@@ -64,16 +64,19 @@
 
 	
 	NSLog(@"Decoded json obj: %@", self.authResponse);
-
+	
 	[jsonData release];
-
     [connection release];
-}
+	
+	if ( [ [ authResponse objectForKey:@"code" ] isEqual:@"Success" ] ) {
+		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
+		[prefs synchronize];
+	} else {
+		NSLog(@"Failed to retrieve access token, probably used invalid credentials");
+	}
 
--(void)onTextChange:(id)sender {
-    // dummy func must exist for textFieldShouldReturn event to be called
 }
-
 
 - (void)dropKickResponder {
 	NSLog(@"Got dropKickResponder");

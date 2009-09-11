@@ -22,6 +22,11 @@
 		D007EB9C1059A331008B41C4 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB941059A331008B41C4 /* SBJsonBase.m */; };
 		D007EB9D1059A331008B41C4 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB961059A331008B41C4 /* SBJsonParser.m */; };
 		D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB981059A331008B41C4 /* SBJsonWriter.m */; };
+		D08C9083105A60710053DA73 /* SetupSubview.xib in Resources */ = {isa = PBXBuildFile; fileRef = D08C9082105A60710053DA73 /* SetupSubview.xib */; };
+		D08C909A105A653E0053DA73 /* ListsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C9099105A653E0053DA73 /* ListsController.m */; };
+		D08C90DC105A6CD40053DA73 /* ItemList.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C90DB105A6CD40053DA73 /* ItemList.m */; };
+		D08C915F105A89800053DA73 /* ListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C915E105A89800053DA73 /* ListItemsController.m */; };
+		D08C918F105A8F860053DA73 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C918E105A8F860053DA73 /* Item.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +58,15 @@
 		D007EB961059A331008B41C4 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		D007EB971059A331008B41C4 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		D007EB981059A331008B41C4 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		D08C9082105A60710053DA73 /* SetupSubview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SetupSubview.xib; sourceTree = "<group>"; };
+		D08C9098105A653E0053DA73 /* ListsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsController.h; sourceTree = "<group>"; };
+		D08C9099105A653E0053DA73 /* ListsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListsController.m; sourceTree = "<group>"; };
+		D08C90DA105A6CD40053DA73 /* ItemList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemList.h; sourceTree = "<group>"; };
+		D08C90DB105A6CD40053DA73 /* ItemList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemList.m; sourceTree = "<group>"; };
+		D08C915D105A89800053DA73 /* ListItemsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListItemsController.h; sourceTree = "<group>"; };
+		D08C915E105A89800053DA73 /* ListItemsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListItemsController.m; sourceTree = "<group>"; };
+		D08C918D105A8F860053DA73 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		D08C918E105A8F860053DA73 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +93,14 @@
 				D007EB3510596672008B41C4 /* AccountSettingsController.m */,
 				D007EB4E10599366008B41C4 /* URLEncode.h */,
 				D007EB4F10599366008B41C4 /* URLEncode.m */,
+				D08C9098105A653E0053DA73 /* ListsController.h */,
+				D08C9099105A653E0053DA73 /* ListsController.m */,
+				D08C90DA105A6CD40053DA73 /* ItemList.h */,
+				D08C90DB105A6CD40053DA73 /* ItemList.m */,
+				D08C915D105A89800053DA73 /* ListItemsController.h */,
+				D08C915E105A89800053DA73 /* ListItemsController.m */,
+				D08C918D105A8F860053DA73 /* Item.h */,
+				D08C918E105A8F860053DA73 /* Item.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -99,6 +121,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				D08C9082105A60710053DA73 /* SetupSubview.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -196,6 +219,7 @@
 			files = (
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
 				282CCBFE0DB6C98000C4EA27 /* AccountSettings.xib in Resources */,
+				D08C9083105A60710053DA73 /* SetupSubview.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +240,10 @@
 				D007EB9C1059A331008B41C4 /* SBJsonBase.m in Sources */,
 				D007EB9D1059A331008B41C4 /* SBJsonParser.m in Sources */,
 				D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */,
+				D08C909A105A653E0053DA73 /* ListsController.m in Sources */,
+				D08C90DC105A6CD40053DA73 /* ItemList.m in Sources */,
+				D08C915F105A89800053DA73 /* ListItemsController.m in Sources */,
+				D08C918F105A8F860053DA73 /* Item.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
