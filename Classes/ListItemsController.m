@@ -10,6 +10,13 @@
 #import "ItemList.h"
 #import "Item.h"
 #import "JSON.h"
+#import "AddListItemController.h"
+#import "URLEncode.h"
+#import "Constants.h"
+
+#import <AddressBook/AddressBook.h>
+#import <AddressBookUI/AddressBookUI.h>
+
 
 @implementation ListItemsController
 
@@ -17,6 +24,7 @@
 @synthesize accessToken;
 @synthesize receivedData;
 @synthesize listItems;
+
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -30,14 +38,109 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-	[self loadItems];
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	self.title = itemList.name;
+	
+	//
+    // Create a header view. Wrap it in a container to allow us to position
+    // it better.
+    //
+    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
+	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
+	
+    headerLabel.text = [ NSString stringWithFormat:@"Items in \"%@\"", itemList.name];
+    headerLabel.textColor = [UIColor blackColor];
+    headerLabel.shadowColor = [UIColor grayColor];
+    headerLabel.shadowOffset = CGSizeMake(0, 1);
+    headerLabel.font = [UIFont boldSystemFontOfSize:22];
+    headerLabel.backgroundColor = [UIColor clearColor];
+    [containerView addSubview:headerLabel];
+    self.tableView.tableHeaderView = containerView;	
+	
+	
+	/// Make floating toolbar footer
+	UIToolbar *toolbar = [UIToolbar new];
+	toolbar.barStyle = UIBarStyleDefault;
+	[toolbar sizeToFit];
+	
+	//Set the frame
+	CGFloat toolbarHeight = [toolbar frame].size.height;
+	CGRect mainViewBounds = self.parentViewController.view.bounds;
+	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds), CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - toolbarHeight, CGRectGetWidth(mainViewBounds),toolbarHeight)];
+	
+	UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshButtonAction:)];
+	
+	UIBarButtonItem *flexibleSpaceLeft = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	
+	UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	
+	[toolbar setItems:[NSArray arrayWithObjects:refreshButton, flexibleSpaceLeft, shareButton, nil]];	
+	
+	[self.parentViewController.view addSubview:toolbar];
+	
+	
+	//// Done adding crazy crap to table
+	
+	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(addButtonAction:)];
+	[self.navigationItem setRightBarButtonItem:addButton];
 }
 
-- (void) loadItems {	
-	NSString *urlString = [ NSString stringWithFormat:@"http://localhost:3000/lists/%@/items.json\?user_credentials=%@", [itemList remoteId], [self accessToken] ];
+- (IBAction)refreshButtonAction:(id)sender {
+	[ self loadItems ];
+}
+
+- (IBAction)shareButtonAction:(id)sender {
+    ABPeoplePickerNavigationController *picker =
+	[[ABPeoplePickerNavigationController alloc] init];
+    picker.peoplePickerDelegate = self;
+	
+    [self presentModalViewController:picker animated:YES];
+    [picker release];
+}
+
+- (IBAction)addButtonAction:(id)sender {
+	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
+	
+	[ nextController setAccessToken:self.accessToken ];
+	[ nextController setItemList:self.itemList ];
+	
+	[[self navigationController] pushViewController:nextController animated:YES];
+	[nextController release];	
+}
+
+
+- (void)peoplePickerNavigationControllerDidCancel:
+(ABPeoplePickerNavigationController *)peoplePicker {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+
+- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person {
+	
+    NSString* name = (NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
+    // self.firstName.text = name;
+    [name release];
+	
+    name = (NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
+    // self.lastName.text = name;
+    [name release];
+	
+    [self dismissModalViewControllerAnimated:YES];
+	
+    return NO;
+}
+
+// Just returns after picking person, I think.
+- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
+      shouldContinueAfterSelectingPerson:(ABRecordRef)person
+                                property:(ABPropertyID)property
+                              identifier:(ABMultiValueIdentifier)identifier{
+    return NO;
+}
+
+- (void) loadItems {
+	
+	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
@@ -46,6 +149,8 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+	currentRetrievalType = Get;
 	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
@@ -69,18 +174,18 @@
 	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	NSMutableArray *listItemArray = [jsonData JSONValue];
-	
+		
 	self.listItems = [NSMutableArray new];
 
-	for (id setObject in listItemArray) {
-		Item *it = [[Item alloc] init];
-		
-		[it setName: [setObject objectForKey:@"name"] ];
-		[it setRemoteId:[setObject objectForKey:@"id"] ];
-		 
-		[self.listItems addObject:it];
+	switch (currentRetrievalType) {
+		case Get:
+			[ self processGetResponse:jsonData ];
+			break;
+		case Delete:
+			[ self processDeleteResponse:jsonData ];
+			[ self loadItems ];
+		default:
+			break;
 	}
 	
 	[jsonData release];
@@ -89,12 +194,30 @@
 	[self.tableView reloadData];
 }
 
+// Iterate through response data and set table items appropriately.
+- (void)processGetResponse:(NSString *)jsonData {
+	NSMutableArray *listItemArray = [jsonData JSONValue];
 
-/*
+	for (id setObject in listItemArray) {
+		Item *it = [[Item alloc] init];
+		
+		[it setName: [setObject objectForKey:@"name"] ];
+		[it setRemoteId:[setObject objectForKey:@"id"] ];
+		
+		[self.listItems addObject:it];
+	}
+}
+
+- (void)processDeleteResponse:(NSString *)jsonData {
+	NSLog(@"Process DELETE response here");
+}
+
 - (void)viewWillAppear:(BOOL)animated {
+	[self loadItems];
+
     [super viewWillAppear:animated];
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -179,19 +302,35 @@
 */
 
 
-/*
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+	Item *item = [listItems objectAtIndex:indexPath.row];
+
+	if (editingStyle == UITableViewCellEditingStyleDelete) {		
+		currentRetrievalType = Delete;
+		
+		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
+		
+		NSLog(@"Url generated for delete is %@", myUrlStr);
+		
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		[request setHTTPMethod:@"DELETE"];
+		
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		
+		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+		
+		if (connection) { 
+			receivedData = [[NSMutableData data] retain]; 
+		}
+	}
 }
-*/
 
 
 /*

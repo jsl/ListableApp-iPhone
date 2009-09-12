@@ -9,6 +9,7 @@
 #import "SharedListAppDelegate.h"
 #import "ListsController.h"
 #import "AccountSettingsController.h"
+#import <AddressBook/AddressBook.h>
 
 @implementation SharedListAppDelegate
 

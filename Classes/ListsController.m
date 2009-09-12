@@ -11,6 +11,9 @@
 
 #import "JSON.h"
 #import "ItemList.h"
+#import "AddListController.h"
+#import "URLEncode.h"
+#import "Constants.h"
 
 @implementation ListsController
 
@@ -29,12 +32,40 @@
 
 
 - (void)viewDidLoad {
+	NSLog(@"Got viewDidLoad");
+	
+	//
+    // Create a header view. Wrap it in a container to allow us to position
+    // it better.
+    //
+    UIView *containerView =
+	[[[UIView alloc]
+	  initWithFrame:CGRectMake(0, 0, 300, 60)]
+	 autorelease];
+    UILabel *headerLabel =
+	[[[UILabel alloc]
+	  initWithFrame:CGRectMake(10, 20, 300, 40)]
+	 autorelease];
+    headerLabel.text = NSLocalizedString(@"Your Lists", @"");
+    headerLabel.textColor = [UIColor blackColor];
+    headerLabel.shadowColor = [UIColor grayColor];
+    headerLabel.shadowOffset = CGSizeMake(0, 1);
+    headerLabel.font = [UIFont boldSystemFontOfSize:22];
+    headerLabel.backgroundColor = [UIColor clearColor];
+    [containerView addSubview:headerLabel];
+    self.tableView.tableHeaderView = containerView;	
+	
+	// End crazy header
+	
     [super viewDidLoad];
 
+	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(addButtonAction:)];
 	
-	if ([self accessToken] != nil) {
-		[self loadLists];
-	} else {
+	self.title = @"Lists";
+	
+	[self.navigationItem setRightBarButtonItem:addButton];
+		
+	if ([self accessToken] == nil) {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome!" 
 													message:@"Since this is the first time you've run Shared List, you must configure your account under \"Settings\"."
 													delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -43,12 +74,23 @@
 	}
 }
 
+- (IBAction)addButtonAction:(id)sender {
+	AddListController *nextController = [[AddListController alloc] initWithNibName:@"AddList" bundle:nil];
+	
+	[ nextController setAccessToken:self.accessToken];
+	
+	[[self navigationController] pushViewController:nextController animated:YES];
+	[nextController release];	
+}
+
 - (void) loadLists {
 	NSURL *myURL = [NSURL URLWithString:[ @"http://localhost:3000/lists.json?user_credentials=" stringByAppendingString:[self accessToken]]];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
+	
+	currentRetrievalType = Get;
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 	
@@ -75,18 +117,17 @@
 	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	NSMutableArray *listNames = [jsonData JSONValue];
 		
-	self.lists = [NSMutableArray new];
-	
-	for (id setObject in listNames) {
-		ItemList *l = [ [ItemList alloc] init];
-		[l setName:[setObject objectForKey:@"name"]];
-		[l setRemoteId:[setObject objectForKey:@"id"]];
-		
-		[self.lists addObject:l];
-	}
+	switch (currentRetrievalType) {
+		case Get:
+			[ self processGetResponse:jsonData ];
+			break;
+		case Delete:
+			[ self processDeleteResponse:jsonData ];
+			[ self loadLists ];
+		default:
+			break;
+	}	
 	
 	[jsonData release];
     [connection release];
@@ -95,11 +136,34 @@
 }
 
 
-/*
+// Iterate through response data and set table items appropriately.
+- (void)processGetResponse:(NSString *)jsonData {
+	self.lists = [NSMutableArray new];
+
+	NSMutableArray *listNames = [jsonData JSONValue];
+
+	for (id setObject in listNames) {
+		ItemList *l = [ [ItemList alloc] init];
+		[l setName:[setObject objectForKey:@"name"]];
+		[l setRemoteId:[setObject objectForKey:@"id"]];
+		
+		[self.lists addObject:l];
+	}	
+}
+
+- (void)processDeleteResponse:(NSString *)jsonData {
+	NSLog(@"Process DELETE response here");
+}
+
+
 - (void)viewWillAppear:(BOOL)animated {
+	NSLog(@"Got viewWillAppear");
+	if ([self accessToken] != nil)	
+		[self loadLists];
+
     [super viewWillAppear:animated];
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -186,20 +250,32 @@
 */
 
 
-/*
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+	ItemList *l = [lists objectAtIndex:indexPath.row];
+	
+	if (editingStyle == UITableViewCellEditingStyleDelete) {		
+		NSString *format = @"http://localhost:3000/lists/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, l.remoteId, [accessToken URLEncodeString]];
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+		currentRetrievalType = Delete;
+		
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		[request setHTTPMethod:@"DELETE"];
+		
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		
+		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+		
+		if (connection) { 
+			receivedData = [[NSMutableData data] retain]; 
+		}
+	}   
 }
-*/
-
 
 /*
 // Override to support rearranging the table view.

@@ -1,107 +1,24 @@
 //
-//  AccountSettingsController.m
+//  AddListItemController.m
 //  SharedList
 //
-//  Created by Justin Leitgeb on 9/10/09.
+//  Created by Justin Leitgeb on 9/11/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "AccountSettingsController.h"
-#import "URLEncode.h"
+#import "AddListItemController.h"
 
+#import "URLEncode.h"
 #import "JSON.h"
 
-@implementation AccountSettingsController
 
+@implementation AddListItemController
+
+@synthesize accessToken;
 @synthesize receivedData;
-@synthesize authResponse;
-@synthesize emailTextField;
-@synthesize passwordTextField;
+@synthesize listItemNameTextField;
+@synthesize itemList;
 
-- (IBAction) checkAccountButtonPressed:(id)sender {
-	NSURL *myURL = [NSURL URLWithString:@"http://localhost:3000/user_session.json"];
-	
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-	
-    [request setHTTPMethod:@"POST"]; 
-    
-	[request setHTTPBody:[[NSString stringWithFormat:@"user_session[email]=%@&user_session[password]=%@&device_id=%@", 
-                           [emailTextField.text URLEncodeString], 
-						   [passwordTextField.text URLEncodeString],
-                           [[UIDevice currentDevice] uniqueIdentifier]] dataUsingEncoding:NSUTF8StringEncoding]]; 
-	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-		
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	[self.receivedData setLength:0];
-}
-
-- (void)connectionDidFail:(NSURLConnection *)connection {
-	[connection release];
-	[receivedData release];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	self.authResponse = [jsonData JSONValue];
-
-	
-	NSLog(@"Decoded json obj: %@", self.authResponse);
-	
-	[jsonData release];
-    [connection release];
-	
-	if ( [ [ authResponse objectForKey:@"code" ] isEqual:@"Success" ] ) {
-		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
-		[prefs synchronize];
-	} else {
-		NSLog(@"Failed to retrieve access token, probably used invalid credentials");
-	}
-
-}
-
-- (void)dropKickResponder {
-	NSLog(@"Got dropKickResponder");
-	
-	[emailTextField resignFirstResponder];
-	[passwordTextField resignFirstResponder];	
-}
-
--(IBAction)dismissKeyboard: (id)sender {
-	NSLog(@"Got dismissKeyboard");
-	[self dropKickResponder];
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)theTextField {
-	NSLog(@"Got textFieldDidEndEditing");
-	[self dropKickResponder];
-	
-	[emailTextField resignFirstResponder];
-	[passwordTextField resignFirstResponder];
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
-	NSLog(@"Got textFieldShouldReturn");
-	[self dropKickResponder];
-
-	return YES;
-}
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -112,6 +29,105 @@
     return self;
 }
 */
+
+- (IBAction) doneButtonPressed:(id)sender {
+	NSString *format = @"http://localhost:3000/lists/%@/items.json";
+	NSString *myUrlStr = [NSString stringWithFormat:format, itemList.remoteId];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [request setHTTPMethod:@"POST"];
+    
+	NSData *httpBody = [ [ NSString stringWithFormat:@"item[name]=%@&user_credentials=%@", 
+						  [listItemNameTextField.text URLEncodeString],
+						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+	
+	[request setHTTPBody: httpBody];
+	
+	NSLog(@"This is what were doin: %@", httpBody);
+	
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+    if (connection) { 
+		NSLog(@"Got conncetion");
+        receivedData = [[NSMutableData data] retain]; 
+		NSLog(@"set up receiveddata, it is %@", [receivedData class]);
+    }
+	
+	NSLog(@"Done setting up con, for real");
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	NSLog(@"Got conncetion 2");
+	
+	[self.receivedData setLength:0];
+}
+
+- (void)connectionDidFail:(NSURLConnection *)connection {
+	NSLog(@"Got conncetion FAIL 3");
+	
+	[connection release];
+	[receivedData release];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	NSLog(@"Got conncetion 4");
+	
+    [self.receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+	NSLog(@"Got conncetion FINISH");
+	
+	NSString *jsonData = [[NSString alloc] initWithBytes:[self.receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	
+	NSMutableDictionary *createResponse = [jsonData JSONValue];
+	
+	NSLog(@"Decoded json obj: %@", createResponse);
+	
+	[jsonData release];
+    [connection release];
+	
+	// DO something with response here!!  XXX
+	//	if ( [ [ authResponse objectForKey:@"code" ] isEqual:@"Success" ] ) {
+	//		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	//		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
+	//		[prefs synchronize];
+	//	} else {
+	//		NSLog(@"Failed to retrieve access token, probably used invalid credentials");
+	//	}
+}
+
+// Gets rid of the keyboard no matter what the responder is
+- (void)dropKickResponder {
+	NSLog(@"Got dropKickResponder");
+	
+	[listItemNameTextField resignFirstResponder];
+}
+
+-(IBAction)dismissKeyboard: (id)sender {
+	NSLog(@"Got dismissKeyboard");
+	[self dropKickResponder];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)theTextField {
+	NSLog(@"Got textFieldDidEndEditing");
+	[self dropKickResponder];	
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
+	NSLog(@"Got textFieldShouldReturn");
+	[self dropKickResponder];
+	
+	return YES;
+}
+
 
 /*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -148,8 +164,8 @@
 
 
 - (void)dealloc {
-	[authResponse release];
 	[receivedData release];
+	[accessToken release];
 	
     [super dealloc];
 }

@@ -7,15 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Constants.h"
 
 @interface ListsController : UITableViewController {
 	NSString *accessToken;
 	NSMutableData *receivedData;
 	NSMutableArray *lists;
+	enum RetrievalTypes currentRetrievalType;
 }
 
 - (void) loadLists;
+- (void)processGetResponse:(NSString *)jsonData;
+- (void)processDeleteResponse:(NSString *)jsonData;
 
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSMutableData *receivedData;

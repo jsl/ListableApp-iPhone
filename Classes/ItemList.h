@@ -14,8 +14,6 @@
 	NSDecimalNumber *remoteId;
 }
 
--(id)initWithName:(NSString *)theName: (NSInteger)theRemoteId;
-
 @property (nonatomic, retain) NSString *name; 
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
 

@@ -7,17 +7,29 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "ItemList.h"
+#import "Constants.h"
 
-@interface ListItemsController : UITableViewController {
+
+#import <AddressBook/AddressBook.h>
+#import <AddressBookUI/AddressBookUI.h>
+
+
+@interface ListItemsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate> {
 	NSString *accessToken;
 	ItemList *itemList;
 	NSMutableData *receivedData;
 	NSMutableArray *listItems;
+	
+	enum RetrievalTypes currentRetrievalType;
 }
 
-- (void) loadItems;
+- (IBAction)refreshButtonAction:(id)sender;
+- (IBAction)shareButtonAction:(id)sender;
+
+- (void)processDeleteResponse:(NSString *)jsonData;
+- (void)processGetResponse:(NSString *)jsonData;
+- (void)loadItems;
 
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) NSString *accessToken;
