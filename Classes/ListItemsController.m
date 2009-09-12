@@ -24,7 +24,7 @@
 @synthesize accessToken;
 @synthesize receivedData;
 @synthesize listItems;
-
+@synthesize inviteeEmail;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -41,10 +41,8 @@
 	
 	self.title = itemList.name;
 	
-	//
     // Create a header view. Wrap it in a container to allow us to position
     // it better.
-    //
     UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
 	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
 	
@@ -77,7 +75,6 @@
 	[toolbar setItems:[NSArray arrayWithObjects:refreshButton, flexibleSpaceLeft, shareButton, nil]];	
 	
 	[self.parentViewController.view addSubview:toolbar];
-	
 	
 	//// Done adding crazy crap to table
 	
@@ -116,18 +113,84 @@
 
 
 - (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person {
+	ABMultiValueRef emailProperty = ABRecordCopyValue(person, kABPersonEmailProperty);
+	NSArray* emailAddresses = (NSArray*)ABMultiValueCopyArrayOfAllValues(emailProperty);
+	CFRelease(emailProperty);	
 	
-    NSString* name = (NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
-    // self.firstName.text = name;
-    [name release];
+	if ([emailAddresses count] == 0) {
+		NSString *msg = @"Cannot send list to contact with no emails.  Please add an email for desired contact in iPhone contact manager and try again.";
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"No emails found for contact" 
+														 message:msg 
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+	 	[alert show];
+		[alert release];
+		
+	} else if ([emailAddresses count] == 1) {
+		[self setInviteeEmail:[emailAddresses objectAtIndex:0]];
+		NSString *msg = [NSString stringWithFormat:@"An email will be sent to %@ inviting them to this list.  OK?", [emailAddresses objectAtIndex:0]];
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Confirm invitation" 
+														 message:msg 
+														delegate:self
+											   cancelButtonTitle:@"Cancel" 
+											   otherButtonTitles:@"OK", nil ];
+		
+	 	[alert show];
+		[alert release];		
+	} else {
+		NSLog(@"Too many addresses, go to disambiguator");
+	}
 	
-    name = (NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
-    // self.lastName.text = name;
-    [name release];
+	[emailAddresses release];
 	
     [self dismissModalViewControllerAnimated:YES];
 	
     return NO;
+}
+
+// This is received when an OK is received, currently only to confirm that we should invite the email address found.
+- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	// the user clicked one of the OK/Cancel buttons
+	if (buttonIndex == 0) {
+		NSLog(@"Cancel Received");
+	} else {
+		[ self sendInvitationToEmail ];
+		NSLog(@"OK Received");
+	}
+}
+
+// Creates an invitation record for the email in ivar for inviteeEmail.
+- (void)sendInvitationToEmail {
+	NSString *format = @"%@/lists/%@/invitations.json";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [request setHTTPMethod:@"POST"];
+    
+	NSData *httpBody = [ [ NSString stringWithFormat:@"invitation[email]=%@&user_credentials=%@", 
+						  [ self.inviteeEmail URLEncodeString ],
+						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+	
+	[request setHTTPBody: httpBody];
+	
+	NSLog(@"This is what were doin: %@", httpBody);
+	
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+    if (connection) { 
+		NSLog(@"Got conncetion");
+        receivedData = [[NSMutableData data] retain]; 
+		NSLog(@"set up receiveddata, it is %@", [receivedData class]);
+    }
+	
+	NSLog(@"Done setting up con, for real");	
 }
 
 // Just returns after picking person, I think.
@@ -314,7 +377,6 @@
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
 		
 		NSLog(@"Url generated for delete is %@", myUrlStr);
-		
 		
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		

@@ -10,7 +10,7 @@
 
 #import "URLEncode.h"
 #import "JSON.h"
-
+#import "Constants.h"
 
 @implementation AddListItemController
 
@@ -31,8 +31,8 @@
 */
 
 - (IBAction) doneButtonPressed:(id)sender {
-	NSString *format = @"http://localhost:3000/lists/%@/items.json";
-	NSString *myUrlStr = [NSString stringWithFormat:format, itemList.remoteId];
+	NSString *format = @"%@/lists/%@/items.json";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	

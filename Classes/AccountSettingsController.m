@@ -8,6 +8,7 @@
 
 #import "AccountSettingsController.h"
 #import "URLEncode.h"
+#import "Constants.h"
 
 #import "JSON.h"
 
@@ -19,7 +20,11 @@
 @synthesize passwordTextField;
 
 - (IBAction) checkAccountButtonPressed:(id)sender {
-	NSURL *myURL = [NSURL URLWithString:@"http://localhost:3000/user_session.json"];
+	NSString *format = @"%@/user_session.json";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER];
+
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	
@@ -59,9 +64,6 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
 	self.authResponse = [jsonData JSONValue];
-
-	
-	NSLog(@"Decoded json obj: %@", self.authResponse);
 	
 	[jsonData release];
     [connection release];
@@ -77,19 +79,15 @@
 }
 
 - (void)dropKickResponder {
-	NSLog(@"Got dropKickResponder");
-	
 	[emailTextField resignFirstResponder];
 	[passwordTextField resignFirstResponder];	
 }
 
 -(IBAction)dismissKeyboard: (id)sender {
-	NSLog(@"Got dismissKeyboard");
 	[self dropKickResponder];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)theTextField {
-	NSLog(@"Got textFieldDidEndEditing");
 	[self dropKickResponder];
 	
 	[emailTextField resignFirstResponder];
@@ -97,7 +95,6 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
-	NSLog(@"Got textFieldShouldReturn");
 	[self dropKickResponder];
 
 	return YES;
