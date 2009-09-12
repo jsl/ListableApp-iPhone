@@ -24,6 +24,7 @@
 @synthesize accessToken;
 @synthesize receivedData;
 @synthesize listItems;
+@synthesize toolbar;
 @synthesize inviteeEmail;
 
 /*
@@ -57,7 +58,7 @@
 	
 	
 	/// Make floating toolbar footer
-	UIToolbar *toolbar = [UIToolbar new];
+	self.toolbar = [UIToolbar new];
 	toolbar.barStyle = UIBarStyleDefault;
 	[toolbar sizeToFit];
 	
@@ -178,19 +179,13 @@
 	
 	[request setHTTPBody: httpBody];
 	
-	NSLog(@"This is what were doin: %@", httpBody);
-	
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 	
     if (connection) { 
-		NSLog(@"Got conncetion");
         receivedData = [[NSMutableData data] retain]; 
-		NSLog(@"set up receiveddata, it is %@", [receivedData class]);
-    }
-	
-	NSLog(@"Done setting up con, for real");	
+    }	
 }
 
 // Just returns after picking person, I think.
@@ -286,11 +281,14 @@
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
+	/// XXX remove toolbar subview like:
+	[toolbar removeFromSuperview];
+
 	[super viewWillDisappear:animated];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
@@ -375,9 +373,7 @@
 		
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
-		
-		NSLog(@"Url generated for delete is %@", myUrlStr);
-		
+				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
@@ -412,6 +408,7 @@
 
 
 - (void)dealloc {
+	[toolbar release];
 	[accessToken release];
 	[itemList release];
 	[receivedData release];

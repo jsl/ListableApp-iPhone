@@ -84,7 +84,11 @@
 }
 
 - (void) loadLists {
-	NSURL *myURL = [NSURL URLWithString:[ @"http://localhost:3000/lists.json?user_credentials=" stringByAppendingString:[self accessToken]]];
+	NSString *format = @"%@/lists.json?user_credentials=%@";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
+
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	

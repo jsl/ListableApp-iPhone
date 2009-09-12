@@ -7,6 +7,6 @@
  *
  */
 
-#define API_SERVER @"http://localhost:3000"
+#define API_SERVER @"http://listableapp.com"
 
 enum RetrievalTypes { Get, Delete };

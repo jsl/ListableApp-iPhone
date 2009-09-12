@@ -73,7 +73,14 @@
 		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
 		[prefs synchronize];
 	} else {
-		NSLog(@"Failed to retrieve access token, probably used invalid credentials");
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Login failed" 
+														 message:@"Sorry, we couldn't log you in with the credentials provided.  Please try again or contact us if problems continue" 
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		[alert show];
+		[alert release];
 	}
 
 }

@@ -22,6 +22,7 @@
 	NSMutableArray *listItems;
 	
 	NSString *inviteeEmail;
+	UIToolbar *toolbar;
 	
 	enum RetrievalTypes currentRetrievalType;
 }
@@ -35,6 +36,7 @@
 - (void)sendInvitationToEmail;
 
 @property (nonatomic, retain) ItemList *itemList;
+@property (nonatomic, retain) UIToolbar *toolbar;
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) NSMutableData *receivedData;
