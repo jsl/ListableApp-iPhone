@@ -21,18 +21,8 @@
 @synthesize receivedData;
 @synthesize lists;
 
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-    if (self = [super initWithStyle:style]) {
-    }
-    return self;
-}
-*/
 
-
-- (void)viewDidLoad {
-	NSLog(@"Got viewDidLoad");
+- (void)viewDidLoad {	
 	
 	//
     // Create a header view. Wrap it in a container to allow us to position
@@ -84,17 +74,16 @@
 }
 
 - (void) loadLists {
+	currentRetrievalType = Get;
+	
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
-
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-	currentRetrievalType = Get;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 	
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 	
@@ -121,20 +110,21 @@
 	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-		
+	
+	[connection release];
+	
 	switch (currentRetrievalType) {
 		case Get:
 			[ self processGetResponse:jsonData ];
 			break;
 		case Delete:
 			[ self processDeleteResponse:jsonData ];
-			[ self loadLists ];
+			break;
 		default:
 			break;
 	}	
 	
 	[jsonData release];
-    [connection release];
 	
 	[self.tableView reloadData];
 }
@@ -156,12 +146,17 @@
 }
 
 - (void)processDeleteResponse:(NSString *)jsonData {
-	NSLog(@"Process DELETE response here");
+	NSLog(@"Proc del resp, data is %@", jsonData);
+	[self loadLists];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
-	NSLog(@"Got viewWillAppear");
+	
+	UIImage *backgroundImage = [UIImage imageNamed:@"gradientBackground.png"];
+	UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:backgroundImage];
+	self.tableView.backgroundColor = backgroundColor;
+	[backgroundColor release];
+	
 	if ([self accessToken] != nil)	
 		[self loadLists];
 
@@ -226,6 +221,8 @@
     }
     
     // Set up the cell...	
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
 	cell.textLabel.text = [ [ [self lists] objectAtIndex:indexPath.row] name];
 	
     return cell;
@@ -260,15 +257,15 @@
 	ItemList *l = [lists objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {		
-		NSString *format = @"http://localhost:3000/lists/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, l.remoteId, [accessToken URLEncodeString]];
+		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [accessToken URLEncodeString]];
 		
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
 		currentRetrievalType = Delete;
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-		
+				
 		[request setHTTPMethod:@"DELETE"];
 		
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];

@@ -56,29 +56,6 @@
     [containerView addSubview:headerLabel];
     self.tableView.tableHeaderView = containerView;	
 	
-	
-	/// Make floating toolbar footer
-	self.toolbar = [UIToolbar new];
-	toolbar.barStyle = UIBarStyleDefault;
-	[toolbar sizeToFit];
-	
-	//Set the frame
-	CGFloat toolbarHeight = [toolbar frame].size.height;
-	CGRect mainViewBounds = self.parentViewController.view.bounds;
-	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds), CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - toolbarHeight, CGRectGetWidth(mainViewBounds),toolbarHeight)];
-	
-	UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshButtonAction:)];
-	
-	UIBarButtonItem *flexibleSpaceLeft = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	
-	UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
-	
-	[toolbar setItems:[NSArray arrayWithObjects:refreshButton, flexibleSpaceLeft, shareButton, nil]];	
-	
-	[self.parentViewController.view addSubview:toolbar];
-	
-	//// Done adding crazy crap to table
-	
 	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(addButtonAction:)];
 	[self.navigationItem setRightBarButtonItem:addButton];
 }
@@ -267,10 +244,40 @@
 }
 
 - (void)processDeleteResponse:(NSString *)jsonData {
-	NSLog(@"Process DELETE response here");
+	currentRetrievalType = Get;
+	[self loadItems];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	
+	UIImage *backgroundImage = [UIImage imageNamed:@"gradientBackground.png"];
+	UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:backgroundImage];
+	self.tableView.backgroundColor = backgroundColor;
+	[backgroundColor release];
+
+	
+	/// Make floating toolbar footer
+	self.toolbar = [UIToolbar new];
+	toolbar.barStyle = UIBarStyleDefault;
+	[toolbar sizeToFit];
+	
+	//Set the frame
+	CGFloat toolbarHeight = [toolbar frame].size.height;
+	CGRect mainViewBounds = self.parentViewController.view.bounds;
+	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds), CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - toolbarHeight, CGRectGetWidth(mainViewBounds),toolbarHeight)];
+	
+	UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshButtonAction:)];
+	
+	UIBarButtonItem *flexibleSpaceLeft = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	
+	UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	
+	[toolbar setItems:[NSArray arrayWithObjects:refreshButton, flexibleSpaceLeft, shareButton, nil]];	
+	
+	[self.parentViewController.view addSubview:toolbar];
+	
+
+	// Have to load items
 	[self loadItems];
 
     [super viewWillAppear:animated];
@@ -339,7 +346,7 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-    // Set up the cell...	
+    // Set up the cell...
 	cell.textLabel.text = [ [ [self listItems] objectAtIndex:indexPath.row] name];
 	
     return cell;
