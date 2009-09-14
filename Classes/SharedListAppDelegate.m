@@ -28,7 +28,7 @@
 	rootNavigationController.tabBarItem.title = @"Browse All";
 	
 	AccountSettingsController *settingsController = [[[AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
-	settingsController.tabBarItem.title = @"Settings";	
+	settingsController.tabBarItem.title = @"Account";	
 	
 	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, settingsController, nil];
 }

@@ -13,6 +13,7 @@
 #import "AddListItemController.h"
 #import "URLEncode.h"
 #import "Constants.h"
+#import "EmailSelectionController.h"
 
 #import <AddressBook/AddressBook.h>
 #import <AddressBookUI/AddressBookUI.h>
@@ -47,7 +48,7 @@
     UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
 	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
 	
-    headerLabel.text = [ NSString stringWithFormat:@"Items in \"%@\"", itemList.name];
+    headerLabel.text = itemList.name;
     headerLabel.textColor = [UIColor blackColor];
     headerLabel.shadowColor = [UIColor grayColor];
     headerLabel.shadowOffset = CGSizeMake(0, 1);
@@ -108,24 +109,35 @@
 		
 	} else if ([emailAddresses count] == 1) {
 		[self setInviteeEmail:[emailAddresses objectAtIndex:0]];
-		NSString *msg = [NSString stringWithFormat:@"An email will be sent to %@ inviting them to this list.  OK?", [emailAddresses objectAtIndex:0]];
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Confirm invitation" 
-														 message:msg 
-														delegate:self
-											   cancelButtonTitle:@"Cancel" 
-											   otherButtonTitles:@"OK", nil ];
 		
-	 	[alert show];
-		[alert release];		
 	} else {
-		NSLog(@"Too many addresses, go to disambiguator");
+		EmailSelectionController *nextController = [[EmailSelectionController alloc] initWithStyle:UITableViewStylePlain];
+		
+		[ nextController setEmails:emailAddresses ];
+		
+		nextController.listItemsController = self;
+		
+		[[self navigationController] pushViewController:nextController animated:YES];
+		[nextController release];		
 	}
-	
+		
 	[emailAddresses release];
 	
     [self dismissModalViewControllerAnimated:YES];
 	
     return NO;
+}
+
+- (void) alertEmailWillBeSent {
+	NSString *msg = [NSString stringWithFormat:@"An email will be sent to %@ inviting them to this list.  OK?", [self inviteeEmail]];
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Confirm invitation" 
+													 message:msg 
+													delegate:self
+										   cancelButtonTitle:@"Cancel" 
+										   otherButtonTitles:@"OK", nil ];
+	
+	[alert show];
+	[alert release];
 }
 
 // This is received when an OK is received, currently only to confirm that we should invite the email address found.
@@ -174,7 +186,6 @@
 }
 
 - (void) loadItems {
-	
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
@@ -249,6 +260,14 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+
+	// If we're loaded with an inviteeEmail present, assume we need to deliver it.
+	if (inviteeEmail != nil) {
+		[self alertEmailWillBeSent];
+		self.inviteeEmail = nil;
+	}
+	
+	NSLog(@"Got view will appear with %@", inviteeEmail);
 	
 	UIImage *backgroundImage = [UIImage imageNamed:@"gradientBackground.png"];
 	UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:backgroundImage];

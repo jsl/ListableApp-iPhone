@@ -34,6 +34,7 @@
 - (void)processGetResponse:(NSString *)jsonData;
 - (void)loadItems;
 - (void)sendInvitationToEmail;
+- (void) alertEmailWillBeSent;
 
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) UIToolbar *toolbar;
