@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ListItemsController.h"
+#import "CollaboratorsController.h"
 
 @interface EmailSelectionController : UITableViewController {
 	NSArray *emails;
-	ListItemsController *listItemsController;
+	CollaboratorsController *collaboratorsController;
 }
 
 @property (nonatomic, retain) NSArray *emails;
-@property (nonatomic, retain) ListItemsController *listItemsController;
+@property (nonatomic, retain) CollaboratorsController *collaboratorsController;
 
 @end

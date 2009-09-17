@@ -17,9 +17,9 @@
 @synthesize tabBarController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
-    // Add the tab bar controller's current view as a subview of the window
-    [window addSubview:tabBarController.view];
 	
+    // Add the tab bar controller's current view as a subview of the window
+    [window addSubview:tabBarController.view];	
 	
 	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
 	listsController.accessToken = [self accessToken];

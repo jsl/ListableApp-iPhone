@@ -13,11 +13,9 @@
 #import "AddListItemController.h"
 #import "URLEncode.h"
 #import "Constants.h"
-#import "EmailSelectionController.h"
+#import "CollaboratorsController.h"
 
-#import <AddressBook/AddressBook.h>
-#import <AddressBookUI/AddressBookUI.h>
-
+#import "StatusToolbarGenerator.h"
 
 @implementation ListItemsController
 
@@ -27,21 +25,46 @@
 @synthesize listItems;
 @synthesize toolbar;
 @synthesize inviteeEmail;
-
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-    if (self = [super initWithStyle:style]) {
-    }
-    return self;
-}
-*/
+@synthesize statusCode;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+		
+	// create a toolbar to have two buttons in the right
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 155, 45)];
 	
-	self.title = itemList.name;
+	// create the array to hold the buttons, which then gets added to the toolbar
+	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];
+	
+	// create a standard "add" button
+	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
+	[buttons addObject:bi];
+	[bi release];
+	
+	// Add the share button
+	bi = [[UIBarButtonItem alloc] initWithTitle:@"Editors" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	[buttons addObject:bi];
+	[bi release];
+	
+	// create a standard "refresh" button
+	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
+	[buttons addObject:bi];
+	[bi release];
+		
+	// stick the buttons in the toolbar
+	[tools setItems:buttons animated:NO];
+	
+	[buttons release];
+	
+	// Set toolbar title
+	self.navigationItem.title = @"Items";
+	
+	// and put the toolbar in the nav bar
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
+	[tools release];
+	
 	
     // Create a header view. Wrap it in a container to allow us to position
     // it better.
@@ -56,23 +79,23 @@
     headerLabel.backgroundColor = [UIColor clearColor];
     [containerView addSubview:headerLabel];
     self.tableView.tableHeaderView = containerView;	
+}
+
+- (void) shareButtonAction:(id)sender {
+	CollaboratorsController *nextController = [[CollaboratorsController alloc] initWithStyle:UITableViewStylePlain];
 	
-	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(addButtonAction:)];
-	[self.navigationItem setRightBarButtonItem:addButton];
+	[ nextController setItemList:self.itemList ];
+	[ nextController setAccessToken:self.accessToken];
+	
+	[[self navigationController] pushViewController:nextController animated:YES];
+	[nextController release];
+	
 }
 
 - (IBAction)refreshButtonAction:(id)sender {
 	[ self loadItems ];
 }
 
-- (IBAction)shareButtonAction:(id)sender {
-    ABPeoplePickerNavigationController *picker =
-	[[ABPeoplePickerNavigationController alloc] init];
-    picker.peoplePickerDelegate = self;
-	
-    [self presentModalViewController:picker animated:YES];
-    [picker release];
-}
 
 - (IBAction)addButtonAction:(id)sender {
 	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
@@ -84,110 +107,9 @@
 	[nextController release];	
 }
 
-
-- (void)peoplePickerNavigationControllerDidCancel:
-(ABPeoplePickerNavigationController *)peoplePicker {
-    [self dismissModalViewControllerAnimated:YES];
-}
-
-
-- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person {
-	ABMultiValueRef emailProperty = ABRecordCopyValue(person, kABPersonEmailProperty);
-	NSArray* emailAddresses = (NSArray*)ABMultiValueCopyArrayOfAllValues(emailProperty);
-	CFRelease(emailProperty);	
-	
-	if ([emailAddresses count] == 0) {
-		NSString *msg = @"Cannot send list to contact with no emails.  Please add an email for desired contact in iPhone contact manager and try again.";
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"No emails found for contact" 
-														 message:msg 
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-	 	[alert show];
-		[alert release];
-		
-	} else if ([emailAddresses count] == 1) {
-		[self setInviteeEmail:[emailAddresses objectAtIndex:0]];
-		
-	} else {
-		EmailSelectionController *nextController = [[EmailSelectionController alloc] initWithStyle:UITableViewStylePlain];
-		
-		[ nextController setEmails:emailAddresses ];
-		
-		nextController.listItemsController = self;
-		
-		[[self navigationController] pushViewController:nextController animated:YES];
-		[nextController release];		
-	}
-		
-	[emailAddresses release];
-	
-    [self dismissModalViewControllerAnimated:YES];
-	
-    return NO;
-}
-
-- (void) alertEmailWillBeSent {
-	NSString *msg = [NSString stringWithFormat:@"An email will be sent to %@ inviting them to this list.  OK?", [self inviteeEmail]];
-	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Confirm invitation" 
-													 message:msg 
-													delegate:self
-										   cancelButtonTitle:@"Cancel" 
-										   otherButtonTitles:@"OK", nil ];
-	
-	[alert show];
-	[alert release];
-}
-
-// This is received when an OK is received, currently only to confirm that we should invite the email address found.
-- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	// the user clicked one of the OK/Cancel buttons
-	if (buttonIndex == 0) {
-		NSLog(@"Cancel Received");
-	} else {
-		[ self sendInvitationToEmail ];
-		NSLog(@"OK Received");
-	}
-}
-
-// Creates an invitation record for the email in ivar for inviteeEmail.
-- (void)sendInvitationToEmail {
-	NSString *format = @"%@/lists/%@/invitations.json";
-	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
-	
-	NSURL *myURL = [NSURL URLWithString:myUrlStr];
-	
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-	
-    [request setHTTPMethod:@"POST"];
-    
-	NSData *httpBody = [ [ NSString stringWithFormat:@"invitation[email]=%@&user_credentials=%@", 
-						  [ self.inviteeEmail URLEncodeString ],
-						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
-	
-	[request setHTTPBody: httpBody];
-	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }	
-}
-
-// Just returns after picking person, I think.
-- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker
-      shouldContinueAfterSelectingPerson:(ABRecordRef)person
-                                property:(ABPropertyID)property
-                              identifier:(ABMultiValueIdentifier)identifier{
-    return NO;
-}
-
 - (void) loadItems {
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
-		
+
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
@@ -198,12 +120,20 @@
 	
 	currentRetrievalType = Get;
 	
+	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
+
+	[self.parentViewController.view addSubview:self.toolbar];
+	self.toolbar.hidden = NO;
+	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
-    }		
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	if ([response respondsToSelector:@selector(statusCode)])
+		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
+	
 	[self.receivedData setLength:0];
 }
 
@@ -221,37 +151,66 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		
-	self.listItems = [NSMutableArray new];
+	if ([ statusCode intValue ] >= 400) {
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+														 message:jsonData
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		self.toolbar.hidden = YES;
+		
+	 	[alert show];
+		[alert release];
+	} else {
+		
+		// Try getting items from response if the body isn't empty and the code is 200
+		if ([ statusCode intValue ] == 200) {
+			if ( [ jsonData length] > 0) {
+				NSMutableArray *itms = [ self processGetResponse:jsonData ];
 
-	switch (currentRetrievalType) {
-		case Get:
-			[ self processGetResponse:jsonData ];
-			break;
-		case Delete:
-			[ self processDeleteResponse:jsonData ];
-			[ self loadItems ];
-		default:
-			break;
+				self.listItems = [ itms retain ];
+				self.toolbar.hidden = YES;
+				[self.tableView reloadData];				
+				
+				[itms release];
+				
+			} else if ([ jsonData length] == 0) {
+				// Must have been a POST or a DELETE, no body parseable to an Array
+				self.toolbar.hidden = YES;
+				
+				// Get new result set.
+				[self loadItems];
+			}
+		} else {
+			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
+		}
 	}
 	
-	[jsonData release];
-    [connection release];
+	self.toolbar.hidden = YES;
 	
 	[self.tableView reloadData];
+
+	[jsonData release];
+    [connection release];	
 }
 
 // Iterate through response data and set table items appropriately.
-- (void)processGetResponse:(NSString *)jsonData {
+- (NSMutableArray *)processGetResponse:(NSString *)jsonData {
+	
 	NSMutableArray *listItemArray = [jsonData JSONValue];
-
+	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
+	
 	for (id setObject in listItemArray) {
 		Item *it = [[Item alloc] init];
 		
 		[it setName: [setObject objectForKey:@"name"] ];
 		[it setRemoteId:[setObject objectForKey:@"id"] ];
 		
-		[self.listItems addObject:it];
+		[tmpItems addObject:it];
 	}
+	
+	return tmpItems;
 }
 
 - (void)processDeleteResponse:(NSString *)jsonData {
@@ -260,43 +219,13 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
-	// If we're loaded with an inviteeEmail present, assume we need to deliver it.
-	if (inviteeEmail != nil) {
-		[self alertEmailWillBeSent];
-		self.inviteeEmail = nil;
-	}
-	
-	NSLog(@"Got view will appear with %@", inviteeEmail);
-	
-	UIImage *backgroundImage = [UIImage imageNamed:@"gradientBackground.png"];
-	UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:backgroundImage];
-	self.tableView.backgroundColor = backgroundColor;
-	[backgroundColor release];
-
-	
+		
 	/// Make floating toolbar footer
 	self.toolbar = [UIToolbar new];
 	toolbar.barStyle = UIBarStyleDefault;
 	[toolbar sizeToFit];
-	
-	//Set the frame
-	CGFloat toolbarHeight = [toolbar frame].size.height;
-	CGRect mainViewBounds = self.parentViewController.view.bounds;
-	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds), CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - toolbarHeight, CGRectGetWidth(mainViewBounds),toolbarHeight)];
-	
-	UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStyleBordered target:self action:@selector(refreshButtonAction:)];
-	
-	UIBarButtonItem *flexibleSpaceLeft = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	
-	UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
-	
-	[toolbar setItems:[NSArray arrayWithObjects:refreshButton, flexibleSpaceLeft, shareButton, nil]];	
-	
-	[self.parentViewController.view addSubview:toolbar];
-	
-
-	// Have to load items
+		
+	// Have to load items -- but it's not working!
 	[self loadItems];
 
     [super viewWillAppear:animated];
@@ -309,9 +238,8 @@
 */
 
 - (void)viewWillDisappear:(BOOL)animated {
-	/// XXX remove toolbar subview like:
 	[toolbar removeFromSuperview];
-
+	
 	[super viewWillDisappear:animated];
 }
 
@@ -373,10 +301,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+	NSLog(@"WRITEME!!!");
 }
 
 
@@ -394,15 +319,17 @@
     
 	Item *item = [listItems objectAtIndex:indexPath.row];
 
-	if (editingStyle == UITableViewCellEditingStyleDelete) {		
-		currentRetrievalType = Delete;
-		
+	if (editingStyle == UITableViewCellEditingStyleDelete) {				
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
 				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Deleting list item..."];
+		
+		[ self.parentViewController.view addSubview:self.toolbar ];
 		
 		[request setHTTPMethod:@"DELETE"];
 		
@@ -439,6 +366,7 @@
 	[itemList release];
 	[receivedData release];
 	[listItems release];
+	[statusCode release];
 	
     [super dealloc];
 }

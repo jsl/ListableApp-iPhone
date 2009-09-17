@@ -31,6 +31,10 @@
 		D08C92E3105ABA7D0053DA73 /* AddListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C92E1105ABA7D0053DA73 /* AddListController.m */; };
 		D08C92E4105ABA7D0053DA73 /* AddList.xib in Resources */ = {isa = PBXBuildFile; fileRef = D08C92E2105ABA7D0053DA73 /* AddList.xib */; };
 		D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0AADB89105E6C6000652E19 /* Entitlements.plist */; };
+		D0AADC2C105E883000652E19 /* ToolbarStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */; };
+		D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADCE010600A5D00652E19 /* CollaboratorsController.m */; };
+		D0AADDB41060487200652E19 /* Collaborator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADDB31060487200652E19 /* Collaborator.m */; };
+		D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */; };
 		D0CA9FB2105AF45F00C5D610 /* AddListItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CA9FB1105AF45F00C5D610 /* AddListItemController.m */; };
 		D0CA9FB4105AF78200C5D610 /* AddListItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0CA9FB3105AF78200C5D610 /* AddListItem.xib */; };
 		D0CAA14E105BD76200C5D610 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA14D105BD76200C5D610 /* AddressBook.framework */; };
@@ -83,6 +87,13 @@
 		D08C92E1105ABA7D0053DA73 /* AddListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddListController.m; sourceTree = "<group>"; };
 		D08C92E2105ABA7D0053DA73 /* AddList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddList.xib; sourceTree = "<group>"; };
 		D0AADB89105E6C6000652E19 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
+		D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ToolbarStatusView.xib; sourceTree = "<group>"; };
+		D0AADCDF10600A5D00652E19 /* CollaboratorsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollaboratorsController.h; sourceTree = "<group>"; };
+		D0AADCE010600A5D00652E19 /* CollaboratorsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollaboratorsController.m; sourceTree = "<group>"; };
+		D0AADDB21060487200652E19 /* Collaborator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Collaborator.h; sourceTree = "<group>"; };
+		D0AADDB31060487200652E19 /* Collaborator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Collaborator.m; sourceTree = "<group>"; };
+		D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusToolbarGenerator.h; sourceTree = "<group>"; };
+		D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusToolbarGenerator.m; sourceTree = "<group>"; };
 		D0CA9FB0105AF45F00C5D610 /* AddListItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddListItemController.h; sourceTree = "<group>"; };
 		D0CA9FB1105AF45F00C5D610 /* AddListItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddListItemController.m; sourceTree = "<group>"; };
 		D0CA9FB3105AF78200C5D610 /* AddListItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddListItem.xib; sourceTree = "<group>"; };
@@ -135,6 +146,12 @@
 				D0CAA0A2105B4F7300C5D610 /* Constants.h */,
 				D07465A5105C72A600077F03 /* EmailSelectionController.h */,
 				D07465A6105C72A600077F03 /* EmailSelectionController.m */,
+				D0AADCDF10600A5D00652E19 /* CollaboratorsController.h */,
+				D0AADCE010600A5D00652E19 /* CollaboratorsController.m */,
+				D0AADDB21060487200652E19 /* Collaborator.h */,
+				D0AADDB31060487200652E19 /* Collaborator.m */,
+				D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */,
+				D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -160,6 +177,7 @@
 				D08C9082105A60710053DA73 /* SetupSubview.xib */,
 				D0CA9FB3105AF78200C5D610 /* AddListItem.xib */,
 				D0AADB89105E6C6000652E19 /* Entitlements.plist */,
+				D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -265,6 +283,7 @@
 				D0D36DB8105C5298002BA818 /* Icon.png in Resources */,
 				D0D36E01105C5A13002BA818 /* gradientBackground.png in Resources */,
 				D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */,
+				D0AADC2C105E883000652E19 /* ToolbarStatusView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +311,9 @@
 				D08C92E3105ABA7D0053DA73 /* AddListController.m in Sources */,
 				D0CA9FB2105AF45F00C5D610 /* AddListItemController.m in Sources */,
 				D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */,
+				D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */,
+				D0AADDB41060487200652E19 /* Collaborator.m in Sources */,
+				D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

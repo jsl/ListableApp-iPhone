@@ -7,12 +7,11 @@
 //
 
 #import "EmailSelectionController.h"
-#import "ListItemsController.h"
 
 @implementation EmailSelectionController
 
 @synthesize emails;
-@synthesize listItemsController;
+@synthesize collaboratorsController;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -106,7 +105,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Pop to the previous view controller and set the email address property to selected address.
-	self.listItemsController.inviteeEmail = [ emails objectAtIndex:indexPath.row];
+	self.collaboratorsController.inviteeEmail = [ emails objectAtIndex:indexPath.row];
 	
 	[self.navigationController popViewControllerAnimated:YES];
 }
@@ -153,6 +152,7 @@
 
 
 - (void)dealloc {
+	[collaboratorsController release];
 	[emails release];
 	
     [super dealloc];

@@ -48,7 +48,7 @@
 	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
-    }	
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -64,28 +64,16 @@
     [self.receivedData appendData:data];
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
 	NSString *jsonData = [[NSString alloc] initWithBytes:[self.receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	NSMutableDictionary *createResponse = [jsonData JSONValue];
-		
-	[jsonData release];
-    [connection release];
-
+	// XXX write some error handling code here
 	
+	NSLog(@"Got resp '%@', len == %i", jsonData, [jsonData length]);
 	
-	[self.navigationController popViewControllerAnimated:YES];
-	
-	// DO something with response here!!  XXX
-//	if ( [ [ authResponse objectForKey:@"code" ] isEqual:@"Success" ] ) {
-//		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-//		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
-//		[prefs synchronize];
-//	} else {
-//		NSLog(@"Failed to retrieve access token, probably used invalid credentials");
-//	}
+	[self.navigationController popViewControllerAnimated:YES];	
 }
 
 // Gets rid of the keyboard no matter what the responder is

@@ -14,54 +14,58 @@
 #import "AddListController.h"
 #import "URLEncode.h"
 #import "Constants.h"
+#import "StatusToolbarGenerator.h"
 
 @implementation ListsController
 
 @synthesize accessToken;
 @synthesize receivedData;
 @synthesize lists;
+@synthesize statusCode;
+@synthesize toolbar;
 
-
-- (void)viewDidLoad {	
+- (void)viewDidLoad {
+	// create a toolbar to have two buttons in the right
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 80, 45)];
 	
-	//
-    // Create a header view. Wrap it in a container to allow us to position
-    // it better.
-    //
-    UIView *containerView =
-	[[[UIView alloc]
-	  initWithFrame:CGRectMake(0, 0, 300, 60)]
-	 autorelease];
-    UILabel *headerLabel =
-	[[[UILabel alloc]
-	  initWithFrame:CGRectMake(10, 20, 300, 40)]
-	 autorelease];
-    headerLabel.text = NSLocalizedString(@"Your Lists", @"");
-    headerLabel.textColor = [UIColor blackColor];
-    headerLabel.shadowColor = [UIColor grayColor];
-    headerLabel.shadowOffset = CGSizeMake(0, 1);
-    headerLabel.font = [UIFont boldSystemFontOfSize:22];
-    headerLabel.backgroundColor = [UIColor clearColor];
-    [containerView addSubview:headerLabel];
-    self.tableView.tableHeaderView = containerView;	
+	// create the array to hold the buttons, which then gets added to the toolbar
+	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:2];
 	
-	// End crazy header
+	// create a standard "add" button
+	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
+	[buttons addObject:bi];
+	[bi release];
 	
-    [super viewDidLoad];
-
-	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(addButtonAction:)];
+	// create a standard "refresh" button
+	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
+	[buttons addObject:bi];
+	[bi release];
+	
+	// stick the buttons in the toolbar
+	[tools setItems:buttons animated:NO];
+	
+	[buttons release];
+	
+	// Set toolbar title
+	self.navigationItem.title = @"List Items";
+	
+	// and put the toolbar in the nav bar
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
+	[tools release];
 	
 	self.title = @"Lists";
-	
-	[self.navigationItem setRightBarButtonItem:addButton];
 		
 	if ([self accessToken] == nil) {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome!" 
-													message:@"Since this is the first time you've run Shared List, you must configure your account under \"Settings\"."
-													delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+														message:@"Since this is the first time you've run Shared List, you must configure your account under \"Settings\"."
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[alert show];
 		[alert release];
 	}
+	
+	[super viewDidLoad];	
 }
 
 - (IBAction)addButtonAction:(id)sender {
@@ -73,11 +77,20 @@
 	[nextController release];	
 }
 
+- (IBAction)refreshButtonAction:(id)sender {
+	[ self loadLists ];
+}
+
 - (void) loadLists {
 	currentRetrievalType = Get;
 	
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
+	
+	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
+	
+	[self.parentViewController.view addSubview:self.toolbar];
+	self.toolbar.hidden = NO;	
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
@@ -93,6 +106,9 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	if ([response respondsToSelector:@selector(statusCode)])
+		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
+
 	[self.receivedData setLength:0];
 }
 
@@ -111,29 +127,53 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	[connection release];
+	if ([ statusCode intValue ] >= 400) {
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+														 message:jsonData
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		self.toolbar.hidden = YES;
+		
+	 	[alert show];
+		[alert release];
+	} else {
+		
+		// Try getting items from response if the body isn't empty and the code is 200
+		if ([ statusCode intValue ] == 200) {
+			if ( [ jsonData length] > 0) {
+				self.lists = [ self processGetResponse:jsonData ];
+				
+				self.toolbar.hidden = YES;
+				[self.tableView reloadData];				
+				
+			} else if ([ jsonData length] == 0) {
+				// Must have been a POST or a DELETE, no body parseable to an Array
+				self.toolbar.hidden = YES;
+				
+				// Get new result set.
+				[self loadLists];
+			}
+		} else {
+			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
+		}
+	}
 	
-	switch (currentRetrievalType) {
-		case Get:
-			[ self processGetResponse:jsonData ];
-			break;
-		case Delete:
-			[ self processDeleteResponse:jsonData ];
-			break;
-		default:
-			break;
-	}	
+	self.toolbar.hidden = YES;
+	
+	[self.tableView reloadData];
 	
 	[jsonData release];
+    [connection release];	
 	
 	[self.tableView reloadData];
 }
 
 
 // Iterate through response data and set table items appropriately.
-- (void)processGetResponse:(NSString *)jsonData {
-	self.lists = [NSMutableArray new];
-
+- (NSMutableArray *)processGetResponse:(NSString *)jsonData {	
+	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
 	NSMutableArray *listNames = [jsonData JSONValue];
 
 	for (id setObject in listNames) {
@@ -141,21 +181,17 @@
 		[l setName:[setObject objectForKey:@"name"]];
 		[l setRemoteId:[setObject objectForKey:@"id"]];
 		
-		[self.lists addObject:l];
-	}	
+		[tmpItems addObject:l];
+	}
+		
+	return tmpItems;
 }
 
 - (void)processDeleteResponse:(NSString *)jsonData {
-	NSLog(@"Proc del resp, data is %@", jsonData);
 	[self loadLists];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	
-	UIImage *backgroundImage = [UIImage imageNamed:@"gradientBackground.png"];
-	UIColor *backgroundColor = [[UIColor alloc] initWithPatternImage:backgroundImage];
-	self.tableView.backgroundColor = backgroundColor;
-	[backgroundColor release];
 	
 	if ([self accessToken] != nil)	
 		[self loadLists];
@@ -260,12 +296,15 @@
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [accessToken URLEncodeString]];
 		
+		self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Deleting list..."];
+		[ self.parentViewController.view addSubview:self.toolbar ];
+
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
 		currentRetrievalType = Delete;
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-				
+
 		[request setHTTPMethod:@"DELETE"];
 		
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -295,9 +334,11 @@
 
 
 - (void)dealloc {
+	[statusCode release];
 	[accessToken release];
 	[receivedData release];
 	[lists release];
+	[toolbar release];
 	
     [super dealloc];
 }

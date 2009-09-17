@@ -9,4 +9,6 @@
 
 #define API_SERVER @"http://listableapp.com"
 
-enum RetrievalTypes { Get, Delete };
+enum RetrievalTypes { Get, Delete, Create };
+
+#define BAR_STYLE UIBarStyleBlackTranslucent

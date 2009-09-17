@@ -10,16 +10,12 @@
 #import "ItemList.h"
 #import "Constants.h"
 
-
-#import <AddressBook/AddressBook.h>
-#import <AddressBookUI/AddressBookUI.h>
-
-
-@interface ListItemsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate> {
+@interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
 	NSString *accessToken;
 	ItemList *itemList;
 	NSMutableData *receivedData;
 	NSMutableArray *listItems;
+	NSNumber *statusCode;
 	
 	NSString *inviteeEmail;
 	UIToolbar *toolbar;
@@ -30,12 +26,11 @@
 - (IBAction)refreshButtonAction:(id)sender;
 - (IBAction)shareButtonAction:(id)sender;
 
-- (void)processDeleteResponse:(NSString *)jsonData;
-- (void)processGetResponse:(NSString *)jsonData;
-- (void)loadItems;
-- (void)sendInvitationToEmail;
-- (void) alertEmailWillBeSent;
+- (void) processDeleteResponse:(NSString *)jsonData;
+- (NSMutableArray *) processGetResponse:(NSString *)jsonData;
+- (void) loadItems;
 
+@property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) UIToolbar *toolbar;
 @property (nonatomic, retain) NSString *accessToken;
