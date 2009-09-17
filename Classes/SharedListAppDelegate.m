@@ -10,6 +10,7 @@
 #import "ListsController.h"
 #import "AccountSettingsController.h"
 #import <AddressBook/AddressBook.h>
+#import "AuthenticationChecker.h"
 
 @implementation SharedListAppDelegate
 
@@ -18,6 +19,14 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
+	BOOL isTokenValid = [ [ [ AuthenticationChecker alloc ] init ] isTokenValid: [self accessToken]];
+	
+	if (isTokenValid) {
+		NSLog(@"We have a valid token");
+	} else {
+		NSLog(@"Token is invalid");
+	}
+
     // Add the tab bar controller's current view as a subview of the window
     [window addSubview:tabBarController.view];	
 	

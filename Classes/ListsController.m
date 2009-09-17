@@ -48,9 +48,6 @@
 	
 	[buttons release];
 	
-	// Set toolbar title
-	self.navigationItem.title = @"List Items";
-	
 	// and put the toolbar in the nav bar
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
 	[tools release];
@@ -128,6 +125,8 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
 	if ([ statusCode intValue ] >= 400) {
+		
+		// If we get a 
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
 														 message:jsonData
 														delegate:self
@@ -286,8 +285,6 @@
 }
 */
 
-
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
 	ItemList *l = [lists objectAtIndex:indexPath.row];

@@ -11,7 +11,7 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		282CCBFE0DB6C98000C4EA27 /* AccountSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 282CCBFD0DB6C98000C4EA27 /* AccountSettings.xib */; };
+		282CCBFE0DB6C98000C4EA27 /* Login.xib in Resources */ = {isa = PBXBuildFile; fileRef = 282CCBFD0DB6C98000C4EA27 /* Login.xib */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
 		28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD73870D9D96C1002E5188 /* MainWindow.xib */; };
 		D007EB3610596672008B41C4 /* AccountSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB3510596672008B41C4 /* AccountSettingsController.m */; };
@@ -23,7 +23,6 @@
 		D007EB9D1059A331008B41C4 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB961059A331008B41C4 /* SBJsonParser.m */; };
 		D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB981059A331008B41C4 /* SBJsonWriter.m */; };
 		D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D07465A6105C72A600077F03 /* EmailSelectionController.m */; };
-		D08C9083105A60710053DA73 /* SetupSubview.xib in Resources */ = {isa = PBXBuildFile; fileRef = D08C9082105A60710053DA73 /* SetupSubview.xib */; };
 		D08C909A105A653E0053DA73 /* ListsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C9099105A653E0053DA73 /* ListsController.m */; };
 		D08C90DC105A6CD40053DA73 /* ItemList.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C90DB105A6CD40053DA73 /* ItemList.m */; };
 		D08C915F105A89800053DA73 /* ListItemsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C915E105A89800053DA73 /* ListItemsController.m */; };
@@ -31,10 +30,10 @@
 		D08C92E3105ABA7D0053DA73 /* AddListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C92E1105ABA7D0053DA73 /* AddListController.m */; };
 		D08C92E4105ABA7D0053DA73 /* AddList.xib in Resources */ = {isa = PBXBuildFile; fileRef = D08C92E2105ABA7D0053DA73 /* AddList.xib */; };
 		D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0AADB89105E6C6000652E19 /* Entitlements.plist */; };
-		D0AADC2C105E883000652E19 /* ToolbarStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */; };
 		D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADCE010600A5D00652E19 /* CollaboratorsController.m */; };
 		D0AADDB41060487200652E19 /* Collaborator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADDB31060487200652E19 /* Collaborator.m */; };
 		D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */; };
+		D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */; };
 		D0CA9FB2105AF45F00C5D610 /* AddListItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CA9FB1105AF45F00C5D610 /* AddListItemController.m */; };
 		D0CA9FB4105AF78200C5D610 /* AddListItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0CA9FB3105AF78200C5D610 /* AddListItem.xib */; };
 		D0CAA14E105BD76200C5D610 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA14D105BD76200C5D610 /* AddressBook.framework */; };
@@ -49,7 +48,7 @@
 		1D3623250D0F684500981E51 /* SharedListAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedListAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Listable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Listable.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		282CCBFD0DB6C98000C4EA27 /* AccountSettings.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountSettings.xib; sourceTree = "<group>"; };
+		282CCBFD0DB6C98000C4EA27 /* Login.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Login.xib; sourceTree = "<group>"; };
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AB4B0D9B1048005BE974 /* SharedList_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedList_Prefix.pch; sourceTree = "<group>"; };
 		28AD73870D9D96C1002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -74,7 +73,6 @@
 		D007EB981059A331008B41C4 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		D07465A5105C72A600077F03 /* EmailSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailSelectionController.h; sourceTree = "<group>"; };
 		D07465A6105C72A600077F03 /* EmailSelectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailSelectionController.m; sourceTree = "<group>"; };
-		D08C9082105A60710053DA73 /* SetupSubview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SetupSubview.xib; sourceTree = "<group>"; };
 		D08C9098105A653E0053DA73 /* ListsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsController.h; sourceTree = "<group>"; };
 		D08C9099105A653E0053DA73 /* ListsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListsController.m; sourceTree = "<group>"; };
 		D08C90DA105A6CD40053DA73 /* ItemList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemList.h; sourceTree = "<group>"; };
@@ -87,13 +85,14 @@
 		D08C92E1105ABA7D0053DA73 /* AddListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddListController.m; sourceTree = "<group>"; };
 		D08C92E2105ABA7D0053DA73 /* AddList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddList.xib; sourceTree = "<group>"; };
 		D0AADB89105E6C6000652E19 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
-		D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ToolbarStatusView.xib; sourceTree = "<group>"; };
 		D0AADCDF10600A5D00652E19 /* CollaboratorsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollaboratorsController.h; sourceTree = "<group>"; };
 		D0AADCE010600A5D00652E19 /* CollaboratorsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollaboratorsController.m; sourceTree = "<group>"; };
 		D0AADDB21060487200652E19 /* Collaborator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Collaborator.h; sourceTree = "<group>"; };
 		D0AADDB31060487200652E19 /* Collaborator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Collaborator.m; sourceTree = "<group>"; };
 		D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusToolbarGenerator.h; sourceTree = "<group>"; };
 		D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusToolbarGenerator.m; sourceTree = "<group>"; };
+		D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationChecker.h; sourceTree = "<group>"; };
+		D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationChecker.m; sourceTree = "<group>"; };
 		D0CA9FB0105AF45F00C5D610 /* AddListItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddListItemController.h; sourceTree = "<group>"; };
 		D0CA9FB1105AF45F00C5D610 /* AddListItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddListItemController.m; sourceTree = "<group>"; };
 		D0CA9FB3105AF78200C5D610 /* AddListItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddListItem.xib; sourceTree = "<group>"; };
@@ -152,6 +151,8 @@
 				D0AADDB31060487200652E19 /* Collaborator.m */,
 				D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */,
 				D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */,
+				D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */,
+				D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -174,10 +175,8 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				D08C9082105A60710053DA73 /* SetupSubview.xib */,
 				D0CA9FB3105AF78200C5D610 /* AddListItem.xib */,
 				D0AADB89105E6C6000652E19 /* Entitlements.plist */,
-				D0AADC2B105E883000652E19 /* ToolbarStatusView.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -194,7 +193,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				282CCBFD0DB6C98000C4EA27 /* AccountSettings.xib */,
+				282CCBFD0DB6C98000C4EA27 /* Login.xib */,
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* SharedList-Info.plist */,
 			);
@@ -276,14 +275,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
-				282CCBFE0DB6C98000C4EA27 /* AccountSettings.xib in Resources */,
-				D08C9083105A60710053DA73 /* SetupSubview.xib in Resources */,
+				282CCBFE0DB6C98000C4EA27 /* Login.xib in Resources */,
 				D08C92E4105ABA7D0053DA73 /* AddList.xib in Resources */,
 				D0CA9FB4105AF78200C5D610 /* AddListItem.xib in Resources */,
 				D0D36DB8105C5298002BA818 /* Icon.png in Resources */,
 				D0D36E01105C5A13002BA818 /* gradientBackground.png in Resources */,
 				D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */,
-				D0AADC2C105E883000652E19 /* ToolbarStatusView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +311,7 @@
 				D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */,
 				D0AADDB41060487200652E19 /* Collaborator.m in Sources */,
 				D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */,
+				D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

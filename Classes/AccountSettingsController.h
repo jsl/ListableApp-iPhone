@@ -14,9 +14,12 @@
 	
 	IBOutlet UITextField *emailTextField;
 	IBOutlet UITextField *passwordTextField;
-
+	IBOutlet UIView *statusView;
+	
 	NSMutableData *receivedData;
 	NSDictionary *authResponse;
+	
+	NSNumber *statusCode;
 }
 
 - (IBAction) checkAccountButtonPressed:(id)sender;
@@ -26,5 +29,8 @@
 @property (nonatomic, retain) NSDictionary *authResponse;
 @property (nonatomic, retain) IBOutlet UITextField *emailTextField;
 @property (nonatomic, retain) IBOutlet UITextField *passwordTextField;
+@property (nonatomic, retain) IBOutlet UIView *statusView;
+
+@property (nonatomic, retain) NSNumber *statusCode;
 
 @end

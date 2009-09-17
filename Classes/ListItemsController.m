@@ -73,9 +73,11 @@
 	
     headerLabel.text = itemList.name;
     headerLabel.textColor = [UIColor blackColor];
-    headerLabel.shadowColor = [UIColor grayColor];
-    headerLabel.shadowOffset = CGSizeMake(0, 1);
-    headerLabel.font = [UIFont boldSystemFontOfSize:22];
+	
+	//    headerLabel.shadowColor = [UIColor grayColor];
+	//    headerLabel.shadowOffset = CGSizeMake(0, 1);
+    
+	headerLabel.font = [UIFont boldSystemFontOfSize:26];
     headerLabel.backgroundColor = [UIColor clearColor];
     [containerView addSubview:headerLabel];
     self.tableView.tableHeaderView = containerView;	

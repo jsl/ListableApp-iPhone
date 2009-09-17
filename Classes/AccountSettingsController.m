@@ -10,14 +10,15 @@
 #import "URLEncode.h"
 #import "Constants.h"
 
-#import "JSON.h"
-
 @implementation AccountSettingsController
 
 @synthesize receivedData;
 @synthesize authResponse;
 @synthesize emailTextField;
 @synthesize passwordTextField;
+@synthesize statusView;
+
+@synthesize statusCode;
 
 - (IBAction) checkAccountButtonPressed:(id)sender {
 	NSString *format = @"%@/user_session.json";
@@ -45,6 +46,9 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	if ([response respondsToSelector:@selector(statusCode)])
+		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
+
 	[self.receivedData setLength:0];
 }
 
@@ -59,30 +63,43 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
+	NSString *responseBody = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	self.authResponse = [jsonData JSONValue];
-	
-	[jsonData release];
-    [connection release];
-	
-	if ( [ [ authResponse objectForKey:@"code" ] isEqual:@"Success" ] ) {
+	if ([statusCode intValue ] == 200) {
+		// It worked!
+		NSLog(@"Auth worked, setting creds to %@", responseBody);
+		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-		[prefs setObject:[ authResponse objectForKey:@"key" ] forKey:@"accessToken"];
+		[prefs setObject:responseBody forKey:@"accessToken"];
 		[prefs synchronize];
-	} else {
+		
+	} else if ([statusCode intValue ] == 404) {
+		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Login failed" 
-														 message:@"Sorry, we couldn't log you in with the credentials provided.  Please try again or contact us if problems continue" 
+														 message:@"Sorry, we couldn't log you in with the credentials provided.  Please try again or contact us at support@listableapp.com if problems continue" 
 														delegate:self
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];
 		
-		[alert show];
+	 	[alert show];
+		[alert release];
+		
+	} else if ([statusCode intValue ] > 400) {
+		// Other error
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+														 message:responseBody
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+	 	[alert show];
 		[alert release];
 	}
 
+	[responseBody release];
+    [connection release];
 }
 
 - (void)dropKickResponder {
@@ -123,12 +140,12 @@
 }
 */
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-    [super viewDidLoad];
+	UIView *myview = [ [[NSBundle mainBundle] loadNibNamed:@"InvalidCredentials" owner:self options:nil] objectAtIndex:0];
+	[ statusView addSubview:myview ];
+	
+	[super viewDidLoad];
 }
-*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -154,6 +171,7 @@
 - (void)dealloc {
 	[authResponse release];
 	[receivedData release];
+	[statusCode release];
 	
     [super dealloc];
 }
