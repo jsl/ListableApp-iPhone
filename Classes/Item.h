@@ -12,9 +12,11 @@
 @interface Item : NSObject {
 	NSString *name;
 	NSDecimalNumber *remoteId;
+	NSNumber *completed;
 }
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
+@property (nonatomic, retain) NSNumber *completed;
 
 @end

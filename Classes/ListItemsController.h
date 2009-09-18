@@ -14,7 +14,11 @@
 	NSString *accessToken;
 	ItemList *itemList;
 	NSMutableData *receivedData;
+	
 	NSMutableArray *listItems;
+	NSArray *completedItems;
+	NSArray *activeItems;
+	
 	NSNumber *statusCode;
 	
 	NSString *inviteeEmail;
@@ -37,5 +41,7 @@
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSMutableArray *listItems;
+@property (nonatomic, retain) NSArray *completedItems;
+@property (nonatomic, retain) NSArray *activeItems;
 
 @end

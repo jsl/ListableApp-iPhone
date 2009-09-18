@@ -26,6 +26,8 @@
 @synthesize toolbar;
 @synthesize inviteeEmail;
 @synthesize statusCode;
+@synthesize completedItems;
+@synthesize activeItems;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -120,8 +122,6 @@
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 	
-	currentRetrievalType = Get;
-	
 	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
 
 	[self.parentViewController.view addSubview:self.toolbar];
@@ -182,6 +182,29 @@
 				NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
 
 				self.listItems = [ itms retain ];
+								
+				NSLog(@"he got: %@", [ [self.listItems objectAtIndex:0] completed]);
+
+				NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
+				NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+				
+				NSPredicate  *completedPredicate = [ NSComparisonPredicate
+													  predicateWithLeftExpression:lhs
+													  rightExpression:rhs
+													  modifier:NSDirectPredicateModifier
+													  type:NSEqualToPredicateOperatorType
+													  options:0 ];
+
+				NSPredicate  *activePredicate = [ NSComparisonPredicate
+													predicateWithLeftExpression:lhs
+													rightExpression:rhs
+													modifier:NSDirectPredicateModifier
+													type:NSNotEqualToPredicateOperatorType
+													options:0 ];
+				
+				self.completedItems = [self.listItems filteredArrayUsingPredicate:completedPredicate];
+				self.activeItems = [self.listItems filteredArrayUsingPredicate:activePredicate];
+				
 				self.toolbar.hidden = YES;
 				[self.tableView reloadData];	
 				
@@ -216,6 +239,8 @@
 		Item *it = [[Item alloc] init];
 		
 		[it setName: [setObject objectForKey:@"name"] ];
+		[it setCompleted:[setObject objectForKey:@"completed"] ];
+
 		[it setRemoteId:[setObject objectForKey:@"id"] ];
 		
 		[tmpItems addObject:it];
@@ -236,7 +261,6 @@
 	toolbar.barStyle = UIBarStyleDefault;
 	[toolbar sizeToFit];
 		
-	// Have to load items -- but it's not working!
 	[self loadItems];
 
     [super viewWillAppear:animated];
@@ -284,13 +308,17 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [ [self listItems] count];
+	if (section == 0) {
+		return [[self activeItems] count];
+	} else {
+		return [ [self completedItems] count];		
+	}
 }
 
 
@@ -304,8 +332,10 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	
     // Set up the cell...
-	cell.textLabel.text = [ [ [self listItems] objectAtIndex:indexPath.row] name];
+	cell.textLabel.text = [ [ tmpItems objectAtIndex:indexPath.row] name];
 	
     return cell;
 }
@@ -323,6 +353,10 @@
     return YES;
 }
 */
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {	
+	return (section == 0) ? @"Active Items" : @"Completed Items";
+}
 
 
 // Override to support editing the table view.
