@@ -11,10 +11,10 @@
 
 @interface AccountSettingsController : UIViewController <UITextFieldDelegate> {
 	IBOutlet UIButton *checkAccountButton;
+	IBOutlet UIButton *createAccountButton;
 	
 	IBOutlet UITextField *emailTextField;
 	IBOutlet UITextField *passwordTextField;
-	IBOutlet UIView *statusView;
 	
 	NSMutableData *receivedData;
 	NSDictionary *authResponse;
@@ -23,13 +23,19 @@
 }
 
 - (IBAction) checkAccountButtonPressed:(id)sender;
+- (IBAction) createAccountButtonPressed:(id)sender;
+
 - (IBAction) dismissKeyboard: (id)sender;
 
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSDictionary *authResponse;
+
 @property (nonatomic, retain) IBOutlet UITextField *emailTextField;
 @property (nonatomic, retain) IBOutlet UITextField *passwordTextField;
-@property (nonatomic, retain) IBOutlet UIView *statusView;
+
+
+@property (nonatomic, retain) IBOutlet UIButton *checkAccountButton;
+@property (nonatomic, retain) IBOutlet UIButton *createAccountButton;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 

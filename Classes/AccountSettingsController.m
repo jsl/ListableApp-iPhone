@@ -16,7 +16,9 @@
 @synthesize authResponse;
 @synthesize emailTextField;
 @synthesize passwordTextField;
-@synthesize statusView;
+
+@synthesize checkAccountButton;
+@synthesize createAccountButton;
 
 @synthesize statusCode;
 
@@ -45,6 +47,12 @@
     }
 }
 
+- (IBAction) createAccountButtonPressed:(id)sender {
+	NSURL *url = [ [ NSURL alloc ] initWithString: @"http://listableapp.com/account/new" ];
+	[[UIApplication sharedApplication] openURL:url];
+}
+
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	if ([response respondsToSelector:@selector(statusCode)])
 		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
@@ -68,8 +76,7 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
 	if ([statusCode intValue ] == 200) {
-		// It worked!
-		NSLog(@"Auth worked, setting creds to %@", responseBody);
+		self.tabBarController.selectedIndex = 0;
 		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 		[prefs setObject:responseBody forKey:@"accessToken"];
@@ -78,7 +85,7 @@
 	} else if ([statusCode intValue ] == 404) {
 		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Login failed" 
-														 message:@"Sorry, we couldn't log you in with the credentials provided.  Please try again or contact us at support@listableapp.com if problems continue" 
+														 message:@"Sorry, we couldn't log you in with the credentials provided.  Please try again or contact us at support@listableapp.com if problems continue." 
 														delegate:self
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];
@@ -141,8 +148,7 @@
 */
 
 - (void)viewDidLoad {
-	UIView *myview = [ [[NSBundle mainBundle] loadNibNamed:@"InvalidCredentials" owner:self options:nil] objectAtIndex:0];
-	[ statusView addSubview:myview ];
+	self.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
 	
 	[super viewDidLoad];
 }

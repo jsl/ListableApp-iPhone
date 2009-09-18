@@ -24,7 +24,7 @@
 @synthesize statusCode;
 @synthesize toolbar;
 
-- (void)viewDidLoad {
+- (void)viewDidLoad {	
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 80, 45)];
 	

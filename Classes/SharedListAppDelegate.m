@@ -20,26 +20,29 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
 	BOOL isTokenValid = [ [ [ AuthenticationChecker alloc ] init ] isTokenValid: [self accessToken]];
-	
-	if (isTokenValid) {
-		NSLog(@"We have a valid token");
-	} else {
-		NSLog(@"Token is invalid");
-	}
 
-    // Add the tab bar controller's current view as a subview of the window
+	// Add the tab bar controller's current view as a subview of the window
     [window addSubview:tabBarController.view];	
 	
 	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
 	listsController.accessToken = [self accessToken];
 	
 	UINavigationController *rootNavigationController = [[UINavigationController alloc] initWithRootViewController:listsController];
-	rootNavigationController.tabBarItem.title = @"Browse All";
+	rootNavigationController.tabBarItem.title = @"Lists";
+	rootNavigationController.tabBarItem.image = [UIImage imageNamed:@"tabbar_checkmark.png"];
+
 	
 	AccountSettingsController *settingsController = [[[AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
 	settingsController.tabBarItem.title = @"Account";	
 	
 	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, settingsController, nil];
+	
+	// XXX remove bang when done testing auth
+	if (!isTokenValid) {
+		self.tabBarController.selectedIndex = 0;
+	} else {
+		self.tabBarController.selectedIndex = 1;
+	}
 }
 
 // Load settings from persistent storage.
