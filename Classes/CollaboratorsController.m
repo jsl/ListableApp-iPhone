@@ -265,7 +265,7 @@
 	self.collaborators = [ NSMutableArray new ];
 	
 	// create a toolbar to have two buttons in the right
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 90, 45)];
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 85, 45)];
 	
 	// create the array to hold the buttons, which then gets added to the toolbar
 	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];

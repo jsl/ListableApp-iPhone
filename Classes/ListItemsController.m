@@ -33,19 +33,24 @@
     [super viewDidLoad];
 		
 	// create a toolbar to have two buttons in the right
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 155, 45)];
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 135, 45)];
 	
 	// create the array to hold the buttons, which then gets added to the toolbar
 	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];
+
+	// Add the share button
 	
-	// create a standard "add" button
-	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
+	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];
+	NSLog(@"initialised %@", img);
+	
+	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	// bi = [[UIBarButtonItem alloc] initWithTitle:@"Editors" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
 	[buttons addObject:bi];
 	[bi release];
 	
-	// Add the share button
-	bi = [[UIBarButtonItem alloc] initWithTitle:@"Editors" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	// create a standard "add" button
+	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
 	[buttons addObject:bi];
 	[bi release];
 	
@@ -320,7 +325,6 @@
 		return [ [self completedItems] count];		
 	}
 }
-
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
