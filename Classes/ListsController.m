@@ -124,38 +124,39 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	if ([ statusCode intValue ] >= 400) {
-		
-		// If we get a 
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:jsonData
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-		self.toolbar.hidden = YES;
-		
-	 	[alert show];
-		[alert release];
+	id parsedJsonObject = [jsonData JSONValue];
+	
+	// Try getting items from response if the body isn't empty and the code is 200
+	if ([ statusCode intValue ] == 200) {
+		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+			self.lists = [ self processGetResponse:parsedJsonObject ];
+			
+			self.toolbar.hidden = YES;
+			[self.tableView reloadData];				
+			
+		} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+			// Must have been a POST or a DELETE, no body parseable to an Array
+			self.toolbar.hidden = YES;
+			
+			// Get new result set.
+			[self loadLists];
+		}
 	} else {
-		
-		// Try getting items from response if the body isn't empty and the code is 200
-		if ([ statusCode intValue ] == 200) {
-			if ( [ jsonData length] > 0) {
-				self.lists = [ self processGetResponse:jsonData ];
-				
-				self.toolbar.hidden = YES;
-				[self.tableView reloadData];				
-				
-			} else if ([ jsonData length] == 0) {
-				// Must have been a POST or a DELETE, no body parseable to an Array
-				self.toolbar.hidden = YES;
-				
-				// Get new result set.
-				[self loadLists];
-			}
+		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+			NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
+			
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+															 message:msg
+															delegate:self
+												   cancelButtonTitle:@"OK" 
+												   otherButtonTitles:nil ];
+			
+			self.toolbar.hidden = YES;
+			
+			[alert show];
+			[alert release];
 		} else {
-			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
+			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);			
 		}
 	}
 	
@@ -171,11 +172,10 @@
 
 
 // Iterate through response data and set table items appropriately.
-- (NSMutableArray *)processGetResponse:(NSString *)jsonData {	
+- (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {	
 	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
-	NSMutableArray *listNames = [jsonData JSONValue];
 
-	for (id setObject in listNames) {
+	for (id setObject in jsonArray) {
 		ItemList *l = [ [ItemList alloc] init];
 		[l setName:[setObject objectForKey:@"name"]];
 		[l setRemoteId:[setObject objectForKey:@"id"]];

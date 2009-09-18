@@ -21,7 +21,7 @@
 }
 
 - (void) loadLists;
-- (NSMutableArray *)processGetResponse:(NSString *)jsonData;
+- (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
 - (void)processDeleteResponse:(NSString *)jsonData;
 - (IBAction)refreshButtonAction:(id)sender;
 

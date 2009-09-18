@@ -9,6 +9,7 @@
 #import "AccountSettingsController.h"
 #import "URLEncode.h"
 #import "Constants.h"
+#import "JSON.h"
 
 @implementation AccountSettingsController
 
@@ -74,12 +75,14 @@
 	NSString *responseBody = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
+
+	NSMutableDictionary *jsonResponse = [ responseBody JSONValue ];
+
 	if ([statusCode intValue ] == 200) {
 		self.tabBarController.selectedIndex = 0;
 		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-		[prefs setObject:responseBody forKey:@"accessToken"];
+		[prefs setObject:[jsonResponse valueForKey:@"token"] forKey:@"accessToken"];
 		[prefs synchronize];
 		
 	} else if ([statusCode intValue ] == 404) {
@@ -94,9 +97,9 @@
 		[alert release];
 		
 	} else if ([statusCode intValue ] > 400) {
-		// Other error
+		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:responseBody
+														 message:[jsonResponse valueForKey:@"message"]
 														delegate:self
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];
@@ -147,11 +150,11 @@
 }
 */
 
-- (void)viewDidLoad {
-	self.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
-	
+/*
+- (void)viewDidLoad {	
 	[super viewDidLoad];
 }
+*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.

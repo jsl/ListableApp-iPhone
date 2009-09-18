@@ -27,7 +27,7 @@
 - (IBAction)shareButtonAction:(id)sender;
 
 - (void) processDeleteResponse:(NSString *)jsonData;
-- (NSMutableArray *) processGetResponse:(NSString *)jsonData;
+- (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
 
 @property (nonatomic, retain) NSNumber *statusCode;

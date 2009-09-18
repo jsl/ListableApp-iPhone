@@ -172,9 +172,9 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	if ([ statusCode intValue ] >= 400) {
+	if ([ statusCode intValue ] >= 400) {		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:jsonData
+														 message:[ [jsonData JSONValue] valueForKey:@"message"]
 														delegate:self
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];

@@ -153,9 +153,18 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		
+	id parsedJsonObject = [jsonData JSONValue];
+	
 	if ([ statusCode intValue ] >= 400) {
+		NSString *msg = @"Undefined error occurred while processing response";
+		if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES ) {
+			msg = [ parsedJsonObject objectForKey:@"message" ];
+		}
+		
+		msg = (NSString *)[ [jsonData JSONValue] objectForKey:@"message"];
+		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:jsonData
+														 message:msg
 														delegate:self
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];
@@ -165,19 +174,20 @@
 	 	[alert show];
 		[alert release];
 	} else {
-		
-		// Try getting items from response if the body isn't empty and the code is 200
+
+		// Action is based on JSON response type.  An NSDictionary means a basic message, sent in
+		// response to a delete request.  An NSArray is an index request.
 		if ([ statusCode intValue ] == 200) {
-			if ( [ jsonData length] > 0) {
-				NSMutableArray *itms = [ self processGetResponse:jsonData ];
+			if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+				NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
 
 				self.listItems = [ itms retain ];
 				self.toolbar.hidden = YES;
-				[self.tableView reloadData];				
+				[self.tableView reloadData];	
 				
 				[itms release];
 				
-			} else if ([ jsonData length] == 0) {
+			} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
 				// Must have been a POST or a DELETE, no body parseable to an Array
 				self.toolbar.hidden = YES;
 				
@@ -198,12 +208,11 @@
 }
 
 // Iterate through response data and set table items appropriately.
-- (NSMutableArray *)processGetResponse:(NSString *)jsonData {
+- (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
 	
-	NSMutableArray *listItemArray = [jsonData JSONValue];
 	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
 	
-	for (id setObject in listItemArray) {
+	for (id setObject in jsonArray) {
 		Item *it = [[Item alloc] init];
 		
 		[it setName: [setObject objectForKey:@"name"] ];

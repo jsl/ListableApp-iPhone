@@ -216,10 +216,12 @@
 						<bool key="IBUIDelaysContentTouches">NO</bool>
 						<bool key="IBUICanCancelContentTouches">NO</bool>
 						<bool key="IBUIBouncesZoom">NO</bool>
+						<bool key="IBUIEditable">NO</bool>
 						<string key="IBUIText">Enter your account information above as you created your account at listableapp.com. If you don't have an account, click below.</string>
 						<object class="IBUITextInputTraits" key="IBUITextInputTraits">
 							<int key="IBUIAutocapitalizationType">2</int>
 						</object>
+						<int key="IBUIDataDetectorTypes">2</int>
 					</object>
 				</object>
 				<string key="NSFrameSize">{320, 411}</string>

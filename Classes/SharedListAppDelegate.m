@@ -34,11 +34,11 @@
 	
 	AccountSettingsController *settingsController = [[[AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
 	settingsController.tabBarItem.title = @"Account";	
+	settingsController.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
 	
 	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, settingsController, nil];
 	
-	// XXX remove bang when done testing auth
-	if (!isTokenValid) {
+	if (isTokenValid) {
 		self.tabBarController.selectedIndex = 0;
 	} else {
 		self.tabBarController.selectedIndex = 1;

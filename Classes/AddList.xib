@@ -216,10 +216,10 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="1015057389"/>
-							<reference ref="45943511"/>
 							<reference ref="332771528"/>
 							<reference ref="268918688"/>
 							<reference ref="600026741"/>
+							<reference ref="45943511"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -240,11 +240,6 @@
 						<reference key="parent" ref="191373211"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">5</int>
-						<reference key="object" ref="45943511"/>
-						<reference key="parent" ref="191373211"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">6</int>
 						<reference key="object" ref="332771528"/>
 						<reference key="parent" ref="191373211"/>
@@ -258,6 +253,11 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">8</int>
 						<reference key="object" ref="600026741"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">5</int>
+						<reference key="object" ref="45943511"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
 				</object>
@@ -280,7 +280,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>AddListController</string>
 					<string>UIResponder</string>
-					<string>{{214, 243}, {320, 480}}</string>
+					<string>{{101, 590}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
