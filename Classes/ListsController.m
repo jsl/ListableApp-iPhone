@@ -16,6 +16,8 @@
 #import "Constants.h"
 #import "StatusDisplay.h"
 
+#import "ShakeableTableView.h"
+
 @implementation ListsController
 
 @synthesize accessToken;
@@ -24,7 +26,11 @@
 @synthesize statusCode;
 @synthesize statusDisplay;
 
-- (void)viewDidLoad {	
+- (void)viewDidLoad {
+
+	self.tableView = [ [ShakeableTableView alloc] init];
+	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
+		
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 85, 45)];
 	
@@ -36,13 +42,7 @@
 	bi.style = UIBarButtonItemStyleBordered;
 	[buttons addObject:bi];
 	[bi release];
-	
-	// create a standard "refresh" button
-	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
-	[bi release];
-	
+		
 	// stick the buttons in the toolbar
 	[tools setItems:buttons animated:NO];
 	
@@ -55,6 +55,8 @@
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
 	self.title = @"Lists";
+	
+	// [ (ShakeView *)self.view setShakeDelegate:self ];
 
 	[super viewDidLoad];	
 }
@@ -68,7 +70,7 @@
 	[nextController release];	
 }
 
-- (IBAction)refreshButtonAction:(id)sender {
+-(void) shakeHappened:(ShakeableTableView *)view {
 	[ self loadLists ];
 }
 
@@ -134,7 +136,7 @@
 															delegate:self
 												   cancelButtonTitle:@"OK" 
 												   otherButtonTitles:nil ];
-						
+			
 			[alert show];
 			[alert release];
 		} else {
@@ -148,7 +150,6 @@
 	[jsonData release];
     [connection release];	
 }
-
 
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {	
@@ -170,7 +171,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	
+	[self.tableView becomeFirstResponder];
+
 	if ([self accessToken] != nil)	
 		[self loadLists];
 
@@ -182,11 +184,13 @@
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
+	[self resignFirstResponder];
+
 	[super viewWillDisappear:animated];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];

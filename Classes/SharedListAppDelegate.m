@@ -11,6 +11,7 @@
 #import "AccountSettingsController.h"
 #import <AddressBook/AddressBook.h>
 #import "AuthenticationChecker.h"
+#import "ShakeableTableView.h"
 
 @implementation SharedListAppDelegate
 
@@ -26,7 +27,7 @@
 	
 	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
 	listsController.accessToken = [self accessToken];
-	
+		
 	UINavigationController *rootNavigationController = [[UINavigationController alloc] initWithRootViewController:listsController];
 	rootNavigationController.tabBarItem.title = @"Lists";
 	rootNavigationController.tabBarItem.image = [UIImage imageNamed:@"tabbar_checkmark.png"];

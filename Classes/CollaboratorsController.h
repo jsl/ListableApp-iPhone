@@ -15,6 +15,7 @@
 #import "Constants.h"
 #import "Collaborator.h"
 #import "StatusDisplay.h"
+#import "ShakeableTableView.h"
 
 @interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate> {
 	NSMutableArray *collaborators;
@@ -32,8 +33,8 @@
 - (void) alertEmailWillBeSent;
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
-- (IBAction)refreshButtonAction:(id)sender;
 - (IBAction)addButtonAction:(id)sender;
+- (void) shakeHappened:(ShakeableTableView *)view;
 
 @property (nonatomic, retain) NSMutableArray *collaborators;
 @property (nonatomic, retain) NSString *inviteeEmail;

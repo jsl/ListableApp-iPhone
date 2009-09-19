@@ -65,8 +65,6 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[self.receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
-	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		
 	[self.navigationController popViewControllerAnimated:YES];	

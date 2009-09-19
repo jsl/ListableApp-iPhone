@@ -10,6 +10,7 @@
 #import "EmailSelectionController.h"
 #import "ItemList.h"
 #import "Collaborator.h"
+#import "ShakeableTableView.h"
 
 #import "StatusDisplay.h"
 
@@ -76,7 +77,7 @@
     return NO;
 }
 
-- (IBAction)refreshButtonAction:(id)sender {
+-(void) shakeHappened:(ShakeableTableView *)view {
 	[ self loadItems ];
 }
 
@@ -240,7 +241,9 @@
 */
 
 - (void)viewDidLoad {
-	
+	self.tableView = [ [ShakeableTableView alloc] init];
+	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
+
 	self.collaborators = [ NSMutableArray new ];
 	
 	// create a toolbar to have two buttons in the right
@@ -254,13 +257,7 @@
 	bi.style = UIBarButtonItemStyleBordered;
 	[buttons addObject:bi];
 	[bi release];
-		
-	// create a standard "refresh" button
-	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
-	[bi release];
-	
+			
 	// stick the buttons in the toolbar
 	[tools setItems:buttons animated:NO];
 	
@@ -278,6 +275,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	[self.tableView becomeFirstResponder];
+
 	// If we're loaded with an inviteeEmail present, assume we need to deliver it.
 	if (inviteeEmail != nil)
 		[self alertEmailWillBeSent];
@@ -291,11 +290,13 @@
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
+	[self.tableView resignFirstResponder];
+
 	[super viewWillDisappear:animated];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];

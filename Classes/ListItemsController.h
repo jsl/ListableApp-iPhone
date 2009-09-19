@@ -11,6 +11,7 @@
 #import "Constants.h"
 #import "Item.h"
 #import "StatusDisplay.h"
+#import "ShakeableTableView.h"
 
 @interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
 	NSString *accessToken;
@@ -29,13 +30,13 @@
 	BOOL loadingWithUpdate;
 }
 
-- (IBAction)refreshButtonAction:(id)sender;
 - (IBAction)shareButtonAction:(id)sender;
 - (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
 - (void)toggleCompletedStateForItem:(Item *)item;
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage;
 - (void) addListItemWithName:(NSString *) name;
+- (void) shakeHappened:(ShakeableTableView *)view;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) ItemList *itemList;

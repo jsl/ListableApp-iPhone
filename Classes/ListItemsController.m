@@ -16,6 +16,7 @@
 #import "CollaboratorsController.h"
 #import "ListItemCustomCell.h"
 #import "ItemDetailController.h"
+#import "ShakeableTableView.h"
 
 #import "StatusDisplay.h"
 
@@ -32,8 +33,9 @@
 @synthesize loadingWithUpdate;
 @synthesize statusDisplay;
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)viewDidLoad {	
+	self.tableView = [ [ShakeableTableView alloc] init];
+	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
 	// allows other controllers to tell us not to load data immediately if we're called after an update
 	// on an item in our list.
@@ -59,13 +61,7 @@
 	bi.style = UIBarButtonItemStyleBordered;
 	[buttons addObject:bi];
 	[bi release];
-	
-	// create a standard "refresh" button
-	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
-	[bi release];
-		
+			
 	// stick the buttons in the toolbar
 	[tools setItems:buttons animated:NO];
 	
@@ -95,6 +91,8 @@
     headerLabel.backgroundColor = [UIColor clearColor];
     [containerView addSubview:headerLabel];
     self.tableView.tableHeaderView = containerView;	
+	
+	[super viewDidLoad];
 }
 
 // Makes POST request to add list item with the given name.
@@ -134,7 +132,7 @@
 	
 }
 
-- (IBAction)refreshButtonAction:(id)sender {
+-(void) shakeHappened:(ShakeableTableView *)view {
 	[ self loadItems ];
 }
 
@@ -274,7 +272,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	
+	[self.tableView becomeFirstResponder];
+
 	// If we're loading with an update from another controller, let that finished request load
 	// items and unset the flag.  Otherwise, load items as normal.
 	if (loadingWithUpdate) {
@@ -293,6 +292,8 @@
 */
 
 - (void)viewWillDisappear:(BOOL)animated {
+	[self.tableView resignFirstResponder];
+
 	[super viewWillDisappear:animated];
 }
 

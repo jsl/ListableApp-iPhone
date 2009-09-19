@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Constants.h"
 #import "StatusDisplay.h"
+#import "ShakeableTableView.h"
 
 @interface ListsController : UITableViewController {
 	NSString *accessToken;
@@ -22,7 +23,7 @@
 - (void) loadLists;
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
 - (void)processDeleteResponse:(NSString *)jsonData;
-- (IBAction)refreshButtonAction:(id)sender;
+- (void) shakeHappened: (ShakeableTableView *)view;
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSNumber *statusCode;

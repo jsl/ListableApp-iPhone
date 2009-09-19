@@ -8,7 +8,6 @@
 
 #import "StatusDisplay.h"
 
-
 @implementation StatusDisplay
 
 @synthesize uiView, toolbar;
@@ -28,9 +27,7 @@
 }
 
 - (void) startWithTitle:(NSString *)title {
-	
-	NSLog(@"Generating toolbar with title: %@", title);
-	
+		
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:nil];
 	
 	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
@@ -56,9 +53,7 @@
 }
 
 // Stops the toolbar and removes it from window.
-- (void) stop {
-	NSLog(@"Stopping status display...");
-	
+- (void) stop {	
 	self.toolbar.hidden = YES;
 	[self.toolbar removeFromSuperview];
 }
@@ -69,6 +64,5 @@
 	
     [super dealloc];
 }
-
 
 @end
