@@ -11,7 +11,7 @@
 #import "ItemList.h"
 #import "Collaborator.h"
 
-#import "StatusToolbarGenerator.h"
+#import "StatusDisplay.h"
 
 #import "JSON.h"
 
@@ -23,7 +23,7 @@
 
 @implementation CollaboratorsController
 
-@synthesize collaborators, inviteeEmail, receivedData, toolbar, accessToken, itemList, statusCode;
+@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, accessToken, itemList, statusCode;
 
 - (IBAction)addButtonAction:(id)sender {
     ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
@@ -94,27 +94,18 @@
 
 // This is received when an OK is received, currently only to confirm that we should invite the email address found.
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	// the user clicked one of the OK/Cancel buttons
-	if (buttonIndex == 0) {
-		NSLog(@"Cancel Received");
-	} else {
+	if (buttonIndex == 1)
 		[ self sendInvitationToEmail ];
-		NSLog(@"OK Received");
-	}
 }
 
 // Creates an invitation record for the email in ivar for inviteeEmail.
 - (void)sendInvitationToEmail {
 	NSString *format = @"%@/lists/%@/collaborators.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
-	
-	currentRetrievalType = Create;
-	
+
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
-	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Sending invitation..."];
-	
-	[self.parentViewController.view addSubview:self.toolbar];
+	[ self.statusDisplay startWithTitle:@"Sending invitation..." ];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	
@@ -152,10 +143,8 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // release the connection, and the data object
-    [connection release];
-	
-    // inform the user
-    NSLog(@"Connection failed! Error - %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSErrorFailingURLStringKey]);
+    [ connection release ];
+	[ receivedData release ];
 }
 
 - (void)connectionDidFail:(NSURLConnection *)connection {
@@ -176,31 +165,19 @@
 	
 	// Try getting items from response if the body isn't empty and the code is 200
 	if ([ statusCode intValue ] == 200) {
-		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-			NSMutableArray *collabs = [ self processGetResponse:parsedJsonObject ];
-			
-			self.collaborators = [ collabs retain ];
-			self.toolbar.hidden = YES;
-			[self.tableView reloadData];
-			
-			[collabs release];
-			
-		} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
-			// Must have been a POST or a DELETE, no body parseable to an Array
-			self.toolbar.hidden = YES;
-			
-			// Get new result set.
-			[self loadItems];			
-		}
+		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES )
+			self.collaborators = [ self processGetResponse:parsedJsonObject ];
+		else
+			[ self loadItems ];
+		
 	} else {
+		
 		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
 			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
 															 message:[ [jsonData JSONValue] valueForKey:@"message"]
 															delegate:self
 												   cancelButtonTitle:@"OK" 
 												   otherButtonTitles:nil ];
-			
-			self.toolbar.hidden = YES;
 			
 			[alert show];
 			[alert release];
@@ -209,14 +186,17 @@
 			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
 		}
 	}
-		
+	
+	[ self.tableView reloadData ];
+	
+	[ self.statusDisplay stop ];
+	
 	[jsonData release];
     [connection release];	
 }
 
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
-	
 	NSMutableArray *tmpCollaborators =  [ [ NSMutableArray alloc ] init ];
 	
 	for (id setObject in jsonArray) {
@@ -235,9 +215,8 @@
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/collaborators.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
-		
-	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading editor list..."];
-	[self.parentViewController.view addSubview:self.toolbar];
+	
+	[ self.statusDisplay startWithTitle:@"Loading editor list..." ];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 
@@ -293,6 +272,8 @@
 	
     [super viewDidLoad];
 
+	self.statusDisplay = [ statusDisplay initWithView:self.parentViewController.view ];
+	
     self.title = @"List Editors";
 }
 
@@ -402,9 +383,8 @@
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 
-		self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Deleting collaborator..."];		
-		[self.parentViewController.view addSubview:self.toolbar];
-		
+		[ self.statusDisplay startWithTitle:@"Deleting collaborator..." ];
+
 		[request setHTTPMethod:@"DELETE"];
 		
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -440,7 +420,7 @@
 	[accessToken release];
 	[ItemList release];
 	[receivedData release];
-	[toolbar release];
+	[StatusDisplay release];
 	
     [super dealloc];
 }

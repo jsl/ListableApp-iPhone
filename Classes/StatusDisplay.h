@@ -1,5 +1,5 @@
 //
-//  StatusToolbarGenerator.h
+//  StatusDisplay.h
 //  Listable
 //
 //  Created by Justin Leitgeb on 9/16/09.
@@ -8,16 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface StatusToolbarGenerator : NSObject {
-	NSString *message;
+@interface StatusDisplay : NSObject {
 	UIView *uiView;
 	UIToolbar *toolbar;
 }
 
 - (id) initWithView:(UIView *)view;
-- (UIToolbar *) toolbarWithTitle:(NSString *)title;
+- (void) startWithTitle:(NSString *)title;
+- (void) stop;
 
-@property (nonatomic, retain) NSString *message;
 @property (nonatomic, retain) UIView *uiView;
 @property (nonatomic, retain) UIToolbar *toolbar;
 

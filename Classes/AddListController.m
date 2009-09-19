@@ -68,11 +68,7 @@
 	NSString *jsonData = [[NSString alloc] initWithBytes:[self.receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	// XXX write some error handling code here
-	
-	NSLog(@"Got resp '%@', len == %i", jsonData, [jsonData length]);
-	
+		
 	[self.navigationController popViewControllerAnimated:YES];	
 }
 

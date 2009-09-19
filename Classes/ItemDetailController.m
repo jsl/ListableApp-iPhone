@@ -1,21 +1,21 @@
 //
-//  AddListItemController.m
-//  SharedList
+//  ItemDetailController.m
+//  Listable
 //
-//  Created by Justin Leitgeb on 9/11/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Justin Leitgeb on 9/19/09.
+//  Copyright 2009 BlockStackers. All rights reserved.
 //
 
-#import "URLEncode.h"
-#import "Constants.h"
-#import "AddListItemController.h"
+#import "ItemDetailController.h"
 
-#import "ListItemsController.h"
 
-@implementation AddListItemController
+@implementation ItemDetailController
 
-@synthesize listItemNameTextField;
+@synthesize listNameTextView;
+@synthesize doneButton;
 @synthesize listItemsController;
+@synthesize item;
+
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -27,43 +27,17 @@
 }
 */
 
-- (IBAction) doneButtonPressed:(id)sender {
-	[ self.listItemsController addListItemWithName:listItemNameTextField.text ];
-	[ self.navigationController popViewControllerAnimated:YES ];
-}
-
-// Gets rid of the keyboard no matter what the responder is
-- (void)dropKickResponder {
-	[ listItemNameTextField resignFirstResponder ];
-}
-
--(IBAction)dismissKeyboard: (id)sender {
-	[ self dropKickResponder ];
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)theTextField {
-	[ self dropKickResponder ];
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
-	[ self dropKickResponder ];
-	
-	return YES;
-}
-
-
 /*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
 }
 */
 
-/*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+	self.listNameTextView.text = item.name;
     [super viewDidLoad];
 }
-*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -73,9 +47,19 @@
 }
 */
 
+- (IBAction) doneButtonPressed: (id)sender {
+	[listItemsController updateAttributeOnItem:item attribute:@"name" newValue:self.listNameTextView.text displayMessage:@"Updating list item..."];
+	
+	listItemsController.loadingWithUpdate = YES; // Tell it not to automatically load remote data until we finish.
+	
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
-    [ super didReceiveMemoryWarning ];	
+    [super didReceiveMemoryWarning];
+	
+	// Release any cached data, images, etc that aren't in use.
 }
 
 - (void)viewDidUnload {
@@ -85,9 +69,13 @@
 
 
 - (void)dealloc {
-	[ listItemsController release ];
+	[listNameTextView release];
+	[doneButton release];
+	[listItemsController release];
+	[item release];
 	
-    [ super dealloc ];
+    [super dealloc];
 }
+
 
 @end

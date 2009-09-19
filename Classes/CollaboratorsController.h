@@ -14,7 +14,7 @@
 #import "ItemList.h"
 #import "Constants.h"
 #import "Collaborator.h"
-
+#import "StatusDisplay.h"
 
 @interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate> {
 	NSMutableArray *collaborators;
@@ -22,11 +22,10 @@
 	NSString *accessToken;
 	ItemList *itemList;
 	NSMutableData *receivedData;
-	UIToolbar *toolbar;
 
 	NSNumber *statusCode;
 	
-	enum RetrievalTypes currentRetrievalType;
+	StatusDisplay *statusDisplay;
 }
 
 - (void)sendInvitationToEmail;
@@ -41,7 +40,7 @@
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) NSMutableData *receivedData;
-@property (nonatomic, retain) UIToolbar *toolbar;
 @property (nonatomic, retain) NSNumber *statusCode;
+@property (nonatomic, retain) StatusDisplay *statusDisplay;
 
 @end

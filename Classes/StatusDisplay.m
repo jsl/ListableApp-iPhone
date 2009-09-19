@@ -1,24 +1,24 @@
 //
-//  StatusToolbarGenerator.m
+//  StatusDisplay.m
 //  Listable
 //
 //  Created by Justin Leitgeb on 9/16/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "StatusToolbarGenerator.h"
+#import "StatusDisplay.h"
 
 
-@implementation StatusToolbarGenerator
+@implementation StatusDisplay
 
-@synthesize message, uiView, toolbar;
+@synthesize uiView, toolbar;
 
 - (id) initWithView:(UIView *)view {
     /* first initialize the base class */
     self = [super init]; 
 
 	// Initialize transitory footer toolbar
-	self.toolbar = [UIToolbar new];
+	self.toolbar = [ UIToolbar new ];
 	toolbar.barStyle = UIBarStyleDefault;
 	[toolbar sizeToFit];
 	
@@ -27,8 +27,9 @@
     return self;
 }
 
-
-- (UIToolbar *) toolbarWithTitle:(NSString *)title {
+- (void) startWithTitle:(NSString *)title {
+	
+	NSLog(@"Generating toolbar with title: %@", title);
 	
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:nil];
 	
@@ -37,9 +38,11 @@
     UIBarButtonItem *activityItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
     [activityIndicator release];
 	
-	[toolbar setItems:[NSArray arrayWithObjects:bi, activityItem, nil]];
+	[ self.toolbar setItems:[NSArray arrayWithObjects:bi, activityItem, nil] ];
 	
     [activityItem release];
+	
+	[ uiView addSubview: self.toolbar ];
 	
 	self.toolbar.translucent = YES;
 	
@@ -49,13 +52,18 @@
 	CGRect mainViewBounds = uiView.bounds;
 	[toolbar setFrame:CGRectMake(CGRectGetMinX(mainViewBounds), CGRectGetMinY(mainViewBounds) + CGRectGetHeight(mainViewBounds) - toolbarHeight, CGRectGetWidth(mainViewBounds),toolbarHeight)];
 		
-	self.toolbar.hidden = NO;
+	self.toolbar.hidden = NO;	
+}
+
+// Stops the toolbar and removes it from window.
+- (void) stop {
+	NSLog(@"Stopping status display...");
 	
-	return self.toolbar;
+	self.toolbar.hidden = YES;
+	[self.toolbar removeFromSuperview];
 }
 
 - (void)dealloc {
-	[message release];
 	[uiView release];
 	[toolbar release];
 	

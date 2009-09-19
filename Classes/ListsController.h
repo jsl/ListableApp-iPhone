@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Constants.h"
+#import "StatusDisplay.h"
 
 @interface ListsController : UITableViewController {
 	NSString *accessToken;
@@ -15,9 +16,7 @@
 	NSMutableArray *lists;
 	NSNumber *statusCode;
 	
-	UIToolbar *toolbar;
-	
-	enum RetrievalTypes currentRetrievalType;
+	StatusDisplay *statusDisplay;
 }
 
 - (void) loadLists;
@@ -25,7 +24,7 @@
 - (void)processDeleteResponse:(NSString *)jsonData;
 - (IBAction)refreshButtonAction:(id)sender;
 
-@property (nonatomic, retain) UIToolbar *toolbar;
+@property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSMutableData *receivedData;

@@ -10,6 +10,7 @@
 #import "ItemList.h"
 #import "Constants.h"
 #import "Item.h"
+#import "StatusDisplay.h"
 
 @interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
 	NSString *accessToken;
@@ -23,25 +24,28 @@
 	NSNumber *statusCode;
 	
 	NSString *inviteeEmail;
-	UIToolbar *toolbar;	
+	StatusDisplay *statusDisplay;
+	
+	BOOL loadingWithUpdate;
 }
 
 - (IBAction)refreshButtonAction:(id)sender;
 - (IBAction)shareButtonAction:(id)sender;
-
-- (void) processDeleteResponse:(NSString *)jsonData;
 - (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
 - (void)toggleCompletedStateForItem:(Item *)item;
+- (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage;
+- (void) addListItemWithName:(NSString *) name;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) ItemList *itemList;
-@property (nonatomic, retain) UIToolbar *toolbar;
+@property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSMutableArray *listItems;
 @property (nonatomic, retain) NSArray *completedItems;
 @property (nonatomic, retain) NSArray *activeItems;
+@property (nonatomic) BOOL loadingWithUpdate;
 
 @end

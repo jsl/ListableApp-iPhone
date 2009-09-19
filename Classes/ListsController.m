@@ -14,7 +14,7 @@
 #import "AddListController.h"
 #import "URLEncode.h"
 #import "Constants.h"
-#import "StatusToolbarGenerator.h"
+#import "StatusDisplay.h"
 
 @implementation ListsController
 
@@ -22,7 +22,7 @@
 @synthesize receivedData;
 @synthesize lists;
 @synthesize statusCode;
-@synthesize toolbar;
+@synthesize statusDisplay;
 
 - (void)viewDidLoad {	
 	// create a toolbar to have two buttons in the right
@@ -52,16 +52,10 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
 	[tools release];
 	
-	self.title = @"Lists";
-		
-	if ([self accessToken] == nil) {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Welcome!" 
-														message:@"Since this is the first time you've run Shared List, you must configure your account under \"Settings\"."
-													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[alert show];
-		[alert release];
-	}
+	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
+	self.title = @"Lists";
+
 	[super viewDidLoad];	
 }
 
@@ -78,17 +72,12 @@
 	[ self loadLists ];
 }
 
-- (void) loadLists {
-	currentRetrievalType = Get;
-	
+- (void) loadLists {	
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
-	
-	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
-	
-	[self.parentViewController.view addSubview:self.toolbar];
-	self.toolbar.hidden = NO;	
-	
+
+	[ self.statusDisplay startWithTitle:@"Loading lists..."];
+
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
@@ -131,16 +120,11 @@
 		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
 			self.lists = [ self processGetResponse:parsedJsonObject ];
 			
-			self.toolbar.hidden = YES;
-			[self.tableView reloadData];				
-			
 		} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
-			// Must have been a POST or a DELETE, no body parseable to an Array
-			self.toolbar.hidden = YES;
-			
-			// Get new result set.
+			// Must have been a POST or a DELETE, no body parseable to an Array.  Just get new result set.
 			[self loadLists];
 		}
+		
 	} else {
 		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
 			NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
@@ -150,9 +134,7 @@
 															delegate:self
 												   cancelButtonTitle:@"OK" 
 												   otherButtonTitles:nil ];
-			
-			self.toolbar.hidden = YES;
-			
+						
 			[alert show];
 			[alert release];
 		} else {
@@ -160,14 +142,11 @@
 		}
 	}
 	
-	self.toolbar.hidden = YES;
-	
-	[self.tableView reloadData];
+	[ self.statusDisplay stop ];
+	[ self.tableView reloadData ];
 	
 	[jsonData release];
     [connection release];	
-	
-	[self.tableView reloadData];
 }
 
 
@@ -293,13 +272,10 @@
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [accessToken URLEncodeString]];
 		
-		self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Deleting list..."];
-		[ self.parentViewController.view addSubview:self.toolbar ];
-
+		[ self.statusDisplay startWithTitle:@"Deleting list..." ];
+		
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-		
-		currentRetrievalType = Delete;
-		
+				
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 
 		[request setHTTPMethod:@"DELETE"];
@@ -335,7 +311,7 @@
 	[accessToken release];
 	[receivedData release];
 	[lists release];
-	[toolbar release];
+	[StatusDisplay release];
 	
     [super dealloc];
 }

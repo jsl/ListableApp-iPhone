@@ -7,25 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ItemList.h"
+#import "ListItemsController.h"
 
 @interface AddListItemController : UIViewController {
 	IBOutlet UIButton *doneButton;
 	IBOutlet UITextField *listItemNameTextField;
 	
-	NSString *accessToken;
-	NSMutableData *receivedData;	
-	
-	ItemList *itemList;
+	ListItemsController *listItemsController;
 }
 
 - (IBAction) doneButtonPressed: (id)sender;
 - (IBAction) dismissKeyboard: (id)sender;
 
-@property (nonatomic, retain) NSString *accessToken;
-@property (nonatomic, retain) NSMutableData *receivedData;
-@property (nonatomic, retain) ItemList *itemList;
-
+@property (nonatomic, retain) ListItemsController *listItemsController;
 @property (nonatomic, retain) IBOutlet UITextField *listItemNameTextField;
 
 @end

@@ -15,8 +15,9 @@
 #import "Constants.h"
 #import "CollaboratorsController.h"
 #import "ListItemCustomCell.h"
+#import "ItemDetailController.h"
 
-#import "StatusToolbarGenerator.h"
+#import "StatusDisplay.h"
 
 @implementation ListItemsController
 
@@ -24,15 +25,20 @@
 @synthesize accessToken;
 @synthesize receivedData;
 @synthesize listItems;
-@synthesize toolbar;
 @synthesize inviteeEmail;
 @synthesize statusCode;
 @synthesize completedItems;
 @synthesize activeItems;
+@synthesize loadingWithUpdate;
+@synthesize statusDisplay;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-		
+	
+	// allows other controllers to tell us not to load data immediately if we're called after an update
+	// on an item in our list.
+	loadingWithUpdate = NO;
+	
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 135, 45)];
 	
@@ -72,7 +78,8 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
 	[tools release];
 	
-	
+	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
+
     // Create a header view. Wrap it in a container to allow us to position
     // it better.
     UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
@@ -90,6 +97,32 @@
     self.tableView.tableHeaderView = containerView;	
 }
 
+// Makes POST request to add list item with the given name.
+- (void) addListItemWithName:(NSString *) name {
+	NSString *format = @"%@/lists/%@/items.json";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [request setHTTPMethod:@"POST"];
+    
+	NSData *httpBody = [ [ NSString stringWithFormat:@"item[name]=%@&user_credentials=%@", 
+						  [name URLEncodeString],
+						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+	
+	[request setHTTPBody: httpBody];
+	
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+    if (connection) { 
+        receivedData = [[NSMutableData data] retain]; 
+    }	
+}
+
 - (void) shareButtonAction:(id)sender {
 	CollaboratorsController *nextController = [[CollaboratorsController alloc] initWithStyle:UITableViewStylePlain];
 	
@@ -105,12 +138,10 @@
 	[ self loadItems ];
 }
 
-
 - (IBAction)addButtonAction:(id)sender {
 	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
 	
-	[ nextController setAccessToken:self.accessToken ];
-	[ nextController setItemList:self.itemList ];
+	[ nextController setListItemsController:self ];
 	
 	[[self navigationController] pushViewController:nextController animated:YES];
 	[nextController release];	
@@ -127,9 +158,7 @@
 	
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 	
-	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
-
-	[self.parentViewController.view addSubview:self.toolbar];
+	[self.statusDisplay startWithTitle:@"Loading items..."];
 	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
@@ -155,6 +184,12 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
 	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 	
+	NSLog(@"Got conn finished loading with data: %@", jsonData);
+	
+	[self.statusDisplay stop];
+	
+	NSLog(@"Should have hidden toolbar and reloaded data!!");
+
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		
 	id parsedJsonObject = [jsonData JSONValue];
@@ -187,15 +222,9 @@
 			self.completedItems = [self.listItems filteredArrayUsingPredicate:completedPredicate];
 			self.activeItems	= [self.listItems filteredArrayUsingPredicate:activePredicate];
 			
-			self.toolbar.hidden = YES;
-			[self.tableView reloadData];	
-			
 			[itms release];
 			
 		} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
-			// Must have been a POST or a DELETE, no body parseable to an Array
-			self.toolbar.hidden = YES;
-			
 			// Get new result set.
 			[self loadItems];
 		}
@@ -212,18 +241,15 @@
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil ];
 		
-		self.toolbar.hidden = YES;
-		
+
 		[alert show];
 		[alert release];
  	} else {
 		NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
 	}
 
-	self.toolbar.hidden = YES;
-	
 	[self.tableView reloadData];
-
+	
 	[jsonData release];
     [connection release];	
 }
@@ -247,18 +273,15 @@
 	return tmpItems;
 }
 
-- (void)processDeleteResponse:(NSString *)jsonData {
-	[self loadItems];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
-		
-	/// Make floating toolbar footer
-	self.toolbar = [UIToolbar new];
-	toolbar.barStyle = UIBarStyleDefault;
-	[toolbar sizeToFit];
-		
-	[self loadItems];
+	
+	// If we're loading with an update from another controller, let that finished request load
+	// items and unset the flag.  Otherwise, load items as normal.
+	if (loadingWithUpdate) {
+		self.loadingWithUpdate = NO;
+	} else {
+		[self loadItems];	
+	}
 
     [super viewWillAppear:animated];
 }
@@ -270,8 +293,6 @@
 */
 
 - (void)viewWillDisappear:(BOOL)animated {
-	[toolbar removeFromSuperview];
-	
 	[super viewWillDisappear:animated];
 }
 
@@ -351,17 +372,21 @@
 	NSString *updateMessageTerm = ( toggledState == 0 ? @"active" : @"completed");
 	
 	NSString *updatingMessage = [NSString stringWithFormat:@"Marking item as %@", updateMessageTerm];
+	[ self updateAttributeOnItem:item attribute:@"completed" newValue:newStringBoolValue displayMessage:updatingMessage ];
+}
+
+// Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
+- (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage {
+	[ self.statusDisplay startWithTitle:displayMessage ];
 	
-	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:updatingMessage];
-	[self.parentViewController.view addSubview:self.toolbar];
-	
-	NSString *format = @"%@/lists/%@/items/%@.json?item[completed]=%@&user_credentials=%@";
+	NSString *format = @"%@/lists/%@/items/%@.json?item[%@]=%@&user_credentials=%@";
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
-						   API_SERVER, 
-						   itemList.remoteId, 
-						   item.remoteId,
-						   [newStringBoolValue URLEncodeString],
-						   [accessToken URLEncodeString] ];
+						  API_SERVER, 
+						  itemList.remoteId, 
+						  item.remoteId,
+						  [attribute URLEncodeString],
+						  [newValue URLEncodeString],
+						  [accessToken URLEncodeString] ];
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
@@ -375,14 +400,22 @@
 	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
-    }
+    }	
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
-	NSLog(@"Got click on cell row but not doing much with it");
+	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
-	// don't keep the table selection
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	ItemDetailController *nextController = [[ItemDetailController alloc] initWithNibName:@"ItemDetail" bundle:nil];
+
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	Item *item = [tmpItems objectAtIndex:indexPath.row];
+
+	nextController.item = item;
+	nextController.listItemsController = self;
+	
+	[[self navigationController] pushViewController:nextController animated:YES];
+	[nextController release];
 }
 
 
@@ -413,10 +446,8 @@
 		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 		
-		self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Deleting list item..."];
-		
-		[ self.parentViewController.view addSubview:self.toolbar ];
-		
+		[ self.statusDisplay startWithTitle:@"Deleting list item..."];
+				
 		[request setHTTPMethod:@"DELETE"];
 		
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -447,7 +478,7 @@
 
 
 - (void)dealloc {
-	[toolbar release];
+	[statusDisplay release];
 	[accessToken release];
 	[itemList release];
 	[receivedData release];

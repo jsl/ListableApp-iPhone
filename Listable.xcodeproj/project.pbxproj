@@ -22,6 +22,8 @@
 		D007EB9C1059A331008B41C4 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB941059A331008B41C4 /* SBJsonBase.m */; };
 		D007EB9D1059A331008B41C4 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB961059A331008B41C4 /* SBJsonParser.m */; };
 		D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB981059A331008B41C4 /* SBJsonWriter.m */; };
+		D023AC551064EA18000CA1E7 /* ItemDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = D023AC541064EA18000CA1E7 /* ItemDetail.xib */; };
+		D023AC5A1064EC04000CA1E7 /* ItemDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = D023AC591064EC04000CA1E7 /* ItemDetailController.m */; };
 		D0269FB01063F16F00DC8BE5 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D0269FAF1063F16F00DC8BE5 /* Users.png */; };
 		D026A01110640B1B00DC8BE5 /* ToggleImageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */; };
 		D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */; };
@@ -38,7 +40,7 @@
 		D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0AADB89105E6C6000652E19 /* Entitlements.plist */; };
 		D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADCE010600A5D00652E19 /* CollaboratorsController.m */; };
 		D0AADDB41060487200652E19 /* Collaborator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADDB31060487200652E19 /* Collaborator.m */; };
-		D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */; };
+		D0AAE014106198AF00652E19 /* StatusDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AAE013106198AF00652E19 /* StatusDisplay.m */; };
 		D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */; };
 		D0C9419F1063054200C9B8EF /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C9419E1063054200C9B8EF /* Icon.png */; };
 		D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941A01063054C00C9B8EF /* Icon-Small.png */; };
@@ -77,6 +79,9 @@
 		D007EB961059A331008B41C4 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		D007EB971059A331008B41C4 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		D007EB981059A331008B41C4 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		D023AC541064EA18000CA1E7 /* ItemDetail.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemDetail.xib; sourceTree = "<group>"; };
+		D023AC581064EC04000CA1E7 /* ItemDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemDetailController.h; sourceTree = "<group>"; };
+		D023AC591064EC04000CA1E7 /* ItemDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemDetailController.m; sourceTree = "<group>"; };
 		D0269E851063C17A00DC8BE5 /* Listable_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listable_Prefix.pch; sourceTree = "<group>"; };
 		D0269E861063C17A00DC8BE5 /* Listable-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Listable-Info.plist"; sourceTree = "<group>"; };
 		D0269FAF1063F16F00DC8BE5 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
@@ -105,8 +110,8 @@
 		D0AADCE010600A5D00652E19 /* CollaboratorsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollaboratorsController.m; sourceTree = "<group>"; };
 		D0AADDB21060487200652E19 /* Collaborator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Collaborator.h; sourceTree = "<group>"; };
 		D0AADDB31060487200652E19 /* Collaborator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Collaborator.m; sourceTree = "<group>"; };
-		D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusToolbarGenerator.h; sourceTree = "<group>"; };
-		D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusToolbarGenerator.m; sourceTree = "<group>"; };
+		D0AAE012106198AF00652E19 /* StatusDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusDisplay.h; sourceTree = "<group>"; };
+		D0AAE013106198AF00652E19 /* StatusDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusDisplay.m; sourceTree = "<group>"; };
 		D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationChecker.h; sourceTree = "<group>"; };
 		D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationChecker.m; sourceTree = "<group>"; };
 		D0C9419E1063054200C9B8EF /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -167,14 +172,16 @@
 				D0AADCE010600A5D00652E19 /* CollaboratorsController.m */,
 				D0AADDB21060487200652E19 /* Collaborator.h */,
 				D0AADDB31060487200652E19 /* Collaborator.m */,
-				D0AAE012106198AF00652E19 /* StatusToolbarGenerator.h */,
-				D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */,
+				D0AAE012106198AF00652E19 /* StatusDisplay.h */,
+				D0AAE013106198AF00652E19 /* StatusDisplay.m */,
 				D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */,
 				D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */,
 				D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */,
 				D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */,
 				D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */,
 				D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */,
+				D023AC581064EC04000CA1E7 /* ItemDetailController.h */,
+				D023AC591064EC04000CA1E7 /* ItemDetailController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -206,6 +213,7 @@
 				D0CA9FB3105AF78200C5D610 /* AddListItem.xib */,
 				D0AADB89105E6C6000652E19 /* Entitlements.plist */,
 				D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */,
+				D023AC541064EA18000CA1E7 /* ItemDetail.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -318,6 +326,7 @@
 				D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */,
 				D026A05A1064536700DC8BE5 /* checked.png in Resources */,
 				D026A05B1064536700DC8BE5 /* unchecked.png in Resources */,
+				D023AC551064EA18000CA1E7 /* ItemDetail.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,10 +356,11 @@
 				D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */,
 				D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */,
 				D0AADDB41060487200652E19 /* Collaborator.m in Sources */,
-				D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */,
+				D0AAE014106198AF00652E19 /* StatusDisplay.m in Sources */,
 				D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */,
 				D026A01110640B1B00DC8BE5 /* ToggleImageControl.m in Sources */,
 				D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */,
+				D023AC5A1064EC04000CA1E7 /* ItemDetailController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
