@@ -19,6 +19,8 @@
 #import "ShakeableTableView.h"
 #import "EditListController.h"
 
+#import "StringHelper.h"
+
 #import "StatusDisplay.h"
 
 @implementation ListItemsController
@@ -33,6 +35,8 @@
 @synthesize activeItems;
 @synthesize loadingWithUpdate;
 @synthesize statusDisplay;
+
+#define kTextViewFontSize        18.0
 
 - (void)viewDidLoad {	
 	self.tableView = [ [ShakeableTableView alloc] init];
@@ -266,6 +270,14 @@
 	return tmpItems;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	Item *item = [tmpItems objectAtIndex:indexPath.row];
+
+	CGFloat height = [item.name RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20.0;
+    return height;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView becomeFirstResponder];
 	
@@ -354,19 +366,26 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
     
     static NSString *CellIdentifier = @"ListViewCell";
     
-    ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[ListItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
-    
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
 	
-    // Set up the cell...
-	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
-	cell.textLabel.text = [ itm name];
+    if ([[cell.contentView subviews] count] > 1) {
+        UIView *labelToClear = [[cell.contentView subviews] objectAtIndex:1];
+        [labelToClear removeFromSuperview];
+    }
+	
+    UILabel *cellLabel = [itm.name RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize];
+	
+    [cell.contentView addSubview:cellLabel];
+    [cellLabel release];
+    	
 	cell.checked = ( [ itm.completed intValue ] == 1 ? YES : NO );
 	cell.item = itm;
 	cell.listItemsController = self;

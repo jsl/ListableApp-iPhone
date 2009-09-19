@@ -17,22 +17,15 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 		
-		// cell's title label
-		self.textLabel.backgroundColor = self.backgroundColor;
-		self.textLabel.opaque = NO;
-		self.textLabel.textColor = [UIColor blackColor];
-		self.textLabel.highlightedTextColor = [UIColor whiteColor];
-		self.textLabel.font = [UIFont boldSystemFontOfSize:18.0];
-		
 		// cell's check button
 		checkButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		checkButton.frame = CGRectZero;
 		checkButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		checkButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
 		
-		[checkButton addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown];
+		[ checkButton addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown ];
 		checkButton.backgroundColor = self.backgroundColor;
-		[self.contentView addSubview:checkButton];
+		[ self.contentView addSubview:checkButton ];
     }
     return self;
 }
@@ -42,15 +35,12 @@
 	
     CGRect contentRect = [self.contentView bounds];
 	
-	CGRect frame = CGRectMake(contentRect.origin.x + 40.0, 8.0, contentRect.size.width, 30.0);
-	self.textLabel.frame = frame;
-	
 	// layout the check button image
-	UIImage *checkedImage = [UIImage imageNamed:@"checked.png"];
-	frame = CGRectMake(contentRect.origin.x + 10.0, 12.0, checkedImage.size.width, checkedImage.size.height);
+	UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
+	CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, checkedImage.size.height);
 	checkButton.frame = frame;
 	
-	UIImage *image = (self.checked) ? checkedImage: [UIImage imageNamed:@"unchecked.png"];
+	UIImage *image = (self.checked) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
 	UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
 	[checkButton setBackgroundImage:newImage forState:UIControlStateNormal];
 }
