@@ -11,10 +11,14 @@
 
 @implementation NSString (StringHelper)
 
+- (CGFloat)RAD_widthFromScreenSize {
+	return [UIScreen mainScreen].bounds.size.width - 70;
+}
+
 #pragma mark Methods to determine the height of a string for resizeable table cells
 - (CGFloat)RAD_textHeightForSystemFontOfSize:(CGFloat)size {
 	//Calculate the expected size based on the font and linebreak mode of your label
-	CGFloat maxWidth = [UIScreen mainScreen].bounds.size.width - 50;
+	CGFloat maxWidth = [ self RAD_widthFromScreenSize ];
 	CGFloat maxHeight = 9999;
 	CGSize maximumLabelSize = CGSizeMake(maxWidth,maxHeight);
 	
@@ -26,7 +30,7 @@
 }
 
 - (CGRect)RAD_frameForCellLabelWithSystemFontOfSize:(CGFloat)size {
-	CGFloat width = [UIScreen mainScreen].bounds.size.width - 50;
+	CGFloat width = [ self RAD_widthFromScreenSize ];
 	CGFloat height = [self RAD_textHeightForSystemFontOfSize:size] + 10.0;
 	return CGRectMake(40.0f, 10.0f, width, height);
 }
