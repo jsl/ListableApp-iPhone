@@ -172,54 +172,54 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	if ([ statusCode intValue ] >= 400) {		
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:[ [jsonData JSONValue] valueForKey:@"message"]
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-		self.toolbar.hidden = YES;
-
-	 	[alert show];
-		[alert release];
+	id parsedJsonObject = [jsonData JSONValue];
+	
+	// Try getting items from response if the body isn't empty and the code is 200
+	if ([ statusCode intValue ] == 200) {
+		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+			NSMutableArray *collabs = [ self processGetResponse:parsedJsonObject ];
+			
+			self.collaborators = [ collabs retain ];
+			self.toolbar.hidden = YES;
+			[self.tableView reloadData];
+			
+			[collabs release];
+			
+		} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+			// Must have been a POST or a DELETE, no body parseable to an Array
+			self.toolbar.hidden = YES;
+			
+			// Get new result set.
+			[self loadItems];			
+		}
 	} else {
-
-		// Try getting collaborators from response if the body isn't empty and the code is 200
-		if ([ statusCode intValue ] == 200) {
-			if ( [ jsonData length] > 0) {
-				NSMutableArray *collabs = [ self processGetResponse:jsonData ];
-
-				self.collaborators = [ collabs retain ];
-				self.toolbar.hidden = YES;
-				[self.tableView reloadData];
-				
-				[collabs release];
-				
-			} else if ([ jsonData length] == 0) {
-				// Must have been a POST or a DELETE, no body parseable to an Array
-				self.toolbar.hidden = YES;
-				
-				// Get new result set.
-				[self loadItems];
-			}
+		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+															 message:[ [jsonData JSONValue] valueForKey:@"message"]
+															delegate:self
+												   cancelButtonTitle:@"OK" 
+												   otherButtonTitles:nil ];
+			
+			self.toolbar.hidden = YES;
+			
+			[alert show];
+			[alert release];
+			
 		} else {
 			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
 		}
 	}
-
-	
+		
 	[jsonData release];
     [connection release];	
 }
 
 // Iterate through response data and set table items appropriately.
-- (NSMutableArray *)processGetResponse:(NSString *)jsonData {
+- (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
 	
-	NSMutableArray *cArray = [jsonData JSONValue];
 	NSMutableArray *tmpCollaborators =  [ [ NSMutableArray alloc ] init ];
 	
-	for (id setObject in cArray) {
+	for (id setObject in jsonArray) {
 		Collaborator *c = [[Collaborator alloc] init];
 		
 		[c setEmail: [setObject objectForKey:@"email"] ];
@@ -393,8 +393,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 	
-	if (editingStyle == UITableViewCellEditingStyleDelete) {		
-		currentRetrievalType = Delete;
+	if (editingStyle == UITableViewCellEditingStyleDelete) {	
 		
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [accessToken URLEncodeString]];

@@ -31,7 +31,7 @@
 
 - (void)sendInvitationToEmail;
 - (void) alertEmailWillBeSent;
-- (NSMutableArray *)processGetResponse:(NSString *)jsonData;
+- (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
 - (IBAction)refreshButtonAction:(id)sender;
 - (IBAction)addButtonAction:(id)sender;

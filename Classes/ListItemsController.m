@@ -14,6 +14,7 @@
 #import "URLEncode.h"
 #import "Constants.h"
 #import "CollaboratorsController.h"
+#import "ListItemCustomCell.h"
 
 #import "StatusToolbarGenerator.h"
 
@@ -41,7 +42,6 @@
 	// Add the share button
 	
 	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];
-	NSLog(@"initialised %@", img);
 	
 	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
 	// bi = [[UIBarButtonItem alloc] initWithTitle:@"Editors" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
@@ -130,7 +130,6 @@
 	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:@"Loading items..."];
 
 	[self.parentViewController.view addSubview:self.toolbar];
-	self.toolbar.hidden = NO;
 	
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
@@ -160,14 +159,53 @@
 		
 	id parsedJsonObject = [jsonData JSONValue];
 	
-	if ([ statusCode intValue ] >= 400) {
-		NSString *msg = @"Undefined error occurred while processing response";
-		if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES ) {
-			msg = [ parsedJsonObject objectForKey:@"message" ];
+	// Action is based on JSON response type.  An NSDictionary means a basic message, sent in
+	// response to a delete request.  An NSArray is an index request.
+	if ([ statusCode intValue ] == 200) {
+		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+			NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
+			
+			self.listItems = [ itms retain ];
+			
+			NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
+			NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+			
+			NSPredicate  *completedPredicate = [ NSComparisonPredicate
+												predicateWithLeftExpression:lhs
+												rightExpression:rhs
+												modifier:NSDirectPredicateModifier
+												type:NSEqualToPredicateOperatorType
+												options:0 ];
+			
+			NSPredicate  *activePredicate = [ NSComparisonPredicate
+											 predicateWithLeftExpression:lhs
+											 rightExpression:rhs
+											 modifier:NSDirectPredicateModifier
+											 type:NSNotEqualToPredicateOperatorType
+											 options:0 ];
+			
+			self.completedItems = [self.listItems filteredArrayUsingPredicate:completedPredicate];
+			self.activeItems	= [self.listItems filteredArrayUsingPredicate:activePredicate];
+			
+			self.toolbar.hidden = YES;
+			[self.tableView reloadData];	
+			
+			[itms release];
+			
+		} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
+			// Must have been a POST or a DELETE, no body parseable to an Array
+			self.toolbar.hidden = YES;
+			
+			// Get new result set.
+			[self loadItems];
 		}
 		
-		msg = (NSString *)[ [jsonData JSONValue] objectForKey:@"message"];
+	} else if ([ statusCode intValue ] >= 400) {
+		NSString *msg = @"Undefined error occurred while processing response";
 		
+		if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES )
+			msg = [ parsedJsonObject objectForKey:@"message" ];
+				
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
 														 message:msg
 														delegate:self
@@ -176,57 +214,12 @@
 		
 		self.toolbar.hidden = YES;
 		
-	 	[alert show];
+		[alert show];
 		[alert release];
-	} else {
-
-		// Action is based on JSON response type.  An NSDictionary means a basic message, sent in
-		// response to a delete request.  An NSArray is an index request.
-		if ([ statusCode intValue ] == 200) {
-			if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-				NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
-
-				self.listItems = [ itms retain ];
-								
-				NSLog(@"he got: %@", [ [self.listItems objectAtIndex:0] completed]);
-
-				NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
-				NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
-				
-				NSPredicate  *completedPredicate = [ NSComparisonPredicate
-													  predicateWithLeftExpression:lhs
-													  rightExpression:rhs
-													  modifier:NSDirectPredicateModifier
-													  type:NSEqualToPredicateOperatorType
-													  options:0 ];
-
-				NSPredicate  *activePredicate = [ NSComparisonPredicate
-													predicateWithLeftExpression:lhs
-													rightExpression:rhs
-													modifier:NSDirectPredicateModifier
-													type:NSNotEqualToPredicateOperatorType
-													options:0 ];
-				
-				self.completedItems = [self.listItems filteredArrayUsingPredicate:completedPredicate];
-				self.activeItems = [self.listItems filteredArrayUsingPredicate:activePredicate];
-				
-				self.toolbar.hidden = YES;
-				[self.tableView reloadData];	
-				
-				[itms release];
-				
-			} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
-				// Must have been a POST or a DELETE, no body parseable to an Array
-				self.toolbar.hidden = YES;
-				
-				// Get new result set.
-				[self loadItems];
-			}
-		} else {
-			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
-		}
+ 	} else {
+		NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
 	}
-	
+
 	self.toolbar.hidden = YES;
 	
 	[self.tableView reloadData];
@@ -255,7 +248,6 @@
 }
 
 - (void)processDeleteResponse:(NSString *)jsonData {
-	currentRetrievalType = Get;
 	[self loadItems];
 }
 
@@ -329,24 +321,68 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"ListViewCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ListItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
 	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
 	
     // Set up the cell...
-	cell.textLabel.text = [ [ tmpItems objectAtIndex:indexPath.row] name];
+	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
+	cell.textLabel.text = [ itm name];
+	cell.checked = ( [ itm.completed intValue ] == 1 ? YES : NO );
+	cell.item = itm;
+	cell.listItemsController = self;
+	
+	[ cell setImageOnCheckedState ];
 	
     return cell;
 }
 
+- (void)toggleCompletedStateForItem:(Item *)item {	
+	int toggledState = ( [ [item completed] intValue] == 0 ? 1 : 0);
+	
+	item.completed = [NSNumber numberWithInt:toggledState];
+	
+	NSString *newStringBoolValue = ( toggledState == 0 ? @"false" : @"true");
+	NSString *updateMessageTerm = ( toggledState == 0 ? @"active" : @"completed");
+	
+	NSString *updatingMessage = [NSString stringWithFormat:@"Marking item as %@", updateMessageTerm];
+	
+	self.toolbar = [ [ [StatusToolbarGenerator alloc] initWithView:self.parentViewController.view] toolbarWithTitle:updatingMessage];
+	[self.parentViewController.view addSubview:self.toolbar];
+	
+	NSString *format = @"%@/lists/%@/items/%@.json?item[completed]=%@&user_credentials=%@";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, 
+						   API_SERVER, 
+						   itemList.remoteId, 
+						   item.remoteId,
+						   [newStringBoolValue URLEncodeString],
+						   [accessToken URLEncodeString] ];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [ request setHTTPMethod:@"PUT" ];
+    
+    [ [UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES ]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+    if (connection) { 
+        receivedData = [[NSMutableData data] retain]; 
+    }
+}
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSLog(@"WRITEME!!!");
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
+	NSLog(@"Got click on cell row but not doing much with it");
+	
+	// don't keep the table selection
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -366,7 +402,8 @@
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	Item *item = [listItems objectAtIndex:indexPath.row];
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	Item *item = [tmpItems objectAtIndex:indexPath.row];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {				
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";

@@ -23,6 +23,11 @@
 		D007EB9D1059A331008B41C4 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB961059A331008B41C4 /* SBJsonParser.m */; };
 		D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB981059A331008B41C4 /* SBJsonWriter.m */; };
 		D0269FB01063F16F00DC8BE5 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D0269FAF1063F16F00DC8BE5 /* Users.png */; };
+		D026A01110640B1B00DC8BE5 /* ToggleImageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */; };
+		D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */; };
+		D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */; };
+		D026A05A1064536700DC8BE5 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0581064536700DC8BE5 /* checked.png */; };
+		D026A05B1064536700DC8BE5 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0591064536700DC8BE5 /* unchecked.png */; };
 		D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D07465A6105C72A600077F03 /* EmailSelectionController.m */; };
 		D08C909A105A653E0053DA73 /* ListsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C9099105A653E0053DA73 /* ListsController.m */; };
 		D08C90DC105A6CD40053DA73 /* ItemList.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C90DB105A6CD40053DA73 /* ItemList.m */; };
@@ -75,6 +80,13 @@
 		D0269E851063C17A00DC8BE5 /* Listable_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listable_Prefix.pch; sourceTree = "<group>"; };
 		D0269E861063C17A00DC8BE5 /* Listable-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Listable-Info.plist"; sourceTree = "<group>"; };
 		D0269FAF1063F16F00DC8BE5 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
+		D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToggleImageControl.h; sourceTree = "<group>"; };
+		D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToggleImageControl.m; sourceTree = "<group>"; };
+		D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListItemCustomCell.h; sourceTree = "<group>"; };
+		D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListItemCustomCell.m; sourceTree = "<group>"; };
+		D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListItemCustomCell.xib; sourceTree = "<group>"; };
+		D026A0581064536700DC8BE5 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
+		D026A0591064536700DC8BE5 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
 		D07465A5105C72A600077F03 /* EmailSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailSelectionController.h; sourceTree = "<group>"; };
 		D07465A6105C72A600077F03 /* EmailSelectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailSelectionController.m; sourceTree = "<group>"; };
 		D08C9098105A653E0053DA73 /* ListsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsController.h; sourceTree = "<group>"; };
@@ -159,6 +171,10 @@
 				D0AAE013106198AF00652E19 /* StatusToolbarGenerator.m */,
 				D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */,
 				D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */,
+				D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */,
+				D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */,
+				D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */,
+				D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -177,6 +193,8 @@
 				D0269FAF1063F16F00DC8BE5 /* Users.png */,
 				D0269E861063C17A00DC8BE5 /* Listable-Info.plist */,
 				D0C941F0106314F200C9B8EF /* tabbar_checkmark.png */,
+				D026A0581064536700DC8BE5 /* checked.png */,
+				D026A0591064536700DC8BE5 /* unchecked.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
 				D0C941A01063054C00C9B8EF /* Icon-Small.png */,
 				D0C9419E1063054200C9B8EF /* Icon.png */,
@@ -187,6 +205,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				D0CA9FB3105AF78200C5D610 /* AddListItem.xib */,
 				D0AADB89105E6C6000652E19 /* Entitlements.plist */,
+				D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -296,6 +315,9 @@
 				D0C941B4106307E700C9B8EF /* tabbar_key.png in Resources */,
 				D0C941F1106314F200C9B8EF /* tabbar_checkmark.png in Resources */,
 				D0269FB01063F16F00DC8BE5 /* Users.png in Resources */,
+				D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */,
+				D026A05A1064536700DC8BE5 /* checked.png in Resources */,
+				D026A05B1064536700DC8BE5 /* unchecked.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +349,8 @@
 				D0AADDB41060487200652E19 /* Collaborator.m in Sources */,
 				D0AAE014106198AF00652E19 /* StatusToolbarGenerator.m in Sources */,
 				D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */,
+				D026A01110640B1B00DC8BE5 /* ToggleImageControl.m in Sources */,
+				D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

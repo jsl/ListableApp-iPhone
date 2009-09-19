@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ItemList.h"
 #import "Constants.h"
+#import "Item.h"
 
 @interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
 	NSString *accessToken;
@@ -22,9 +23,7 @@
 	NSNumber *statusCode;
 	
 	NSString *inviteeEmail;
-	UIToolbar *toolbar;
-	
-	enum RetrievalTypes currentRetrievalType;
+	UIToolbar *toolbar;	
 }
 
 - (IBAction)refreshButtonAction:(id)sender;
@@ -33,6 +32,7 @@
 - (void) processDeleteResponse:(NSString *)jsonData;
 - (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
+- (void)toggleCompletedStateForItem:(Item *)item;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) ItemList *itemList;
