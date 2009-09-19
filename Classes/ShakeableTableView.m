@@ -32,7 +32,6 @@
 }
 
 - (BOOL)canBecomeFirstResponder {
-	NSLog(@"I can become first responder");
 	return YES; 
 }
 

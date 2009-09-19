@@ -34,7 +34,7 @@
 	
     [request setHTTPMethod:@"POST"]; 
     
-	[request setHTTPBody:[[NSString stringWithFormat:@"item[email]=%@&user_session[password]=%@&device_id=%@", 
+	[request setHTTPBody:[[NSString stringWithFormat:@"user_session[email]=%@&user_session[password]=%@&device_id=%@", 
                            [emailTextField.text URLEncodeString], 
 						   [passwordTextField.text URLEncodeString],
                            [[UIDevice currentDevice] uniqueIdentifier]] dataUsingEncoding:NSUTF8StringEncoding]]; 
