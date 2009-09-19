@@ -31,6 +31,9 @@
 		D026A05A1064536700DC8BE5 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0581064536700DC8BE5 /* checked.png */; };
 		D026A05B1064536700DC8BE5 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0591064536700DC8BE5 /* unchecked.png */; };
 		D06AF04210652A8800E076CF /* ShakeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF04110652A8800E076CF /* ShakeableTableView.m */; };
+		D06AF155106545B300E076CF /* Pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = D06AF154106545B300E076CF /* Pencil.png */; };
+		D06AF1791065481400E076CF /* EditListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF1771065481400E076CF /* EditListController.m */; };
+		D06AF17A1065481400E076CF /* EditListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D06AF1781065481400E076CF /* EditListController.xib */; };
 		D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D07465A6105C72A600077F03 /* EmailSelectionController.m */; };
 		D08C909A105A653E0053DA73 /* ListsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C9099105A653E0053DA73 /* ListsController.m */; };
 		D08C90DC105A6CD40053DA73 /* ItemList.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C90DB105A6CD40053DA73 /* ItemList.m */; };
@@ -95,6 +98,10 @@
 		D026A0591064536700DC8BE5 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
 		D06AF04010652A8800E076CF /* ShakeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeableTableView.h; sourceTree = "<group>"; };
 		D06AF04110652A8800E076CF /* ShakeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShakeableTableView.m; sourceTree = "<group>"; };
+		D06AF154106545B300E076CF /* Pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pencil.png; sourceTree = "<group>"; };
+		D06AF1761065481400E076CF /* EditListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditListController.h; path = ../EditListController.h; sourceTree = "<group>"; };
+		D06AF1771065481400E076CF /* EditListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditListController.m; path = ../EditListController.m; sourceTree = "<group>"; };
+		D06AF1781065481400E076CF /* EditListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditListController.xib; sourceTree = "<group>"; };
 		D07465A5105C72A600077F03 /* EmailSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailSelectionController.h; sourceTree = "<group>"; };
 		D07465A6105C72A600077F03 /* EmailSelectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailSelectionController.m; sourceTree = "<group>"; };
 		D08C9098105A653E0053DA73 /* ListsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListsController.h; sourceTree = "<group>"; };
@@ -180,6 +187,8 @@
 				D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */,
 				D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */,
 				D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */,
+				D06AF1761065481400E076CF /* EditListController.h */,
+				D06AF1771065481400E076CF /* EditListController.m */,
 				D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */,
 				D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */,
 				D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */,
@@ -208,6 +217,7 @@
 				D026A0581064536700DC8BE5 /* checked.png */,
 				D026A0591064536700DC8BE5 /* unchecked.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
+				D06AF154106545B300E076CF /* Pencil.png */,
 				D0C941A01063054C00C9B8EF /* Icon-Small.png */,
 				D0C9419E1063054200C9B8EF /* Icon.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -219,6 +229,7 @@
 				D0AADB89105E6C6000652E19 /* Entitlements.plist */,
 				D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */,
 				D023AC541064EA18000CA1E7 /* ItemDetail.xib */,
+				D06AF1781065481400E076CF /* EditListController.xib */,
 			);
 			name = SharedList;
 			sourceTree = "<group>";
@@ -332,6 +343,8 @@
 				D026A05A1064536700DC8BE5 /* checked.png in Resources */,
 				D026A05B1064536700DC8BE5 /* unchecked.png in Resources */,
 				D023AC551064EA18000CA1E7 /* ItemDetail.xib in Resources */,
+				D06AF155106545B300E076CF /* Pencil.png in Resources */,
+				D06AF17A1065481400E076CF /* EditListController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +380,7 @@
 				D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */,
 				D023AC5A1064EC04000CA1E7 /* ItemDetailController.m in Sources */,
 				D06AF04210652A8800E076CF /* ShakeableTableView.m in Sources */,
+				D06AF1791065481400E076CF /* EditListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

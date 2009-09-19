@@ -17,6 +17,7 @@
 #import "ListItemCustomCell.h"
 #import "ItemDetailController.h"
 #import "ShakeableTableView.h"
+#import "EditListController.h"
 
 #import "StatusDisplay.h"
 
@@ -42,17 +43,21 @@
 	loadingWithUpdate = NO;
 	
 	// create a toolbar to have two buttons in the right
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 135, 45)];
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
 	
 	// create the array to hold the buttons, which then gets added to the toolbar
 	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];
 
+	// Add edit button for list name
+	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Pencil" ofType:@"png"]];
+	
+	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
+	[buttons addObject:bi];
+	[bi release];	
+	
 	// Add the share button
-	
-	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];
-	
-	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
-	// bi = [[UIBarButtonItem alloc] initWithTitle:@"Editors" style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
+	img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
+	bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
 	[buttons addObject:bi];
 	[bi release];
 	
@@ -75,22 +80,6 @@
 	[tools release];
 	
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
-
-    // Create a header view. Wrap it in a container to allow us to position
-    // it better.
-    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
-	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
-	
-    headerLabel.text = itemList.name;
-    headerLabel.textColor = [UIColor blackColor];
-	
-	//    headerLabel.shadowColor = [UIColor grayColor];
-	//    headerLabel.shadowOffset = CGSizeMake(0, 1);
-    
-	headerLabel.font = [UIFont boldSystemFontOfSize:26];
-    headerLabel.backgroundColor = [UIColor clearColor];
-    [containerView addSubview:headerLabel];
-    self.tableView.tableHeaderView = containerView;	
 	
 	[super viewDidLoad];
 }
@@ -119,6 +108,16 @@
     if (connection) { 
         receivedData = [[NSMutableData data] retain]; 
     }	
+}
+
+- (void) editListButtonAction:(id)sender {
+	EditListController *nextController = [[EditListController alloc] initWithNibName:@"EditListController" bundle:nil];
+	
+	nextController.list = self.itemList;
+	nextController.listItemsController = self;
+	
+	[[self navigationController] pushViewController:nextController animated:YES];
+	[nextController release];
 }
 
 - (void) shareButtonAction:(id)sender {
@@ -181,13 +180,9 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
 	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
-	
-	NSLog(@"Got conn finished loading with data: %@", jsonData);
-	
+		
 	[self.statusDisplay stop];
 	
-	NSLog(@"Should have hidden toolbar and reloaded data!!");
-
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		
 	id parsedJsonObject = [jsonData JSONValue];
@@ -273,6 +268,23 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView becomeFirstResponder];
+	
+	// Create a header view. Wrap it in a container to allow us to position
+    // it better.
+    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
+	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
+	
+    headerLabel.text = itemList.name;
+    headerLabel.textColor = [UIColor blackColor];
+	
+	//    headerLabel.shadowColor = [UIColor grayColor];
+	//    headerLabel.shadowOffset = CGSizeMake(0, 1);
+    
+	headerLabel.font = [UIFont boldSystemFontOfSize:26];
+    headerLabel.backgroundColor = [UIColor clearColor];
+    [containerView addSubview:headerLabel];
+    self.tableView.tableHeaderView = containerView;	
+	
 
 	// If we're loading with an update from another controller, let that finished request load
 	// items and unset the flag.  Otherwise, load items as normal.
@@ -374,6 +386,32 @@
 	
 	NSString *updatingMessage = [NSString stringWithFormat:@"Marking item as %@", updateMessageTerm];
 	[ self updateAttributeOnItem:item attribute:@"completed" newValue:newStringBoolValue displayMessage:updatingMessage ];
+}
+
+// Updates ItemList name.  Displays appropriate status message in toolbar.
+- (void)updateListName: (ItemList *)list name:(NSString *)name {
+	[ self.statusDisplay startWithTitle:@"Updating list name..." ];
+	
+	NSString *format = @"%@/lists/%@.json?list[name]=%@&user_credentials=%@";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, 
+						  API_SERVER,
+						  itemList.remoteId, 
+						  [name URLEncodeString],
+						  [accessToken URLEncodeString] ];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [ request setHTTPMethod:@"PUT" ];
+    
+    [ [UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES ]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+    if (connection) { 
+        receivedData = [[NSMutableData data] retain]; 
+    }	
 }
 
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.

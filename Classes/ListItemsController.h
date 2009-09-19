@@ -31,9 +31,12 @@
 }
 
 - (IBAction)shareButtonAction:(id)sender;
+- (IBAction)editListButtonAction:(id)sender;
+
 - (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
 - (void)toggleCompletedStateForItem:(Item *)item;
+- (void)updateListName: (ItemList *)list name:(NSString *)name;
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage;
 - (void) addListItemWithName:(NSString *) name;
 - (void) shakeHappened:(ShakeableTableView *)view;
