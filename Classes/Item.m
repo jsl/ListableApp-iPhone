@@ -14,6 +14,8 @@
 @synthesize name;
 @synthesize remoteId;
 @synthesize completed;
+@synthesize createdAt;
+@synthesize creatorEmail;
 
 - (void)dealloc {
 	[name release];

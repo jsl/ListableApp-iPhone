@@ -1,24 +1,17 @@
 //
-//  ItemDetailController.m
+//  CurrentSessionController.m
 //  Listable
 //
-//  Created by Justin Leitgeb on 9/19/09.
+//  Created by Justin Leitgeb on 9/20/09.
 //  Copyright 2009 BlockStackers. All rights reserved.
 //
 
-#import "ItemDetailController.h"
+#import "CurrentSessionController.h"
+#import "SharedListAppDelegate.h"
 
+@implementation CurrentSessionController
 
-@implementation ItemDetailController
-
-@synthesize listNameTextView;
-@synthesize createdAtLabel;
-@synthesize creatorEmailLabel;
-
-@synthesize doneButton;
-@synthesize listItemsController;
-@synthesize item;
-
+@synthesize logoutButton, emailLabel;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -30,20 +23,25 @@
 }
 */
 
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
-}
-*/
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	[super viewDidLoad];
+    [super viewDidLoad];
 	
-	[ self.listNameTextView becomeFirstResponder ];
-	self.listNameTextView.text = item.name;
-	self.createdAtLabel.text = item.createdAt;
-	self.creatorEmailLabel.text = item.creatorEmail;
+	SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+	NSLog(@"logged in? %i", sad.isTokenValid);
+	
+	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	emailLabel.text = [prefs objectForKey:@"userEmail"];
+}
+
+- (IBAction) logoutButtonPressed:(id)sender {
+	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	[prefs setObject:nil forKey:@"accessToken"];
+	[prefs setObject:nil forKey:@"userEmail"];
+	[prefs synchronize];
+	
+	SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+	[sad configureTabBarWithLoggedInState:NO];	
 }
 
 /*
@@ -53,14 +51,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 */
-
-- (IBAction) doneButtonPressed: (id)sender {
-	[listItemsController updateAttributeOnItem:item attribute:@"name" newValue:self.listNameTextView.text displayMessage:@"Updating list item..."];
-	
-	listItemsController.loadingWithUpdate = YES; // Tell it not to automatically load remote data until we finish.
-	
-	[self.navigationController popViewControllerAnimated:YES];
-}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -76,13 +66,8 @@
 
 
 - (void)dealloc {
-	[listNameTextView release];
-	[createdAtLabel release];
-	[creatorEmailLabel release];
-	
-	[doneButton release];
-	[listItemsController release];
-	[item release];
+	[logoutButton release];
+	[emailLabel release];
 	
     [super dealloc];
 }

@@ -222,8 +222,28 @@
 			[itms release];
 			
 		} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
-			// Get new result set.
-			[self loadItems];
+			// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
+			// the followup to a modification request.
+			
+			if ([ [ parsedJsonObject valueForKey:@"type" ] isEqual:@"Item" ]) {
+				ItemDetailController *nextController = [[ItemDetailController alloc] initWithNibName:@"ItemDetail" bundle:nil];
+
+				Item *itm = [ [Item alloc] init];
+				itm.name = [ parsedJsonObject valueForKey:@"name" ];
+				
+				itm.createdAt = [ parsedJsonObject valueForKey:@"created_at" ];
+				itm.creatorEmail = [ parsedJsonObject valueForKey:@"creator_email" ];
+				itm.remoteId = [ parsedJsonObject valueForKey:@"id" ];
+
+				nextController.item = itm;
+				nextController.listItemsController = self;
+				
+				[[self navigationController] pushViewController:nextController animated:YES];
+				[nextController release];				
+			} else {
+				// Get new result set.  Should we verify that it's a success message here?
+				[self loadItems];
+			}
 		}
 		
 	} else if ([ statusCode intValue ] >= 400) {
@@ -283,8 +303,8 @@
 	
 	// Create a header view. Wrap it in a container to allow us to position
     // it better.
-    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 60)] autorelease];
-	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 20, 300, 40)] autorelease];
+    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 45)] autorelease];
+	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 0, 300, 40)] autorelease];
 	
     headerLabel.text = itemList.name;
     headerLabel.textColor = [UIColor blackColor];
@@ -464,16 +484,24 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { 
 	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
-	ItemDetailController *nextController = [[ItemDetailController alloc] initWithNibName:@"ItemDetail" bundle:nil];
-
 	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *item = [tmpItems objectAtIndex:indexPath.row];
+	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
 
-	nextController.item = item;
-	nextController.listItemsController = self;
+	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items/%@.json?user_credentials=%@", API_SERVER, [itemList remoteId], [itm remoteId], [self accessToken] ];
 	
-	[[self navigationController] pushViewController:nextController animated:YES];
-	[nextController release];
+	NSURL *myURL = [NSURL URLWithString:urlString];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
+	
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	
+	[self.statusDisplay startWithTitle:@"Loading item details..."];
+	
+    if (connection) { 
+        receivedData = [[NSMutableData data] retain]; 
+    }	
 }
 
 

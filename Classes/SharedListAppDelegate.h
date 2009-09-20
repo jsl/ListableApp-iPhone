@@ -11,11 +11,15 @@
 @interface SharedListAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
     UIWindow *window;
     UITabBarController *tabBarController;
+	
+	BOOL isTokenValid;
 }
 
 - (NSString *)accessToken;
+- (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
+@property (nonatomic) BOOL isTokenValid;
 
 @end

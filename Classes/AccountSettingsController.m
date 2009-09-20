@@ -10,6 +10,7 @@
 #import "URLEncode.h"
 #import "Constants.h"
 #import "JSON.h"
+#import "SharedListAppDelegate.h"
 
 @implementation AccountSettingsController
 
@@ -81,7 +82,11 @@
 	if ([statusCode intValue ] == 200) {		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 		[prefs setObject:[jsonResponse valueForKey:@"token"] forKey:@"accessToken"];
+		[prefs setObject:emailTextField.text forKey:@"userEmail"];
 		[prefs synchronize];
+		
+		SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+		[sad configureTabBarWithLoggedInState:YES];
 		
 		self.tabBarController.selectedIndex = 0;
 		

@@ -12,37 +12,68 @@
 #import <AddressBook/AddressBook.h>
 #import "AuthenticationChecker.h"
 #import "ShakeableTableView.h"
+#import "CurrentSessionController.h"
 
 @implementation SharedListAppDelegate
 
 @synthesize window;
 @synthesize tabBarController;
+@synthesize isTokenValid;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
-	BOOL isTokenValid = [ [ [ AuthenticationChecker alloc ] init ] isTokenValid: [self accessToken]];
-
-	// Add the tab bar controller's current view as a subview of the window
-    [window addSubview:tabBarController.view];	
+	NSString *authtoken = [self accessToken];
 	
-	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
+	if (! (authtoken == nil )) {
+		// We have an auth token, check it and direct to appropriate page based on whether the token is valid or not.
+		isTokenValid = [ [ [ AuthenticationChecker alloc ] init ] isTokenValid:authtoken ];
+		[self configureTabBarWithLoggedInState:isTokenValid];
+
+		// Add the tab bar controller's current view as a subview of the window
+		[window addSubview:tabBarController.view];
+
+	} else {
+		[self configureTabBarWithLoggedInState:NO];
+
+		self.tabBarController.selectedIndex = 1;
+
+		// Add the tab bar controller's current view as a subview of the window
+		[window addSubview:tabBarController.view];
+
+		// First time user has loaded app, provide nice message and direct to login page
+		NSString *msg = @"Thanks for installing Listable!  Before making lists, we have to set you up with a valid account.  While this should be a short process for most users, if you have any trouble, contact us at support@listableapp.com and we'll help you along.  Thanks!";
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Welcome to Listable!" 
+														 message:msg
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
 		
+		[alert show];
+		[alert release];
+	}
+}
+
+- (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn {
+	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
+	
 	UINavigationController *rootNavigationController = [[UINavigationController alloc] initWithRootViewController:listsController];
 	rootNavigationController.tabBarItem.title = @"Lists";
 	rootNavigationController.tabBarItem.image = [UIImage imageNamed:@"tabbar_checkmark.png"];
 
+	UIViewController *accountController;
 	
-	AccountSettingsController *settingsController = [[[AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
-	settingsController.tabBarItem.title = @"Account";	
-	settingsController.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
-	
-	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, settingsController, nil];
-	
-	if (isTokenValid) {
+	if (isLoggedIn) {
+		accountController = [ [ [ CurrentSessionController alloc] initWithNibName:nil bundle:nil ] autorelease ];
 		self.tabBarController.selectedIndex = 0;
 	} else {
+		accountController = [ [ [AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
 		self.tabBarController.selectedIndex = 1;
 	}
+	
+	accountController.tabBarItem.title = @"Account";
+	accountController.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
+	
+	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, accountController, nil];	
 }
 
 // Load settings from persistent storage.
