@@ -26,7 +26,6 @@
     [window addSubview:tabBarController.view];	
 	
 	ListsController *listsController = [[[ListsController alloc] initWithNibName:nil bundle:nil] autorelease];
-	listsController.accessToken = [self accessToken];
 		
 	UINavigationController *rootNavigationController = [[UINavigationController alloc] initWithRootViewController:listsController];
 	rootNavigationController.tabBarItem.title = @"Lists";

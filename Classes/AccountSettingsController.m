@@ -78,12 +78,12 @@
 
 	NSMutableDictionary *jsonResponse = [ responseBody JSONValue ];
 
-	if ([statusCode intValue ] == 200) {
-		self.tabBarController.selectedIndex = 0;
-		
+	if ([statusCode intValue ] == 200) {		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 		[prefs setObject:[jsonResponse valueForKey:@"token"] forKey:@"accessToken"];
 		[prefs synchronize];
+		
+		self.tabBarController.selectedIndex = 0;
 		
 	} else if ([statusCode intValue ] == 404) {
 		

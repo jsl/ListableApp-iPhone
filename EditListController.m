@@ -28,8 +28,10 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+    [ super viewDidLoad ];
+	
+	[ self.listNameTextField becomeFirstResponder ];
 	self.listNameTextField.text = list.name;
-    [super viewDidLoad];
 }
 
 - (IBAction) doneButtonPressed: (id)sender {

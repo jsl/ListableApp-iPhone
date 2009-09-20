@@ -72,7 +72,7 @@
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<bool key="IBUISelected">YES</bool>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<string key="IBUIText"/>
+						<string key="IBUIText">kjxjx</string>
 						<int key="IBUIBorderStyle">3</int>
 						<object class="NSColor" key="IBUITextColor">
 							<int key="NSColorSpace">3</int>
@@ -80,6 +80,11 @@
 							<object class="NSColorSpace" key="NSCustomColorSpace" id="767874840">
 								<int key="NSID">2</int>
 							</object>
+						</object>
+						<object class="NSFont" key="IBUIFont">
+							<string key="NSName">Helvetica</string>
+							<double key="NSSize">18</double>
+							<int key="NSfFlags">16</int>
 						</object>
 						<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 						<float key="IBUIMinimumFontSize">17</float>
@@ -254,7 +259,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>AddListItemController</string>
 					<string>UIResponder</string>
-					<string>{{1053, 613}, {320, 480}}</string>
+					<string>{{569, 811}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

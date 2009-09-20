@@ -171,8 +171,10 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView becomeFirstResponder];
 
-	if ([self accessToken] != nil)	
-		[self loadLists];
+	if (self.accessToken == nil)
+		self.accessToken = [ [ NSUserDefaults standardUserDefaults ] objectForKey:@"accessToken" ];
+
+	[ self loadLists ];
 
     [super viewWillAppear:animated];
 }
