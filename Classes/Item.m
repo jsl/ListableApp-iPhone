@@ -25,4 +25,16 @@
     [super dealloc];
 }
 
+- (id) copyWithZone:(NSZone *)zone {
+	Item *copy = [ [self class] allocWithZone:zone ];
+	
+	copy.name			= self.name;
+	copy.remoteId		= self.remoteId;
+	copy.completed		= self.completed;
+	copy.createdAt		= self.createdAt;
+	copy.creatorEmail	= self.creatorEmail;
+	
+	return copy;
+}
+
 @end

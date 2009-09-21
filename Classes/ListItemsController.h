@@ -19,8 +19,8 @@
 	NSMutableData *receivedData;
 	
 	NSMutableArray *listItems;
-	NSArray *completedItems;
-	NSArray *activeItems;
+	NSMutableArray *completedItems;
+	NSMutableArray *activeItems;
 	
 	NSNumber *statusCode;
 	
@@ -40,6 +40,7 @@
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage;
 - (void) addListItemWithName:(NSString *) name;
 - (void) shakeHappened:(ShakeableTableView *)view;
+- (void) editListTitleAction:(id)sender;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) ItemList *itemList;
@@ -48,8 +49,8 @@
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSMutableArray *listItems;
-@property (nonatomic, retain) NSArray *completedItems;
-@property (nonatomic, retain) NSArray *activeItems;
+@property (nonatomic, retain) NSMutableArray *completedItems;
+@property (nonatomic, retain) NSMutableArray *activeItems;
 @property (nonatomic) BOOL loadingWithUpdate;
 
 @end

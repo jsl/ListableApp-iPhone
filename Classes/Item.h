@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Item : NSObject {
+@interface Item : NSObject <NSCopying> {
 	NSString *name;
 	NSDecimalNumber *remoteId;
 	NSNumber *completed;

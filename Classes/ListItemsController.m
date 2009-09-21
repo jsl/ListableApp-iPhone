@@ -45,14 +45,14 @@
 	// allows other controllers to tell us not to load data immediately if we're called after an update
 	// on an item in our list.
 	loadingWithUpdate = NO;
-	
+		
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
 	
 	// create the array to hold the buttons, which then gets added to the toolbar
 	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];
 
-	// Add edit button for list name
+	// Add edit button
 	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Pencil" ofType:@"png"]];
 	
 	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
@@ -114,7 +114,13 @@
     }	
 }
 
+
 - (void) editListButtonAction:(id)sender {
+	[self setEditing:!self.editing];
+}
+
+// Activate on touch of list heading.
+- (void) editListTitleAction:(id)sender {
 	EditListController *nextController = [[EditListController alloc] initWithNibName:@"EditListController" bundle:nil];
 	
 	nextController.list = self.itemList;
@@ -198,7 +204,7 @@
 			NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
 			
 			self.listItems = [ itms retain ];
-			
+
 			NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
 			NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
 			
@@ -215,9 +221,12 @@
 											 modifier:NSDirectPredicateModifier
 											 type:NSNotEqualToPredicateOperatorType
 											 options:0 ];
+
+			self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+			self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
 			
-			self.completedItems = [self.listItems filteredArrayUsingPredicate:completedPredicate];
-			self.activeItems	= [self.listItems filteredArrayUsingPredicate:activePredicate];
+			[ self.completedItems filterUsingPredicate:completedPredicate ];
+			[ self.activeItems filterUsingPredicate:activePredicate ];
 			
 			[itms release];
 			
@@ -271,6 +280,18 @@
     [connection release];	
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
+	NSLog(@"Got to insert at %i", proposedDestinationIndexPath.row);
+	
+    if( sourceIndexPath.section != proposedDestinationIndexPath.section ) {
+		NSLog(@"block insertion!!!");
+        return sourceIndexPath;
+    } else {
+		NSLog(@"insertion is OK!!!");
+        return proposedDestinationIndexPath;
+    }
+}
+
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
 	
@@ -304,19 +325,20 @@
 	// Create a header view. Wrap it in a container to allow us to position
     // it better.
     UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 45)] autorelease];
-	UILabel *headerLabel  = [[[UILabel alloc] initWithFrame:CGRectMake(10, 0, 300, 40)] autorelease];
+	UIButton *headerButton = [[UIButton alloc] initWithFrame:containerView.frame];
+
+	headerButton.frame = containerView.frame;
 	
-    headerLabel.text = itemList.name;
-    headerLabel.textColor = [UIColor blackColor];
+	[ headerButton setTitle:itemList.name forState:UIControlStateNormal ];
+	    
+	headerButton.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+	headerButton.titleLabel.textColor = [UIColor blackColor];
+	headerButton.backgroundColor = [UIColor whiteColor];
 	
-	//    headerLabel.shadowColor = [UIColor grayColor];
-	//    headerLabel.shadowOffset = CGSizeMake(0, 1);
-    
-	headerLabel.font = [UIFont boldSystemFontOfSize:26];
-    headerLabel.backgroundColor = [UIColor clearColor];
-    [containerView addSubview:headerLabel];
+    [containerView addSubview:headerButton];
     self.tableView.tableHeaderView = containerView;	
 	
+	[headerButton addTarget:self action:@selector(editListTitleAction:) forControlEvents:UIControlEventTouchUpInside];
 
 	// If we're loading with an update from another controller, let that finished request load
 	// items and unset the flag.  Otherwise, load items as normal.
@@ -386,7 +408,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	NSMutableArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
 	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
     
     static NSString *CellIdentifier = @"ListViewCell";
@@ -547,20 +569,31 @@
 }
 
 
-/*
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+	NSLog(@"Actually do the move of %i to %i", fromIndexPath.row, toIndexPath.row);
+	NSMutableArray *tmpItems = (fromIndexPath.section == 0) ? self.activeItems : self.completedItems;
+	Item *item = [tmpItems objectAtIndex:fromIndexPath.row];
+
+	[tmpItems removeObjectAtIndex:fromIndexPath.row];
+    [tmpItems insertObject:item atIndex:toIndexPath.row];
+
+	if (fromIndexPath.section == 0) {
+		self.activeItems = tmpItems;
+	} else {
+		self.completedItems = tmpItems;
+	}
+
+	NSString *updatingMessage = @"Moving item...";
+	[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:toIndexPath.row] stringValue] displayMessage:updatingMessage ];
 }
-*/
 
 
-/*
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+	// only allow reordering in first section.
+	return (indexPath.section == 0);
 }
-*/
 
 
 - (void)dealloc {
