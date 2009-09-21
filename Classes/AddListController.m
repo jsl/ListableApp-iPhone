@@ -10,10 +10,10 @@
 #import "URLEncode.h"
 #import "JSON.h"
 #import "Constants.h"
+#import "UserSettings.h"
 
 @implementation AddListController
 
-@synthesize accessToken;
 @synthesize receivedData;
 @synthesize listNameTextField;
 
@@ -38,7 +38,7 @@
     
 	NSData *httpBody = [ [ NSString stringWithFormat:@"list[name]=%@&user_credentials=%@", 
 						  [listNameTextField.text URLEncodeString],
-						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	[request setHTTPBody: httpBody];
 	
@@ -66,8 +66,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-		
-	[self.navigationController popViewControllerAnimated:YES];	
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 // Gets rid of the keyboard no matter what the responder is
@@ -93,6 +92,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+		
 	[ listNameTextField becomeFirstResponder ];
 }
 
@@ -119,7 +119,6 @@
 
 - (void)dealloc {
 	[receivedData release];
-	[accessToken release];
 	
     [super dealloc];
 }

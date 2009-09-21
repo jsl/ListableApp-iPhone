@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SharedListAppDelegate.h"
 
 @interface CurrentSessionController : UIViewController {
 	IBOutlet UIButton *logoutButton;	

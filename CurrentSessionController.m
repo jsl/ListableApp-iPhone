@@ -8,6 +8,7 @@
 
 #import "CurrentSessionController.h"
 #import "SharedListAppDelegate.h"
+#import "UserSettings.h"
 
 @implementation CurrentSessionController
 
@@ -26,10 +27,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	
-	SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
-	NSLog(@"logged in? %i", sad.isTokenValid);
-	
+		
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	emailLabel.text = [prefs objectForKey:@"userEmail"];
 }
@@ -40,8 +38,9 @@
 	[prefs setObject:nil forKey:@"userEmail"];
 	[prefs synchronize];
 	
-	SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
-	[sad configureTabBarWithLoggedInState:NO];	
+	[UserSettings sharedUserSettings].authToken = nil;
+	
+	[UIAppDelegate configureTabBarWithLoggedInState:NO];	
 }
 
 /*

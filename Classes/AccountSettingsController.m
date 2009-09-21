@@ -11,6 +11,7 @@
 #import "Constants.h"
 #import "JSON.h"
 #import "SharedListAppDelegate.h"
+#import "UserSettings.h"
 
 @implementation AccountSettingsController
 
@@ -24,10 +25,8 @@
 
 @synthesize statusCode;
 
-@synthesize appDelegate;
-
 - (IBAction) checkAccountButtonPressed:(id)sender {
-	if (!self.appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 
 	NSString *format = @"%@/user_session.json";
@@ -90,7 +89,8 @@
 		[prefs setObject:emailTextField.text forKey:@"userEmail"];
 		[prefs synchronize];
 		
-		[self.appDelegate configureTabBarWithLoggedInState:YES];
+		[UIAppDelegate configureTabBarWithLoggedInState:YES];
+		[UserSettings sharedUserSettings].authToken = [jsonResponse valueForKey:@"token"];
 		
 		self.tabBarController.selectedIndex = 0;
 
@@ -170,7 +170,6 @@
 
 - (void)viewDidLoad {	
 	[super viewDidLoad];
-	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
 }
 
 /*
@@ -198,7 +197,6 @@
 	[authResponse release];
 	[receivedData release];
 	[statusCode release];
-	[appDelegate release];
 	
     [super dealloc];
 }

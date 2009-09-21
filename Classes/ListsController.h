@@ -13,12 +13,10 @@
 #import "SharedListAppDelegate.h"
 
 @interface ListsController : UITableViewController {
-	NSString *accessToken;
 	NSMutableData *receivedData;
 	NSMutableArray *lists;
 	NSNumber *statusCode;
 
-	SharedListAppDelegate *appDelegate;
 	StatusDisplay *statusDisplay;
 }
 
@@ -29,9 +27,7 @@
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSNumber *statusCode;
-@property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSMutableArray *lists;
-@property (nonatomic, retain) SharedListAppDelegate *appDelegate;
 
 @end

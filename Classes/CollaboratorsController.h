@@ -16,17 +16,14 @@
 #import "Collaborator.h"
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
-#import "SharedListAppDelegate.h"
 
 @interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate> {
 	NSMutableArray *collaborators;
 	NSString *inviteeEmail;
-	NSString *accessToken;
 	ItemList *itemList;
 	NSMutableData *receivedData;
 
 	NSNumber *statusCode;
-	SharedListAppDelegate *appDelegate;
 	
 	StatusDisplay *statusDisplay;
 }
@@ -40,11 +37,9 @@
 
 @property (nonatomic, retain) NSMutableArray *collaborators;
 @property (nonatomic, retain) NSString *inviteeEmail;
-@property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
-@property (nonatomic, retain) SharedListAppDelegate *appDelegate;
 
 @end

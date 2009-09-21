@@ -8,21 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-
 @interface AddListController : UIViewController <UITextFieldDelegate> {
 	IBOutlet UIButton *doneButton;
 	IBOutlet UITextField *listNameTextField;
 	
-	NSString *accessToken;
 	NSMutableData *receivedData;
 }
 
 - (IBAction) doneButtonPressed: (id)sender;
 - (IBAction) dismissKeyboard: (id)sender;
 
-@property (nonatomic, retain) NSString *accessToken;
 @property (nonatomic, retain) NSMutableData *receivedData;
-
 @property (nonatomic, retain) IBOutlet UITextField *listNameTextField;
 
 @end

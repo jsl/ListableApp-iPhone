@@ -13,6 +13,7 @@
 #import "AuthenticationChecker.h"
 #import "ShakeableTableView.h"
 #import "CurrentSessionController.h"
+#import "UserSettings.h"
 
 #import <SystemConfiguration/SCNetworkReachability.h>
 
@@ -21,12 +22,15 @@
 @synthesize window;
 @synthesize tabBarController;
 @synthesize isTokenValid;
+@synthesize authToken;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
-	NSString *authtoken = [self accessToken];
+	[UserSettings sharedUserSettings].authToken = [ [NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
 	
-	if (! (authtoken == nil ) ) {
+	self.authToken =  [ [NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
+	
+	if (! (self.authToken == nil ) ) {
 		[self configureTabBarWithLoggedInState:YES];
 
 		// Add the tab bar controller's current view as a subview of the window
@@ -109,12 +113,6 @@
 	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, accountController, nil];	
 }
 
-// Load settings from persistent storage.
--(NSString *)accessToken {
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	return [prefs objectForKey:@"accessToken"];
-}
-
 /*
 // Optional UITabBarControllerDelegate method
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
@@ -129,6 +127,7 @@
 
 
 - (void)dealloc {
+	[authToken release];
     [tabBarController release];
     [window release];
 	

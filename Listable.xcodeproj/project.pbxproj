@@ -52,6 +52,7 @@
 		D0C54BE810666EFC0093DBA6 /* CurrentSessionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C54BE610666EFC0093DBA6 /* CurrentSessionController.m */; };
 		D0C54BE910666EFC0093DBA6 /* CurrentSessionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0C54BE710666EFC0093DBA6 /* CurrentSessionController.xib */; };
 		D0C54E331067C2440093DBA6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C54E321067C2440093DBA6 /* SystemConfiguration.framework */; };
+		D0C54F771067FDA20093DBA6 /* UserSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C54F761067FDA20093DBA6 /* UserSettings.m */; };
 		D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */; };
 		D0C9419F1063054200C9B8EF /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C9419E1063054200C9B8EF /* Icon.png */; };
 		D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941A01063054C00C9B8EF /* Icon-Small.png */; };
@@ -138,6 +139,9 @@
 		D0C54BE610666EFC0093DBA6 /* CurrentSessionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CurrentSessionController.m; path = ../CurrentSessionController.m; sourceTree = "<group>"; };
 		D0C54BE710666EFC0093DBA6 /* CurrentSessionController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CurrentSessionController.xib; sourceTree = "<group>"; };
 		D0C54E321067C2440093DBA6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
+		D0C54F741067FD910093DBA6 /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SynthesizeSingleton.h; path = ../SynthesizeSingleton.h; sourceTree = "<group>"; };
+		D0C54F751067FDA20093DBA6 /* UserSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserSettings.h; path = ../UserSettings.h; sourceTree = "<group>"; };
+		D0C54F761067FDA20093DBA6 /* UserSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettings.m; path = ../UserSettings.m; sourceTree = "<group>"; };
 		D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationChecker.h; sourceTree = "<group>"; };
 		D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationChecker.m; sourceTree = "<group>"; };
 		D0C9419E1063054200C9B8EF /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -181,6 +185,7 @@
 				D007EB4F10599366008B41C4 /* URLEncode.m */,
 				D08C9098105A653E0053DA73 /* ListsController.h */,
 				D08C9099105A653E0053DA73 /* ListsController.m */,
+				D0C54F741067FD910093DBA6 /* SynthesizeSingleton.h */,
 				D08C90DA105A6CD40053DA73 /* ItemList.h */,
 				D08C90DB105A6CD40053DA73 /* ItemList.m */,
 				D08C915D105A89800053DA73 /* ListItemsController.h */,
@@ -209,6 +214,8 @@
 				D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */,
 				D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */,
 				D06AF1761065481400E076CF /* EditListController.h */,
+				D0C54F751067FDA20093DBA6 /* UserSettings.h */,
+				D0C54F761067FDA20093DBA6 /* UserSettings.m */,
 				D06AF1771065481400E076CF /* EditListController.m */,
 				D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */,
 				D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */,
@@ -413,6 +420,7 @@
 				D06AF1791065481400E076CF /* EditListController.m in Sources */,
 				D0C54A7810657BFE0093DBA6 /* StringHelper.m in Sources */,
 				D0C54BE810666EFC0093DBA6 /* CurrentSessionController.m in Sources */,
+				D0C54F771067FDA20093DBA6 /* UserSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

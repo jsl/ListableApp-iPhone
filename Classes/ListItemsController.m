@@ -19,6 +19,7 @@
 #import "ShakeableTableView.h"
 #import "EditListController.h"
 #import "SharedListAppDelegate.h"
+#import "UserSettings.h"
 
 #import "StringHelper.h"
 
@@ -27,7 +28,6 @@
 @implementation ListItemsController
 
 @synthesize itemList;
-@synthesize accessToken;
 @synthesize receivedData;
 @synthesize listItems;
 @synthesize inviteeEmail;
@@ -36,7 +36,6 @@
 @synthesize activeItems;
 @synthesize loadingWithUpdate;
 @synthesize statusDisplay;
-@synthesize appDelegate;
 
 #define kTextViewFontSize        18.0
 
@@ -44,8 +43,6 @@
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
-	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
-
 	// allows other controllers to tell us not to load data immediately if we're called after an update
 	// on an item in our list.
 	loadingWithUpdate = NO;
@@ -94,7 +91,7 @@
 
 // Makes POST request to add list item with the given name.
 - (void) addListItemWithName:(NSString *) name {
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;	
 	
 	NSString *format = @"%@/lists/%@/items.json";
@@ -108,7 +105,7 @@
     
 	NSData *httpBody = [ [ NSString stringWithFormat:@"item[name]=%@&user_credentials=%@", 
 						  [name URLEncodeString],
-						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	[request setHTTPBody: httpBody];
 	
@@ -120,7 +117,6 @@
         receivedData = [[NSMutableData data] retain]; 
     }	
 }
-
 
 - (void) editListButtonAction:(id)sender {
 	[self setEditing:!self.editing];
@@ -141,7 +137,6 @@
 	CollaboratorsController *nextController = [[CollaboratorsController alloc] initWithStyle:UITableViewStylePlain];
 	
 	[ nextController setItemList:self.itemList ];
-	[ nextController setAccessToken:self.accessToken];
 	
 	[[self navigationController] pushViewController:nextController animated:YES];
 	[nextController release];
@@ -162,10 +157,13 @@
 }
 
 - (void) loadItems {
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 
-	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
+	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, 
+						   [ itemList remoteId ], 
+						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ] 
+						   ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
@@ -465,7 +463,7 @@
 
 // Updates ItemList name.  Displays appropriate status message in toolbar.
 - (void)updateListName: (ItemList *)list name:(NSString *)name {
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 
 	[ self.statusDisplay startWithTitle:@"Updating list name..." ];
@@ -475,7 +473,7 @@
 						  API_SERVER,
 						  itemList.remoteId, 
 						  [name URLEncodeString],
-						  [accessToken URLEncodeString] ];
+						  [ [UserSettings sharedUserSettings].authToken URLEncodeString] ];
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
@@ -503,7 +501,7 @@
 						  item.remoteId,
 						  [attribute URLEncodeString],
 						  [newValue URLEncodeString],
-						  [accessToken URLEncodeString] ];
+						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ];
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
@@ -526,7 +524,12 @@
 	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
 	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
 
-	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items/%@.json?user_credentials=%@", API_SERVER, [itemList remoteId], [itm remoteId], [self accessToken] ];
+	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items/%@.json?user_credentials=%@", 
+						   API_SERVER, 
+						   [itemList remoteId], 
+						   [itm remoteId], 
+						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ]
+						   ];
 	
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
@@ -564,11 +567,11 @@
 	Item *item = [tmpItems objectAtIndex:indexPath.row];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		if (!appDelegate.ableToConnectToHostWithAlert)
+		if (!UIAppDelegate.ableToConnectToHostWithAlert)
 			return;
 
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
@@ -617,12 +620,10 @@
 
 - (void)dealloc {
 	[statusDisplay release];
-	[accessToken release];
 	[itemList release];
 	[receivedData release];
 	[listItems release];
 	[statusCode release];
-	[appDelegate release];
 	
     [super dealloc];
 }

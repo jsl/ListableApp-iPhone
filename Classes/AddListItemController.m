@@ -6,7 +6,6 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "URLEncode.h"
 #import "Constants.h"
 #import "AddListItemController.h"
 
@@ -85,6 +84,7 @@
 
 - (void)dealloc {
 	[ listItemsController release ];
+	[ listItemNameTextField release ];
 	
     [ super dealloc ];
 }

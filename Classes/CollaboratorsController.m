@@ -12,6 +12,7 @@
 #import "Collaborator.h"
 #import "ShakeableTableView.h"
 #import "SharedListAppDelegate.h"
+#import "UserSettings.h"
 
 #import "StatusDisplay.h"
 
@@ -25,7 +26,7 @@
 
 @implementation CollaboratorsController
 
-@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, accessToken, itemList, statusCode, appDelegate;
+@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, itemList, statusCode;
 
 - (IBAction)addButtonAction:(id)sender {
     ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
@@ -102,7 +103,7 @@
 
 // Creates an invitation record for the email in ivar for inviteeEmail.
 - (void)sendInvitationToEmail {
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 	
 	NSString *format = @"%@/lists/%@/collaborators.json";
@@ -118,7 +119,7 @@
     		
 	NSData *httpBody = [ [ NSString stringWithFormat:@"collaborator[email]=%@&user_credentials=%@", 
 						  [ self.inviteeEmail URLEncodeString ],
-						  [accessToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
+						  [ [UserSettings sharedUserSettings].authToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	[request setHTTPBody: httpBody];
 	
@@ -217,10 +218,14 @@
 }
 
 - (void) loadItems {
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 	
-	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/collaborators.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
+	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/collaborators.json?user_credentials=%@", 
+						   API_SERVER, 
+						   [ itemList remoteId ], 
+						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ]
+						   ];
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
@@ -250,8 +255,6 @@
 - (void)viewDidLoad {
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
-
-	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
 	
 	self.collaborators = [ NSMutableArray new ];
 	
@@ -385,11 +388,11 @@
 	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
-		if (!appDelegate.ableToConnectToHostWithAlert)
+		if (!UIAppDelegate.ableToConnectToHostWithAlert)
 			return;
 
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [accessToken URLEncodeString]];
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 		
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
@@ -429,11 +432,9 @@
 - (void)dealloc {
 	[collaborators release];
 	[inviteeEmail release];
-	[accessToken release];
 	[ItemList release];
 	[receivedData release];
 	[statusDisplay release];
-	[appDelegate release];
 	
     [super dealloc];
 }

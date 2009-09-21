@@ -13,7 +13,7 @@
 
 
 - (BOOL) isTokenValid:(NSString *)accessToken {
-	NSString *urlString = [ NSString stringWithFormat:@"%@/api_authentication/%@.json", API_SERVER, accessToken ];
+	NSString *urlString = [ NSString stringWithFormat:@"%@/api_authentication/%@.json", API_SERVER, [ accessToken URLEncodeString] ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
 

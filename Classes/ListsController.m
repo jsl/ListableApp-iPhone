@@ -16,25 +16,22 @@
 #import "Constants.h"
 #import "StatusDisplay.h"
 #import "SharedListAppDelegate.h"
+#import "UserSettings.h"
 
 #import "ShakeableTableView.h"
 
 @implementation ListsController
 
-@synthesize accessToken;
 @synthesize receivedData;
 @synthesize lists;
 @synthesize statusCode;
 @synthesize statusDisplay;
-@synthesize appDelegate;
 
 - (void)viewDidLoad {
 
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
-	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
-
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 40, 45)];
 	
@@ -65,9 +62,7 @@
 
 - (IBAction)addButtonAction:(id)sender {
 	AddListController *nextController = [[AddListController alloc] initWithNibName:@"AddList" bundle:nil];
-	
-	[ nextController setAccessToken:self.accessToken];
-	
+		
 	[[self navigationController] pushViewController:nextController animated:YES];
 	[nextController release];	
 }
@@ -78,11 +73,13 @@
 
 - (void) loadLists {
 	
-	if (!appDelegate.ableToConnectToHostWithAlert)
+	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
 	
+	NSLog(@"The shared auth token is %@", [UserSettings sharedUserSettings].authToken);
+	
 	NSString *format = @"%@/lists.json?user_credentials=%@";
-	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [ [UserSettings sharedUserSettings].authToken URLEncodeString ]];
 
 	[ self.statusDisplay startWithTitle:@"Loading lists..."];
 
@@ -134,6 +131,11 @@
 		}
 		
 	} else {
+		
+		// Clear the lists if we get an auth failed.
+		if ([statusCode intValue] == 403)
+			self.lists = [ [ NSMutableArray alloc ] init ];
+		
 		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
 			NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
 			
@@ -178,10 +180,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView becomeFirstResponder];
-
-	if (self.accessToken == nil)
-		self.accessToken = [ [ NSUserDefaults standardUserDefaults ] objectForKey:@"accessToken" ];
-
+	
 	[ self loadLists ];
 
     [super viewWillAppear:animated];
@@ -262,7 +261,6 @@
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
 	
 	[ nextController setItemList:l ];
-	[ nextController setAccessToken:self.accessToken];
 	
 	[[self navigationController] pushViewController:nextController animated:YES];
 	[nextController release];
@@ -281,11 +279,11 @@
 	ItemList *l = [lists objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		if (!appDelegate.ableToConnectToHostWithAlert)
+		if (!UIAppDelegate.ableToConnectToHostWithAlert)
 			return;
 
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [accessToken URLEncodeString]];
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 		
 		[ self.statusDisplay startWithTitle:@"Deleting list..." ];
 		
@@ -323,11 +321,9 @@
 
 - (void)dealloc {
 	[statusCode release];
-	[accessToken release];
 	[receivedData release];
 	[lists release];
 	[statusDisplay release];
-	[appDelegate release];
 	
     [super dealloc];
 }
