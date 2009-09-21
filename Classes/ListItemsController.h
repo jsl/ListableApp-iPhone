@@ -12,6 +12,7 @@
 #import "Item.h"
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
+#import "SharedListAppDelegate.h"
 
 @interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
 	NSString *accessToken;
@@ -23,6 +24,8 @@
 	NSMutableArray *activeItems;
 	
 	NSNumber *statusCode;
+	
+	SharedListAppDelegate *appDelegate;
 	
 	NSString *inviteeEmail;
 	StatusDisplay *statusDisplay;
@@ -51,6 +54,7 @@
 @property (nonatomic, retain) NSMutableArray *listItems;
 @property (nonatomic, retain) NSMutableArray *completedItems;
 @property (nonatomic, retain) NSMutableArray *activeItems;
+@property (nonatomic, retain) SharedListAppDelegate *appDelegate;
 @property (nonatomic) BOOL loadingWithUpdate;
 
 @end

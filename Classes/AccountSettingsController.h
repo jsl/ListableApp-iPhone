@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SharedListAppDelegate.h"
 
 @interface AccountSettingsController : UIViewController <UITextFieldDelegate> {
 	IBOutlet UIButton *checkAccountButton;
@@ -18,6 +18,8 @@
 	
 	NSMutableData *receivedData;
 	NSDictionary *authResponse;
+	
+	SharedListAppDelegate *appDelegate;
 	
 	NSNumber *statusCode;
 }
@@ -33,6 +35,7 @@
 @property (nonatomic, retain) IBOutlet UITextField *emailTextField;
 @property (nonatomic, retain) IBOutlet UITextField *passwordTextField;
 
+@property (nonatomic, retain) SharedListAppDelegate *appDelegate;
 
 @property (nonatomic, retain) IBOutlet UIButton *checkAccountButton;
 @property (nonatomic, retain) IBOutlet UIButton *createAccountButton;

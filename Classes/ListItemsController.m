@@ -18,6 +18,7 @@
 #import "ItemDetailController.h"
 #import "ShakeableTableView.h"
 #import "EditListController.h"
+#import "SharedListAppDelegate.h"
 
 #import "StringHelper.h"
 
@@ -35,6 +36,7 @@
 @synthesize activeItems;
 @synthesize loadingWithUpdate;
 @synthesize statusDisplay;
+@synthesize appDelegate;
 
 #define kTextViewFontSize        18.0
 
@@ -42,10 +44,12 @@
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
+	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+
 	// allows other controllers to tell us not to load data immediately if we're called after an update
 	// on an item in our list.
 	loadingWithUpdate = NO;
-		
+	
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
 	
@@ -90,6 +94,9 @@
 
 // Makes POST request to add list item with the given name.
 - (void) addListItemWithName:(NSString *) name {
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;	
+	
 	NSString *format = @"%@/lists/%@/items.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
 	
@@ -155,6 +162,9 @@
 }
 
 - (void) loadItems {
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;
+
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
@@ -455,6 +465,9 @@
 
 // Updates ItemList name.  Displays appropriate status message in toolbar.
 - (void)updateListName: (ItemList *)list name:(NSString *)name {
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;
+
 	[ self.statusDisplay startWithTitle:@"Updating list name..." ];
 	
 	NSString *format = @"%@/lists/%@.json?list[name]=%@&user_credentials=%@";
@@ -550,7 +563,10 @@
 	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
 	Item *item = [tmpItems objectAtIndex:indexPath.row];
 
-	if (editingStyle == UITableViewCellEditingStyleDelete) {				
+	if (editingStyle == UITableViewCellEditingStyleDelete) {
+		if (!appDelegate.ableToConnectToHostWithAlert)
+			return;
+
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [accessToken URLEncodeString]];
 				
@@ -575,7 +591,6 @@
 
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-	NSLog(@"Actually do the move of %i to %i", fromIndexPath.row, toIndexPath.row);
 	NSMutableArray *tmpItems = (fromIndexPath.section == 0) ? self.activeItems : self.completedItems;
 	Item *item = [tmpItems objectAtIndex:fromIndexPath.row];
 
@@ -607,6 +622,7 @@
 	[receivedData release];
 	[listItems release];
 	[statusCode release];
+	[appDelegate release];
 	
     [super dealloc];
 }

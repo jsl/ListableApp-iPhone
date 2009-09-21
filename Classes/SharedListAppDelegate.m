@@ -14,6 +14,8 @@
 #import "ShakeableTableView.h"
 #import "CurrentSessionController.h"
 
+#import <SystemConfiguration/SCNetworkReachability.h>
+
 @implementation SharedListAppDelegate
 
 @synthesize window;
@@ -24,10 +26,8 @@
 	
 	NSString *authtoken = [self accessToken];
 	
-	if (! (authtoken == nil )) {
-		// We have an auth token, check it and direct to appropriate page based on whether the token is valid or not.
-		isTokenValid = [ [ [ AuthenticationChecker alloc ] init ] isTokenValid:authtoken ];
-		[self configureTabBarWithLoggedInState:isTokenValid];
+	if (! (authtoken == nil ) ) {
+		[self configureTabBarWithLoggedInState:YES];
 
 		// Add the tab bar controller's current view as a subview of the window
 		[window addSubview:tabBarController.view];
@@ -51,6 +51,39 @@
 		[alert show];
 		[alert release];
 	}
+}
+
+// If unable to connect display a standard notice.  Returns bool indicating whether
+// or not the connection was available so that the caller can take appropriate action.
+- (BOOL)ableToConnectToHostWithAlert {
+	BOOL serverReachable = [self ableToConnect];
+		
+	if (! serverReachable ) {
+		NSString *msg = @"Listable is unable to connect to the server.  Please make sure that your device is able to access the internet and try again.  If problems persist, please contact support@listableapp.com for help.";
+		
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to ListableApp.com"
+														 message:msg
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		[alert show];
+		[alert release];		
+	}
+	
+	return serverReachable;
+}
+
+-(BOOL)ableToConnect {
+	BOOL connected;
+	const char *host = [API_SERVER UTF8String];
+	SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(NULL, host);
+	SCNetworkReachabilityFlags flags;
+	connected = SCNetworkReachabilityGetFlags(reachability, &flags);
+	BOOL isConnected = connected &&	(flags & kSCNetworkFlagsReachable) && !(flags & kSCNetworkFlagsConnectionRequired);
+	CFRelease(reachability);
+	
+	return isConnected;
 }
 
 - (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn {

@@ -15,6 +15,7 @@
 #import "URLEncode.h"
 #import "Constants.h"
 #import "StatusDisplay.h"
+#import "SharedListAppDelegate.h"
 
 #import "ShakeableTableView.h"
 
@@ -25,12 +26,15 @@
 @synthesize lists;
 @synthesize statusCode;
 @synthesize statusDisplay;
+@synthesize appDelegate;
 
 - (void)viewDidLoad {
 
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
-		
+	
+	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+
 	// create a toolbar to have two buttons in the right
 	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 40, 45)];
 	
@@ -72,7 +76,11 @@
 	[ self loadLists ];
 }
 
-- (void) loadLists {	
+- (void) loadLists {
+	
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;
+	
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [self accessToken]];
 
@@ -272,7 +280,10 @@
     
 	ItemList *l = [lists objectAtIndex:indexPath.row];
 	
-	if (editingStyle == UITableViewCellEditingStyleDelete) {		
+	if (editingStyle == UITableViewCellEditingStyleDelete) {
+		if (!appDelegate.ableToConnectToHostWithAlert)
+			return;
+
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [accessToken URLEncodeString]];
 		
@@ -315,7 +326,8 @@
 	[accessToken release];
 	[receivedData release];
 	[lists release];
-	[StatusDisplay release];
+	[statusDisplay release];
+	[appDelegate release];
 	
     [super dealloc];
 }

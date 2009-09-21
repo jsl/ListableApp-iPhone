@@ -11,6 +11,7 @@
 #import "ItemList.h"
 #import "Collaborator.h"
 #import "ShakeableTableView.h"
+#import "SharedListAppDelegate.h"
 
 #import "StatusDisplay.h"
 
@@ -24,7 +25,7 @@
 
 @implementation CollaboratorsController
 
-@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, accessToken, itemList, statusCode;
+@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, accessToken, itemList, statusCode, appDelegate;
 
 - (IBAction)addButtonAction:(id)sender {
     ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
@@ -101,6 +102,9 @@
 
 // Creates an invitation record for the email in ivar for inviteeEmail.
 - (void)sendInvitationToEmail {
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;
+	
 	NSString *format = @"%@/lists/%@/collaborators.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
 
@@ -213,6 +217,9 @@
 }
 
 - (void) loadItems {
+	if (!appDelegate.ableToConnectToHostWithAlert)
+		return;
+	
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/collaborators.json?user_credentials=%@", API_SERVER, [itemList remoteId], [self accessToken] ];
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
@@ -244,6 +251,8 @@
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 
+	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
+	
 	self.collaborators = [ NSMutableArray new ];
 	
 	// create a toolbar to have two buttons in the right
@@ -376,7 +385,9 @@
 	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
-		
+		if (!appDelegate.ableToConnectToHostWithAlert)
+			return;
+
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [accessToken URLEncodeString]];
 		
@@ -421,7 +432,8 @@
 	[accessToken release];
 	[ItemList release];
 	[receivedData release];
-	[StatusDisplay release];
+	[statusDisplay release];
+	[appDelegate release];
 	
     [super dealloc];
 }

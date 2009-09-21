@@ -24,7 +24,12 @@
 
 @synthesize statusCode;
 
+@synthesize appDelegate;
+
 - (IBAction) checkAccountButtonPressed:(id)sender {
+	if (!self.appDelegate.ableToConnectToHostWithAlert)
+		return;
+
 	NSString *format = @"%@/user_session.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER];
 
@@ -85,11 +90,19 @@
 		[prefs setObject:emailTextField.text forKey:@"userEmail"];
 		[prefs synchronize];
 		
-		SharedListAppDelegate *sad = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
-		[sad configureTabBarWithLoggedInState:YES];
+		[self.appDelegate configureTabBarWithLoggedInState:YES];
 		
 		self.tabBarController.selectedIndex = 0;
+
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Login success" 
+														 message:@"You've been logged in to Listable and we've saved your account information for next time.  To begin making lists, click the '+' button in the upper-right corner." 
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
 		
+	 	[alert show];
+		[alert release];
+
 	} else if ([statusCode intValue ] == 404) {
 		
 		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Login failed" 
@@ -155,11 +168,10 @@
 }
 */
 
-/*
 - (void)viewDidLoad {	
 	[super viewDidLoad];
+	self.appDelegate = (SharedListAppDelegate *)[ [UIApplication sharedApplication] delegate];
 }
-*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -186,6 +198,7 @@
 	[authResponse release];
 	[receivedData release];
 	[statusCode release];
+	[appDelegate release];
 	
     [super dealloc];
 }

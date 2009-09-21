@@ -51,6 +51,7 @@
 		D0C54B1310658E340093DBA6 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C54B1210658E340093DBA6 /* Default.png */; };
 		D0C54BE810666EFC0093DBA6 /* CurrentSessionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C54BE610666EFC0093DBA6 /* CurrentSessionController.m */; };
 		D0C54BE910666EFC0093DBA6 /* CurrentSessionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0C54BE710666EFC0093DBA6 /* CurrentSessionController.xib */; };
+		D0C54E331067C2440093DBA6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C54E321067C2440093DBA6 /* SystemConfiguration.framework */; };
 		D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */; };
 		D0C9419F1063054200C9B8EF /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C9419E1063054200C9B8EF /* Icon.png */; };
 		D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941A01063054C00C9B8EF /* Icon-Small.png */; };
@@ -136,6 +137,7 @@
 		D0C54BE510666EFC0093DBA6 /* CurrentSessionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CurrentSessionController.h; path = ../CurrentSessionController.h; sourceTree = "<group>"; };
 		D0C54BE610666EFC0093DBA6 /* CurrentSessionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CurrentSessionController.m; path = ../CurrentSessionController.m; sourceTree = "<group>"; };
 		D0C54BE710666EFC0093DBA6 /* CurrentSessionController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CurrentSessionController.xib; sourceTree = "<group>"; };
+		D0C54E321067C2440093DBA6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationChecker.h; sourceTree = "<group>"; };
 		D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationChecker.m; sourceTree = "<group>"; };
 		D0C9419E1063054200C9B8EF /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
 				D0CAA14E105BD76200C5D610 /* AddressBook.framework in Frameworks */,
 				D0CAA1FA105C0A7900C5D610 /* AddressBookUI.framework in Frameworks */,
+				D0C54E331067C2440093DBA6 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +285,7 @@
 				288765070DF74369002DB57D /* CoreGraphics.framework */,
 				D0CAA14D105BD76200C5D610 /* AddressBook.framework */,
 				D0CAA1F9105C0A7900C5D610 /* AddressBookUI.framework */,
+				D0C54E321067C2440093DBA6 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
