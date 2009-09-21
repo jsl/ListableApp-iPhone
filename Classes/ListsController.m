@@ -75,9 +75,7 @@
 	
 	if (!UIAppDelegate.ableToConnectToHostWithAlert)
 		return;
-	
-	NSLog(@"The shared auth token is %@", [UserSettings sharedUserSettings].authToken);
-	
+		
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [ [UserSettings sharedUserSettings].authToken URLEncodeString ]];
 

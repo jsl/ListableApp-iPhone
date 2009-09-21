@@ -78,7 +78,7 @@
 	[buttons release];
 	
 	// Set toolbar title
-	self.navigationItem.title = @"Items";
+	self.title = @"Items";
 	
 	// and put the toolbar in the nav bar
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
@@ -289,15 +289,11 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
-	NSLog(@"Got to insert at %i", proposedDestinationIndexPath.row);
 	
-    if( sourceIndexPath.section != proposedDestinationIndexPath.section ) {
-		NSLog(@"block insertion!!!");
+    if( sourceIndexPath.section != proposedDestinationIndexPath.section )
         return sourceIndexPath;
-    } else {
-		NSLog(@"insertion is OK!!!");
+    else
         return proposedDestinationIndexPath;
-    }
 }
 
 // Iterate through response data and set table items appropriately.

@@ -13,6 +13,7 @@
 	IBOutlet UITextField *listNameTextField;
 	
 	NSMutableData *receivedData;
+	NSNumber *statusCode;
 }
 
 - (IBAction) doneButtonPressed: (id)sender;
@@ -20,6 +21,7 @@
 
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) IBOutlet UITextField *listNameTextField;
+@property (nonatomic, retain) NSNumber *statusCode;
 
 @end
 

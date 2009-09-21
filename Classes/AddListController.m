@@ -11,11 +11,15 @@
 #import "JSON.h"
 #import "Constants.h"
 #import "UserSettings.h"
+#import "JSON.h"
+#import "ItemList.h"
+#import "ListItemsController.h"
 
 @implementation AddListController
 
 @synthesize receivedData;
 @synthesize listNameTextField;
+@synthesize statusCode;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -52,6 +56,9 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	if ([response respondsToSelector:@selector(statusCode)])
+		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
+
 	[self.receivedData setLength:0];
 }
 
@@ -65,8 +72,44 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
+	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
+	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	[self.navigationController popViewControllerAnimated:YES];
+	
+	NSDictionary *jsonResponse = [jsonData JSONValue];
+	
+	if ( [ self.statusCode intValue ] == 200 ) {
+		ItemList *l = [ [ItemList alloc] init];
+		[l setName:[jsonResponse objectForKey:@"name"]];
+		[l setRemoteId:[jsonResponse objectForKey:@"id"]];
+		
+		NSArray *ct = [ self.navigationController viewControllers];
+		ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
+		[ nextController setItemList:l ];
+		
+		NSArray *ct2 = [NSArray arrayWithObjects:[ct objectAtIndex:0], nextController, nil];
+		
+		[nextController release];		
+		
+		// If "animated" is added to this call, for some reason the back button becomes active but invisible...
+		// is there another method that can be used?  right now it just jumps back :(
+		[ self.navigationController setViewControllers:ct2];
+	} else {
+		NSString *msg = @"Undefined error occurred while processing response";
+		
+		if ( [ jsonResponse respondsToSelector:@selector( objectForKey: )] == YES )
+			msg = [ jsonResponse objectForKey:@"message" ];
+		
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+														 message:msg
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		
+		[alert show];
+		[alert release];		
+	}
 }
 
 // Gets rid of the keyboard no matter what the responder is
@@ -119,6 +162,8 @@
 
 - (void)dealloc {
 	[receivedData release];
+	[statusCode release];
+	[listNameTextField release];
 	
     [super dealloc];
 }
