@@ -328,11 +328,16 @@
 	UIButton *headerButton = [[UIButton alloc] initWithFrame:containerView.frame];
 
 	headerButton.frame = containerView.frame;
+		
+	UILabel *label = [ [UILabel alloc] initWithFrame:CGRectMake(10, 5, 290, 35)];
+	label.text = itemList.name;
+	label.font = [UIFont boldSystemFontOfSize:18];
+	label.textColor = [UIColor blackColor];
 	
-	[ headerButton setTitle:itemList.name forState:UIControlStateNormal ];
-	    
-	headerButton.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-	headerButton.titleLabel.textColor = [UIColor blackColor];
+	// [headerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+	
+	[ headerButton addSubview:label];
+	
 	headerButton.backgroundColor = [UIColor whiteColor];
 	
     [containerView addSubview:headerButton];
@@ -342,11 +347,10 @@
 
 	// If we're loading with an update from another controller, let that finished request load
 	// items and unset the flag.  Otherwise, load items as normal.
-	if (loadingWithUpdate) {
+	if (loadingWithUpdate)
 		self.loadingWithUpdate = NO;
-	} else {
-		[self loadItems];	
-	}
+	else
+		[self loadItems];
 
     [super viewWillAppear:animated];
 }
