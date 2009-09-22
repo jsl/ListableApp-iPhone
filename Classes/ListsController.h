@@ -11,8 +11,9 @@
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
 #import "SharedListAppDelegate.h"
+#import "TimedConnection.h"
 
-@interface ListsController : UITableViewController {
+@interface ListsController : UITableViewController <TimedConnection> {
 	NSMutableData *receivedData;
 	NSMutableArray *lists;
 	NSNumber *statusCode;
@@ -24,6 +25,9 @@
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
 - (void)processDeleteResponse:(NSString *)jsonData;
 - (void) shakeHappened: (ShakeableTableView *)view;
+- (void)alertOnHTTPFailure;
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject;
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSNumber *statusCode;

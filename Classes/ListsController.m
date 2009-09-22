@@ -17,6 +17,7 @@
 #import "StatusDisplay.h"
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
+#import "TimedURLConnection.h"
 
 #import "ShakeableTableView.h"
 
@@ -73,88 +74,66 @@
 
 - (void) loadLists {
 	
-	if (!UIAppDelegate.ableToConnectToHostWithAlert)
-		return;
-		
 	NSString *format = @"%@/lists.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, [ [UserSettings sharedUserSettings].authToken URLEncodeString ]];
 
-	[ self.statusDisplay startWithTitle:@"Loading lists..."];
-
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 	
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }		
+	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+																			   delegate:self 
+																		  statusDisplay:self.statusDisplay 
+																		  statusMessage:@"Loading lists..."];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	if ([response respondsToSelector:@selector(statusCode)])
-		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
-
-	[self.receivedData setLength:0];
+- (void)alertOnHTTPFailure {
+	NSString *msg = @"HTTP Failure";
+	
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"HTTP Failure, whoops!"
+													 message:msg
+													delegate:self
+										   cancelButtonTitle:@"OK" 
+										   otherButtonTitles:nil ];
+	
+	[alert show];
+	[alert release];		
+	
 }
 
-- (void)connectionDidFail:(NSURLConnection *)connection {
-	[connection release];
-	[receivedData release];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)theStatusCode {
+	if (theStatusCode == 403)
+		self.lists = [ [ NSMutableArray alloc ] init ];
 	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
-	id parsedJsonObject = [jsonData JSONValue];
-	
-	// Try getting items from response if the body isn't empty and the code is 200
-	if ([ statusCode intValue ] == 200) {
-		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-			self.lists = [ self processGetResponse:parsedJsonObject ];
-			
-		} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
-			// Must have been a POST or a DELETE, no body parseable to an Array.  Just get new result set.
-			[self loadLists];
-		}
+	if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+		NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
 		
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+														 message:msg
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		[alert show];
+		[alert release];
 	} else {
+		NSLog(@"Unusual - response code of %i and object == %@", theStatusCode, parsedJsonObject);			
+	}	
+}
+
+// When the TimedURLConnection delegate receives a 200 response, it calls this method to figure
+// out the specifics of how the parsed JSON object should be translated into something to render
+// in the UITableView.
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {
+	NSLog(@"Gonna render success json response");
+	
+	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+		self.lists = [ self processGetResponse:parsedJsonObject ];
 		
-		// Clear the lists if we get an auth failed.
-		if ([statusCode intValue] == 403)
-			self.lists = [ [ NSMutableArray alloc ] init ];
-		
-		if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
-			NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
-			
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-															 message:msg
-															delegate:self
-												   cancelButtonTitle:@"OK" 
-												   otherButtonTitles:nil ];
-			
-			[alert show];
-			[alert release];
-		} else {
-			NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);			
-		}
+	} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
+		// Must have been a POST or a DELETE, no body parseable to an Array.  Just get new result set.
+		[self loadLists];
 	}
 	
-	[ self.statusDisplay stop ];
 	[ self.tableView reloadData ];
-	
-	[jsonData release];
-    [connection release];	
 }
 
 // Iterate through response data and set table items appropriately.
@@ -281,24 +260,21 @@
 			return;
 
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
-		
-		[ self.statusDisplay startWithTitle:@"Deleting list..." ];
-		
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
+							  l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
+				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
 				
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-
-		[request setHTTPMethod:@"DELETE"];
+		[ request setHTTPMethod:@"DELETE" ];
 		
-		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																						 delegate:self 
+																					statusDisplay:self.statusDisplay 
+																					statusMessage:@"Deleting list..." ];
 		
-		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-		
-		if (connection) { 
-			receivedData = [[NSMutableData data] retain]; 
-		}
-	}   
+		// XXX release some vars
+	} 
 }
 
 /*

@@ -17,6 +17,13 @@
 
 #import <SystemConfiguration/SCNetworkReachability.h>
 
+#import <sys/socket.h>
+#import <netinet/in.h>
+#import <netinet6/in6.h>
+#import <arpa/inet.h>
+#import <ifaddrs.h>
+#import <netdb.h>
+
 @implementation SharedListAppDelegate
 
 @synthesize window;
@@ -79,15 +86,7 @@
 }
 
 -(BOOL)ableToConnect {
-	BOOL connected;
-	const char *host = [API_SERVER UTF8String];
-	SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(NULL, host);
-	SCNetworkReachabilityFlags flags;
-	connected = SCNetworkReachabilityGetFlags(reachability, &flags);
-	BOOL isConnected = connected &&	(flags & kSCNetworkFlagsReachable) && !(flags & kSCNetworkFlagsConnectionRequired);
-	CFRelease(reachability);
-	
-	return isConnected;
+	return YES;
 }
 
 - (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn {
