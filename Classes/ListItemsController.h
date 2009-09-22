@@ -12,8 +12,9 @@
 #import "Item.h"
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
+#import "TimedConnection.h"
 
-@interface ListItemsController : UITableViewController <UIAlertViewDelegate> {
+@interface ListItemsController : UITableViewController <UIAlertViewDelegate, TimedConnection> {
 	ItemList *itemList;
 	NSMutableData *receivedData;
 	

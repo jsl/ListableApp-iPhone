@@ -10,7 +10,6 @@
 // Figure out what methods should be in this protocol...
 @protocol TimedConnection <NSObject>
 
-@optional
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject;
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
 

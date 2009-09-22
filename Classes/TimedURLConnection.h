@@ -45,5 +45,6 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)inData;
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 - (void)checkIfResponseReceived: (NSTimer *)theTimer;
+- (void)displayConnectivityProblemMessage;
 
 @end

@@ -20,6 +20,7 @@
 #import "EditListController.h"
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
+#import "TimedURLConnection.h"
 
 #import "StringHelper.h"
 
@@ -91,9 +92,7 @@
 
 // Makes POST request to add list item with the given name.
 - (void) addListItemWithName:(NSString *) name {
-	if (!UIAppDelegate.ableToConnectToHostWithAlert)
-		return;	
-	
+
 	NSString *format = @"%@/lists/%@/items.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId];
 	
@@ -109,13 +108,10 @@
 	
 	[request setHTTPBody: httpBody];
 	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }	
+	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																				   delegate:self 
+																			  statusDisplay:self.statusDisplay 
+																			  statusMessage:@"Updating item..." ];	
 }
 
 - (void) editListButtonAction:(id)sender {
@@ -157,136 +153,99 @@
 }
 
 - (void) loadItems {
-	if (!UIAppDelegate.ableToConnectToHostWithAlert)
-		return;
-
+	
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, 
 						   [ itemList remoteId ], 
 						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ] 
 						   ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
-	
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-	[self.statusDisplay startWithTitle:@"Loading items..."];
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	if ([response respondsToSelector:@selector(statusCode)])
-		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
-	
-	[self.receivedData setLength:0];
-}
-
-- (void)connectionDidFail:(NSURLConnection *)connection {
-	[connection release];
-	[receivedData release];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
 		
-	[self.statusDisplay stop];
-	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+																			   delegate:self 
+																		  statusDisplay:self.statusDisplay 
+																		  statusMessage:@"Loading items..."];
+}
+
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
+	NSLog(@"Called with success json response");
+	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+		NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
 		
-	id parsedJsonObject = [jsonData JSONValue];
-	
-	// Action is based on JSON response type.  An NSDictionary means a basic message, sent in
-	// response to a delete request.  An NSArray is an index request.
-	if ([ statusCode intValue ] == 200) {
-		if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-			NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
+		self.listItems = [ itms retain ];
+		
+		NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
+		NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+		
+		NSPredicate  *completedPredicate = [ NSComparisonPredicate
+											predicateWithLeftExpression:lhs
+											rightExpression:rhs
+											modifier:NSDirectPredicateModifier
+											type:NSEqualToPredicateOperatorType
+											options:0 ];
+		
+		NSPredicate  *activePredicate = [ NSComparisonPredicate
+										 predicateWithLeftExpression:lhs
+										 rightExpression:rhs
+										 modifier:NSDirectPredicateModifier
+										 type:NSNotEqualToPredicateOperatorType
+										 options:0 ];
+		
+		self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+		self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+		
+		[ self.completedItems filterUsingPredicate:completedPredicate ];
+		[ self.activeItems filterUsingPredicate:activePredicate ];
+		
+		[itms release];
+		
+	} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
+		// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
+		// the followup to a modification request.
+		
+		if ([ [ parsedJsonObject valueForKey:@"type" ] isEqual:@"Item" ]) {
+			ItemDetailController *nextController = [[ItemDetailController alloc] initWithNibName:@"ItemDetail" bundle:nil];
 			
-			self.listItems = [ itms retain ];
-
-			NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
-			NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+			Item *itm = [ [Item alloc] init];
+			itm.name = [ parsedJsonObject valueForKey:@"name" ];
 			
-			NSPredicate  *completedPredicate = [ NSComparisonPredicate
-												predicateWithLeftExpression:lhs
-												rightExpression:rhs
-												modifier:NSDirectPredicateModifier
-												type:NSEqualToPredicateOperatorType
-												options:0 ];
+			itm.createdAt = [ parsedJsonObject valueForKey:@"created_at" ];
+			itm.creatorEmail = [ parsedJsonObject valueForKey:@"creator_email" ];
+			itm.remoteId = [ parsedJsonObject valueForKey:@"id" ];
 			
-			NSPredicate  *activePredicate = [ NSComparisonPredicate
-											 predicateWithLeftExpression:lhs
-											 rightExpression:rhs
-											 modifier:NSDirectPredicateModifier
-											 type:NSNotEqualToPredicateOperatorType
-											 options:0 ];
-
-			self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
-			self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+			nextController.item = itm;
+			nextController.listItemsController = self;
 			
-			[ self.completedItems filterUsingPredicate:completedPredicate ];
-			[ self.activeItems filterUsingPredicate:activePredicate ];
-			
-			[itms release];
-			
-		} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
-			// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
-			// the followup to a modification request.
-			
-			if ([ [ parsedJsonObject valueForKey:@"type" ] isEqual:@"Item" ]) {
-				ItemDetailController *nextController = [[ItemDetailController alloc] initWithNibName:@"ItemDetail" bundle:nil];
-
-				Item *itm = [ [Item alloc] init];
-				itm.name = [ parsedJsonObject valueForKey:@"name" ];
-				
-				itm.createdAt = [ parsedJsonObject valueForKey:@"created_at" ];
-				itm.creatorEmail = [ parsedJsonObject valueForKey:@"creator_email" ];
-				itm.remoteId = [ parsedJsonObject valueForKey:@"id" ];
-
-				nextController.item = itm;
-				nextController.listItemsController = self;
-				
-				[[self navigationController] pushViewController:nextController animated:YES];
-				[nextController release];				
-			} else {
-				// Get new result set.  Should we verify that it's a success message here?
-				[self loadItems];
-			}
+			[[self navigationController] pushViewController:nextController animated:YES];
+			[nextController release];				
+		} else {
+			// Get new result set.  Should we verify that it's a success message here?
+			[self loadItems];
 		}
-		
-	} else if ([ statusCode intValue ] >= 400) {
-		NSString *msg = @"Undefined error occurred while processing response";
-		
-		if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES )
-			msg = [ parsedJsonObject objectForKey:@"message" ];
-				
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:msg
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-
-		[alert show];
-		[alert release];
- 	} else {
-		NSLog(@"Unusual - response code of %i and body len == %i", [statusCode intValue], [jsonData length]);
 	}
 
-	[self.tableView reloadData];
-	
-	[jsonData release];
-    [connection release];	
+	[ self.tableView reloadData ];
 }
+
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
+	NSLog(@"Called with FAIL json response");
+
+	NSString *msg = @"Undefined error occurred while processing response";
+	
+	if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES )
+		msg = [ parsedJsonObject objectForKey:@"message" ];
+	
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+													 message:msg
+													delegate:self
+										   cancelButtonTitle:@"OK" 
+										   otherButtonTitles:nil ];
+	
+	
+	[alert show];
+	[alert release];
+}
+
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
 	
@@ -504,14 +463,11 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 	
     [ request setHTTPMethod:@"PUT" ];
-    
-    [ [UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES ]; 
 	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }	
+	[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																					delegate:self 
+																			   statusDisplay:self.statusDisplay 
+																			   statusMessage:displayMessage ];	
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { 
@@ -529,17 +485,10 @@
 	
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-	[self.statusDisplay startWithTitle:@"Loading item details..."];
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }	
+	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+																			   delegate:self 
+																		  statusDisplay:self.statusDisplay
+																		  statusMessage:@"Loading item details..." ];	
 }
 
 
@@ -563,27 +512,16 @@
 	Item *item = [tmpItems objectAtIndex:indexPath.row];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		if (!UIAppDelegate.ableToConnectToHostWithAlert)
-			return;
 
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 		
-		[ self.statusDisplay startWithTitle:@"Deleting list item..."];
-				
-		[request setHTTPMethod:@"DELETE"];
+		[ request setHTTPMethod:@"DELETE" ];
 		
-		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-		
-		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-		
-		if (connection) { 
-			receivedData = [[NSMutableData data] retain]; 
-		}
+		[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."];
 	}
 }
 

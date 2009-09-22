@@ -8,12 +8,13 @@
 
 #import "AuthenticationChecker.h"
 #import "Constants.h"
+#import "URLEncode.h"
 
 @implementation AuthenticationChecker
 
 
 - (BOOL) isTokenValid:(NSString *)accessToken {
-	NSString *urlString = [ NSString stringWithFormat:@"%@/api_authentication/%@.json", API_SERVER, [ accessToken URLEncodeString] ];
+	NSString *urlString = [ NSString stringWithFormat:@"%@/api_authentication/%@.json", API_SERVER, [ accessToken URLEncodeString ] ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
 

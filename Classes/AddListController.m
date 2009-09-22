@@ -14,12 +14,11 @@
 #import "JSON.h"
 #import "ItemList.h"
 #import "ListItemsController.h"
+#import "TimedURLConnection.h"
 
 @implementation AddListController
 
-@synthesize receivedData;
-@synthesize listNameTextField;
-@synthesize statusCode;
+@synthesize listNameTextField, statusDisplay;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -46,70 +45,42 @@
 	
 	[request setHTTPBody: httpBody];
 	
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }
+	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Creating list..."];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	if ([response respondsToSelector:@selector(statusCode)])
-		self.statusCode = [ NSNumber numberWithInt:[((NSHTTPURLResponse *)response) statusCode] ];
-
-	[self.receivedData setLength:0];
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {
+	ItemList *l = [ [ItemList alloc] init];
+	[l setName:[parsedJsonObject objectForKey:@"name"]];
+	[l setRemoteId:[parsedJsonObject objectForKey:@"id"]];
+	
+	NSArray *ct = [ self.navigationController viewControllers];
+	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
+	[ nextController setItemList:l ];
+	
+	NSArray *ct2 = [NSArray arrayWithObjects:[ct objectAtIndex:0], nextController, nil];
+	
+	[nextController release];		
+	
+	// If "animated" is added to this call, for some reason the back button becomes active but invisible...
+	// is there another method that can be used?  right now it just jumps back :(
+	[ self.navigationController setViewControllers:ct2];	
 }
 
-- (void)connectionDidFail:(NSURLConnection *)connection {
-	[connection release];
-	[receivedData release];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [self.receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {	
-	NSString *jsonData = [[NSString alloc] initWithBytes:[receivedData bytes] length:[receivedData length] encoding:NSUTF8StringEncoding];
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
+	NSString *msg = @"Undefined error occurred while processing response";
 	
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES )
+		msg = [ parsedJsonObject objectForKey:@"message" ];
 	
-	NSDictionary *jsonResponse = [jsonData JSONValue];
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+													 message:msg
+													delegate:self
+										   cancelButtonTitle:@"OK" 
+										   otherButtonTitles:nil ];
 	
-	if ( [ self.statusCode intValue ] == 200 ) {
-		ItemList *l = [ [ItemList alloc] init];
-		[l setName:[jsonResponse objectForKey:@"name"]];
-		[l setRemoteId:[jsonResponse objectForKey:@"id"]];
-		
-		NSArray *ct = [ self.navigationController viewControllers];
-		ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
-		[ nextController setItemList:l ];
-		
-		NSArray *ct2 = [NSArray arrayWithObjects:[ct objectAtIndex:0], nextController, nil];
-		
-		[nextController release];		
-		
-		// If "animated" is added to this call, for some reason the back button becomes active but invisible...
-		// is there another method that can be used?  right now it just jumps back :(
-		[ self.navigationController setViewControllers:ct2];
-	} else {
-		NSString *msg = @"Undefined error occurred while processing response";
-		
-		if ( [ jsonResponse respondsToSelector:@selector( objectForKey: )] == YES )
-			msg = [ jsonResponse objectForKey:@"message" ];
-		
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
-														 message:msg
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-		
-		[alert show];
-		[alert release];		
-	}
+	
+	[alert show];
+	[alert release];	
 }
 
 // Gets rid of the keyboard no matter what the responder is
@@ -135,7 +106,9 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-		
+
+	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
+
 	[ listNameTextField becomeFirstResponder ];
 }
 
@@ -161,9 +134,8 @@
 
 
 - (void)dealloc {
-	[receivedData release];
-	[statusCode release];
 	[listNameTextField release];
+	[statusDisplay release];
 	
     [super dealloc];
 }

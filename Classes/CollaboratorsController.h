@@ -16,8 +16,9 @@
 #import "Collaborator.h"
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
+#import "TimedConnection.h"
 
-@interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate> {
+@interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate, TimedConnection> {
 	NSMutableArray *collaborators;
 	NSString *inviteeEmail;
 	ItemList *itemList;
@@ -34,6 +35,9 @@
 - (void) loadItems;
 - (IBAction)addButtonAction:(id)sender;
 - (void) shakeHappened:(ShakeableTableView *)view;
+
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject;
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
 
 @property (nonatomic, retain) NSMutableArray *collaborators;
 @property (nonatomic, retain) NSString *inviteeEmail;

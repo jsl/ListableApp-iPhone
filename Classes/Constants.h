@@ -7,6 +7,6 @@
  *
  */
 
-#define API_SERVER @"http://192.168.5.154:3000"
+#define API_SERVER @"http://listableapp.com"
 
 #define BAR_STYLE UIBarStyleBlackTranslucent

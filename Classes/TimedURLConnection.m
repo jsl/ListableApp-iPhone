@@ -25,6 +25,7 @@
 		self.statusDisplay = inStatusDisplay;
     }
 	
+	NSLog(@"The status display is %@", self.statusDisplay);
 	if (! ( self.statusDisplay == nil  ) )
 		[ self.statusDisplay startWithTitle:inStatusMessage];
 	
@@ -32,14 +33,10 @@
 	
     self.connection = [[NSURLConnection alloc] initWithRequest:inRequest delegate:self]; 
 	
-    if (self.connection) { 
-		NSLog(@"Got data");
-        self.data = [[NSMutableData data] retain]; 
-		
-    } else {
-		NSLog(@"Got failure!");
+    if (self.connection)
+        self.data = [[NSMutableData data] retain]; 		
+    else
 		[ self alertOnHTTPFailure ];
-	}
 	
 	return self;	
 }
@@ -47,7 +44,7 @@
 - (id)initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:(NSURL *)inUrl delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage {
 	NSMutableURLRequest *request = [ NSMutableURLRequest requestWithURL:inUrl ];
 	
-	return [self initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:inDelegate statusDisplay:nil statusMessage:nil ];
+	return [self initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:inDelegate statusDisplay:inStatusDisplay statusMessage:inStatusMessage ];
 }
 
 - (id)initWithUrlAndDelegate: (NSURL *)inUrl delegate:(UIViewController *)inDelegate {
@@ -73,19 +70,16 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    // release the connection, and the data object
-    [self.connection release];
+    [ self.connection release ];	
+    [ self.data release ];
+	[ self.timer invalidate ];
 	
-    // receivedData is declared as a method instance elsewhere
-    [self.data release];
-	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
 	if (! ( self.statusDisplay == nil ) )
-		[ self.statusDisplay stop ];
-	
-    // inform the user
-    NSLog(@"Connection failed! Error - %@ %@",
-          [error localizedDescription],
-          [[error userInfo] objectForKey:NSErrorFailingURLStringKey]);
+		[ self.statusDisplay stop ];	
+
+	[ self displayConnectivityProblemMessage ];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)inData {
@@ -102,29 +96,37 @@
 		// If we've gone too long, show an alert.
 		self.ticks++;
 		
-		// 3 seconds max
 		if (self.ticks > 50) {
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to server"
-															 message:@"Unable to connect to ListableApp.com.  Please try again, or contact support@listableapp.com if problems persist."
-															delegate:self
-												   cancelButtonTitle:@"OK" 
-												   otherButtonTitles:nil ];
+			[self.connection cancel];
 			
-			[alert show];
-			[alert release];
-			
-			// Make connection an Ivar?
-			// [connection release];			
+			[connection release];			
 			[data release];
 			
 			[self.timer invalidate];
+
+			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
+			[ self displayConnectivityProblemMessage ];
 			
-			// Now we just have to get rid of the status display... should we take care of that?
-			// Perhaps it should be a singleton?
+			if (! ( self.statusDisplay == nil ) )
+				[ self.statusDisplay stop ];
+
 		} else {
 			NSLog(@"We'll try again later, ticks == %i", self.ticks);
 		}
 	}
+}
+
+// To be displayed on timeouts and when we get a connection failure.
+- (void)displayConnectivityProblemMessage {
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to server"
+													 message:@"Unable to connect to ListableApp.com.  Please try again, or contact support@listableapp.com if problems persist."
+													delegate:self
+										   cancelButtonTitle:@"OK" 
+										   otherButtonTitles:nil ];
+	
+	[alert show];
+	[alert release];	
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {

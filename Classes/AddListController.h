@@ -7,21 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TimedConnection.h"
+#import "StatusDisplay.h"
 
-@interface AddListController : UIViewController <UITextFieldDelegate> {
+@interface AddListController : UIViewController <UITextFieldDelegate, TimedConnection> {
 	IBOutlet UIButton *doneButton;
-	IBOutlet UITextField *listNameTextField;
+	IBOutlet UITextField *listNameTextField;	
 	
-	NSMutableData *receivedData;
-	NSNumber *statusCode;
+	StatusDisplay *statusDisplay;
 }
 
 - (IBAction) doneButtonPressed: (id)sender;
 - (IBAction) dismissKeyboard: (id)sender;
 
-@property (nonatomic, retain) NSMutableData *receivedData;
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject;
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
+
 @property (nonatomic, retain) IBOutlet UITextField *listNameTextField;
-@property (nonatomic, retain) NSNumber *statusCode;
+@property (nonatomic, retain) StatusDisplay *statusDisplay;
 
 @end
 
