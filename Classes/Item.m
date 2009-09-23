@@ -21,6 +21,8 @@
 	[name release];
 	[remoteId release];
 	[completed release];
+	[createdAt release];
+	[creatorEmail release];
 	
     [super dealloc];
 }

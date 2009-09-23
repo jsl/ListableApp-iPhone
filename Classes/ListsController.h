@@ -14,9 +14,7 @@
 #import "TimedConnection.h"
 
 @interface ListsController : UITableViewController <TimedConnection> {
-	NSMutableData *receivedData;
 	NSMutableArray *lists;
-	NSNumber *statusCode;
 
 	StatusDisplay *statusDisplay;
 }
@@ -30,8 +28,6 @@
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
-@property (nonatomic, retain) NSNumber *statusCode;
-@property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSMutableArray *lists;
 
 @end

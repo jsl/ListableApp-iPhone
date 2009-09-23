@@ -15,7 +15,6 @@
 
 
 - (id)initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:(NSMutableURLRequest *)inRequest delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage {
-	NSLog(@"Doing TimedURLConnection init, inRequest is %@", inRequest);
 	
 	if (self = [super init]) {
 		self.delegate = [ inDelegate retain ];
@@ -25,7 +24,6 @@
 		self.statusDisplay = inStatusDisplay;
     }
 	
-	NSLog(@"The status display is %@", self.statusDisplay);
 	if (! ( self.statusDisplay == nil  ) )
 		[ self.statusDisplay startWithTitle:inStatusMessage];
 	
@@ -48,8 +46,6 @@
 }
 
 - (id)initWithUrlAndDelegate: (NSURL *)inUrl delegate:(UIViewController *)inDelegate {
-	NSLog(@"Gonna make a daddy object!");
-
 	return [self initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:inUrl delegate:inDelegate statusDisplay:nil statusMessage:nil ];
 }
 
@@ -58,9 +54,7 @@
 }
 
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"Got response, setting status code");
-	
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {	
 	self.didReceiveResponse = YES;
 	
 	if ([response respondsToSelector:@selector(statusCode)])
@@ -83,20 +77,18 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)inData {
-	NSLog(@"Did receive some data");
     [self.data appendData:inData];
 }
 
 - (void)checkIfResponseReceived: (NSTimer *)theTimer {	
 	if (self.didReceiveResponse) {
-		NSLog(@"Eggs are cooked, needed %i ticks", self.ticks);
 		[self.timer invalidate];
 		
 	} else {
 		// If we've gone too long, show an alert.
 		self.ticks++;
 		
-		if (self.ticks > 50) {
+		if (self.ticks > 150) {
 			[self.connection cancel];
 			
 			[connection release];			
@@ -111,8 +103,6 @@
 			if (! ( self.statusDisplay == nil ) )
 				[ self.statusDisplay stop ];
 
-		} else {
-			NSLog(@"We'll try again later, ticks == %i", self.ticks);
 		}
 	}
 }
@@ -130,7 +120,6 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	NSLog(@"Connection did finish loading");
 	
 	if (! ( self.statusDisplay == nil ) )
 		[ self.statusDisplay stop ];
@@ -148,8 +137,9 @@
 		if ([ delegate respondsToSelector:@selector(renderSuccessJSONResponse:) ])
 			[delegate renderSuccessJSONResponse:parsedJsonObject];
 	} else {
-		if ([ delegate respondsToSelector:@selector(renderFailureJSONResponse:) ])
+		if ([ delegate respondsToSelector:@selector(renderFailureJSONResponse: withStatusCode:) ]) {
 			[delegate renderFailureJSONResponse:parsedJsonObject withStatusCode:[ self.statusCode intValue ] ];
+		}
 	}
 	
 	[responseData release];

@@ -9,7 +9,6 @@
 #import "ListItemsController.h"
 #import "ItemList.h"
 #import "Item.h"
-#import "JSON.h"
 #import "AddListItemController.h"
 #import "URLEncode.h"
 #import "Constants.h"
@@ -29,10 +28,8 @@
 @implementation ListItemsController
 
 @synthesize itemList;
-@synthesize receivedData;
 @synthesize listItems;
 @synthesize inviteeEmail;
-@synthesize statusCode;
 @synthesize completedItems;
 @synthesize activeItems;
 @synthesize loadingWithUpdate;
@@ -59,19 +56,21 @@
 	
 	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
 	[buttons addObject:bi];
-	[bi release];	
+	[img release];
+	[bi release];
 	
 	// Add the share button
 	img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
 	bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
 	[buttons addObject:bi];
+	[img release];
 	[bi release];
 	
 	// create a standard "add" button
 	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
 	bi.style = UIBarButtonItemStyleBordered;
 	[buttons addObject:bi];
-	[bi release];
+	[bi release];	
 			
 	// stick the buttons in the toolbar
 	[tools setItems:buttons animated:NO];
@@ -111,7 +110,7 @@
 	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																				   delegate:self 
 																			  statusDisplay:self.statusDisplay 
-																			  statusMessage:@"Updating item..." ];	
+																			  statusMessage:@"Updating item..." ];
 }
 
 - (void) editListButtonAction:(id)sender {
@@ -153,11 +152,9 @@
 }
 
 - (void) loadItems {
-	
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items.json?user_credentials=%@", API_SERVER, 
 						   [ itemList remoteId ], 
-						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ] 
-						   ];
+						   [ [UserSettings sharedUserSettings].authToken URLEncodeString ] ];
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
 		
@@ -165,14 +162,13 @@
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay 
 																		  statusMessage:@"Loading items..."];
+	[ myURL release ];
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
-	NSLog(@"Called with success json response");
+
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-		NSMutableArray *itms = [ self processGetResponse:parsedJsonObject ];
-		
-		self.listItems = [ itms retain ];
+		self.listItems = [ self processGetResponse:parsedJsonObject ];
 		
 		NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
 		NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
@@ -196,9 +192,7 @@
 		
 		[ self.completedItems filterUsingPredicate:completedPredicate ];
 		[ self.activeItems filterUsingPredicate:activePredicate ];
-		
-		[itms release];
-		
+				
 	} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
 		// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
 		// the followup to a modification request.
@@ -215,7 +209,7 @@
 			
 			nextController.item = itm;
 			nextController.listItemsController = self;
-			
+						
 			[[self navigationController] pushViewController:nextController animated:YES];
 			[nextController release];				
 		} else {
@@ -228,8 +222,6 @@
 }
 
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
-	NSLog(@"Called with FAIL json response");
-
 	NSString *msg = @"Undefined error occurred while processing response";
 	
 	if ( [ parsedJsonObject respondsToSelector:@selector( objectForKey: )] == YES )
@@ -258,7 +250,7 @@
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
 	
-	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
+	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease];
 	
 	for (id setObject in jsonArray) {
 		Item *it = [[Item alloc] init];
@@ -269,6 +261,8 @@
 		[it setRemoteId:[setObject objectForKey:@"id"] ];
 		
 		[tmpItems addObject:it];
+		
+		[it release];
 	}
 	
 	return tmpItems;
@@ -279,6 +273,7 @@
 	Item *item = [tmpItems objectAtIndex:indexPath.row];
 
 	CGFloat height = [item.name RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20.0;
+	
     return height;
 }
 
@@ -304,9 +299,11 @@
 	headerButton.backgroundColor = [UIColor whiteColor];
 	
     [containerView addSubview:headerButton];
+	
     self.tableView.tableHeaderView = containerView;	
 	
 	[headerButton addTarget:self action:@selector(editListTitleAction:) forControlEvents:UIControlEventTouchUpInside];
+	[headerButton release];
 
 	// If we're loading with an update from another controller, let that finished request load
 	// items and unset the flag.  Otherwise, load items as normal.
@@ -366,18 +363,17 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 0) {
+	if (section == 0)
 		return [[self activeItems] count];
-	} else {
-		return [ [self completedItems] count];		
-	}
+	else
+		return [ [self completedItems] count];
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSMutableArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
-    
+	
+	Item *itm = [self itemAtIndexPath:indexPath];
+
     static NSString *CellIdentifier = @"ListViewCell";
     
 	ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -397,6 +393,7 @@
     	
 	cell.checked = ( [ itm.completed intValue ] == 1 ? YES : NO );
 	cell.item = itm;
+
 	cell.listItemsController = self;
 	
 	[ cell setImageOnCheckedState ];
@@ -418,10 +415,6 @@
 
 // Updates ItemList name.  Displays appropriate status message in toolbar.
 - (void)updateListName: (ItemList *)list name:(NSString *)name {
-	if (!UIAppDelegate.ableToConnectToHostWithAlert)
-		return;
-
-	[ self.statusDisplay startWithTitle:@"Updating list name..." ];
 	
 	NSString *format = @"%@/lists/%@.json?list[name]=%@&user_credentials=%@";
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
@@ -436,13 +429,10 @@
 	
     [ request setHTTPMethod:@"PUT" ];
     
-    [ [UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES ]; 
-	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
-	
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
-    }	
+	[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																					 delegate:self 
+																				statusDisplay:self.statusDisplay 
+																				statusMessage:@"Updating list name..." ];
 }
 
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
@@ -473,9 +463,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { 
 	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *itm = [ tmpItems objectAtIndex:indexPath.row];
-
+	Item *itm = [self itemAtIndexPath:indexPath];
+	
 	NSString *urlString = [ NSString stringWithFormat:@"%@/lists/%@/items/%@.json?user_credentials=%@", 
 						   API_SERVER, 
 						   [itemList remoteId], 
@@ -489,6 +478,7 @@
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay
 																		  statusMessage:@"Loading item details..." ];	
+	[myURL release];
 }
 
 
@@ -504,12 +494,15 @@
 	return (section == 0) ? @"Active Items" : @"Completed Items";
 }
 
+- (Item *)itemAtIndexPath:(NSIndexPath *)indexPath {
+	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
+	return [tmpItems objectAtIndex:indexPath.row];
+}
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *item = [tmpItems objectAtIndex:indexPath.row];
+	Item *item = [self itemAtIndexPath:indexPath];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 
@@ -521,27 +514,31 @@
 		
 		[ request setHTTPMethod:@"DELETE" ];
 		
-		[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."];
-	}
+		[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."];		
+	}	
 }
 
 
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-	NSMutableArray *tmpItems = (fromIndexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *item = [tmpItems objectAtIndex:fromIndexPath.row];
-
-	[tmpItems removeObjectAtIndex:fromIndexPath.row];
-    [tmpItems insertObject:item atIndex:toIndexPath.row];
-
-	if (fromIndexPath.section == 0) {
-		self.activeItems = tmpItems;
-	} else {
-		self.completedItems = tmpItems;
+	
+	// Don't do anything if source is same as target.
+	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
+		
+		NSMutableArray *tmpItems = (fromIndexPath.section == 0) ? self.activeItems : self.completedItems;
+		Item *item = [tmpItems objectAtIndex:fromIndexPath.row];
+		
+		[tmpItems removeObjectAtIndex:fromIndexPath.row];
+		[tmpItems insertObject:item atIndex:toIndexPath.row];
+		
+		if (fromIndexPath.section == 0)
+			self.activeItems = tmpItems;
+		else
+			self.completedItems = tmpItems;
+		
+		NSString *updatingMessage = @"Moving item...";
+		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:toIndexPath.row] stringValue] displayMessage:updatingMessage ];		
 	}
-
-	NSString *updatingMessage = @"Moving item...";
-	[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:toIndexPath.row] stringValue] displayMessage:updatingMessage ];
 }
 
 
@@ -553,11 +550,11 @@
 
 
 - (void)dealloc {
-	[statusDisplay release];
 	[itemList release];
-	[receivedData release];
 	[listItems release];
-	[statusCode release];
+	[statusDisplay release];
+	[completedItems release];
+	[activeItems release];
 	
     [super dealloc];
 }

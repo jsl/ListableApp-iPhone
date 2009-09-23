@@ -9,7 +9,6 @@
 #import "ListsController.h"
 #import "ListItemsController.h"
 
-#import "JSON.h"
 #import "ItemList.h"
 #import "AddListController.h"
 #import "URLEncode.h"
@@ -23,9 +22,7 @@
 
 @implementation ListsController
 
-@synthesize receivedData;
 @synthesize lists;
-@synthesize statusCode;
 @synthesize statusDisplay;
 
 - (void)viewDidLoad {
@@ -100,8 +97,11 @@
 }
 
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)theStatusCode {
-	if (theStatusCode == 403)
+
+	if (theStatusCode == 403) {
 		self.lists = [ [ NSMutableArray alloc ] init ];
+		[ self.tableView reloadData ];
+	}
 	
 	if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
 		NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
@@ -122,9 +122,7 @@
 // When the TimedURLConnection delegate receives a 200 response, it calls this method to figure
 // out the specifics of how the parsed JSON object should be translated into something to render
 // in the UITableView.
-- (void) renderSuccessJSONResponse: (id)parsedJsonObject {
-	NSLog(@"Gonna render success json response");
-	
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
 		self.lists = [ self processGetResponse:parsedJsonObject ];
 		
@@ -138,7 +136,7 @@
 
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {	
-	NSMutableArray *tmpItems = [[NSMutableArray alloc] init];
+	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease ];
 
 	for (id setObject in jsonArray) {
 		ItemList *l = [ [ItemList alloc] init];
@@ -189,15 +187,18 @@
 }
 */
 
+/*
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+*/
 
+/*
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
-
+*/
 
 #pragma mark Table view methods
 
@@ -234,11 +235,11 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
 	ItemList *l = [lists objectAtIndex:indexPath.row];
-		
+
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
 	
 	[ nextController setItemList:l ];
-	
+
 	[[self navigationController] pushViewController:nextController animated:YES];
 	[nextController release];
 }
@@ -272,8 +273,6 @@
 																						 delegate:self 
 																					statusDisplay:self.statusDisplay 
 																					statusMessage:@"Deleting list..." ];
-		
-		// XXX release some vars
 	} 
 }
 
@@ -294,8 +293,6 @@
 
 
 - (void)dealloc {
-	[statusCode release];
-	[receivedData release];
 	[lists release];
 	[statusDisplay release];
 	

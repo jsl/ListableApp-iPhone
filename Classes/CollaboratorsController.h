@@ -22,10 +22,7 @@
 	NSMutableArray *collaborators;
 	NSString *inviteeEmail;
 	ItemList *itemList;
-	NSMutableData *receivedData;
 
-	NSNumber *statusCode;
-	
 	StatusDisplay *statusDisplay;
 }
 
@@ -42,8 +39,6 @@
 @property (nonatomic, retain) NSMutableArray *collaborators;
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) ItemList *itemList;
-@property (nonatomic, retain) NSMutableData *receivedData;
-@property (nonatomic, retain) NSNumber *statusCode;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 
 @end

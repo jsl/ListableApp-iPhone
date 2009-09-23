@@ -27,7 +27,7 @@
 
 @implementation CollaboratorsController
 
-@synthesize collaborators, inviteeEmail, receivedData, statusDisplay, itemList, statusCode;
+@synthesize collaborators, inviteeEmail, statusDisplay, itemList;
 
 - (IBAction)addButtonAction:(id)sender {
     ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
@@ -375,7 +375,6 @@
 	[collaborators release];
 	[inviteeEmail release];
 	[ItemList release];
-	[receivedData release];
 	[statusDisplay release];
 	
     [super dealloc];

@@ -8,7 +8,6 @@
 
 #import "ShakeableTableView.h"
 
-
 @implementation ShakeableTableView
 
 @synthesize viewDelegate;

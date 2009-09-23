@@ -7,7 +7,6 @@
  *
  */
 
-// Figure out what methods should be in this protocol...
 @protocol TimedConnection <NSObject>
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject;
