@@ -46,27 +46,15 @@
 	// on an item in our list.
 	loadingWithUpdate = NO;
 	
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 40.0, 45.0)];
-	
-	// create the array to hold the buttons, which then gets added to the toolbar
-	NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:1];
-
 	// create a standard "add" button
 	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
 	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
+	self.navigationItem.rightBarButtonItem = bi;
 	[bi release];	
 	
-	// stick the buttons in the toolbar
-	[tools setItems:buttons animated:NO];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
 	
-	[buttons release];
-	[tools release];
-		
 	UIView *tv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 135, 45.0)];
 	
-
 	// Add the share button
 	UIImage *users = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
 	

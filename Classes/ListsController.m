@@ -30,27 +30,12 @@
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
-	// create a toolbar to have two buttons in the right
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 40, 45)];
-	
-	// create the array to hold the buttons, which then gets added to the toolbar
-	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:2];
-	
 	// create a standard "add" button
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
+	bi.style = UIBarButtonItemStyleBordered;		
+	self.navigationItem.rightBarButtonItem = bi;
 	[bi release];
-		
-	// stick the buttons in the toolbar
-	[tools setItems:buttons animated:NO];
-	
-	[buttons release];
-	
-	// and put the toolbar in the nav bar
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
-	[tools release];
-	
+
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
 	self.title = @"Lists";
