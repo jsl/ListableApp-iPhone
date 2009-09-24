@@ -29,8 +29,15 @@
 		D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */; };
 		D026A05A1064536700DC8BE5 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0581064536700DC8BE5 /* checked.png */; };
 		D026A05B1064536700DC8BE5 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0591064536700DC8BE5 /* unchecked.png */; };
-		D05FF88B106AF178001E1839 /* Pencil-Wide.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FF889106AF178001E1839 /* Pencil-Wide.png */; };
-		D05FF88C106AF178001E1839 /* Users-Wide.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FF88A106AF178001E1839 /* Users-Wide.png */; };
+		D05FFA4C106BB54F001E1839 /* Pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4A106BB54F001E1839 /* Pencil.png */; };
+		D05FFA4D106BB54F001E1839 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4B106BB54F001E1839 /* Users.png */; };
+		D05FFA6B106BBB16001E1839 /* CustomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D05FFA6A106BBB16001E1839 /* CustomButton.m */; };
+		D05FFA6E106BBB84001E1839 /* custombuttonnormal.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA6C106BBB84001E1839 /* custombuttonnormal.png */; };
+		D05FFA6F106BBB84001E1839 /* custombuttonpressed.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA6D106BBB84001E1839 /* custombuttonpressed.png */; };
+		D05FFAA8106BC994001E1839 /* blueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFAA7106BC994001E1839 /* blueButton.png */; };
+		D05FFAD4106BCC04001E1839 /* CancelTest.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFAD3106BCC04001E1839 /* CancelTest.png */; };
+		D05FFB00106BD38E001E1839 /* DarkerButtonBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFAFF106BD38E001E1839 /* DarkerButtonBackground.png */; };
+		D05FFB20106BD93A001E1839 /* PencilDark.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFB1F106BD93A001E1839 /* PencilDark.png */; };
 		D06AF04210652A8800E076CF /* ShakeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF04110652A8800E076CF /* ShakeableTableView.m */; };
 		D06AF1791065481400E076CF /* EditListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF1771065481400E076CF /* EditListController.m */; };
 		D06AF17A1065481400E076CF /* EditListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D06AF1781065481400E076CF /* EditListController.xib */; };
@@ -104,8 +111,16 @@
 		D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListItemCustomCell.xib; sourceTree = "<group>"; };
 		D026A0581064536700DC8BE5 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
 		D026A0591064536700DC8BE5 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
-		D05FF889106AF178001E1839 /* Pencil-Wide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pencil-Wide.png"; sourceTree = "<group>"; };
-		D05FF88A106AF178001E1839 /* Users-Wide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Users-Wide.png"; sourceTree = "<group>"; };
+		D05FFA4A106BB54F001E1839 /* Pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pencil.png; sourceTree = "<group>"; };
+		D05FFA4B106BB54F001E1839 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
+		D05FFA69106BBB16001E1839 /* CustomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomButton.h; sourceTree = "<group>"; };
+		D05FFA6A106BBB16001E1839 /* CustomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomButton.m; sourceTree = "<group>"; };
+		D05FFA6C106BBB84001E1839 /* custombuttonnormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = custombuttonnormal.png; sourceTree = "<group>"; };
+		D05FFA6D106BBB84001E1839 /* custombuttonpressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = custombuttonpressed.png; sourceTree = "<group>"; };
+		D05FFAA7106BC994001E1839 /* blueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueButton.png; sourceTree = "<group>"; };
+		D05FFAD3106BCC04001E1839 /* CancelTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CancelTest.png; sourceTree = "<group>"; };
+		D05FFAFF106BD38E001E1839 /* DarkerButtonBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DarkerButtonBackground.png; sourceTree = "<group>"; };
+		D05FFB1F106BD93A001E1839 /* PencilDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PencilDark.png; sourceTree = "<group>"; };
 		D06AF04010652A8800E076CF /* ShakeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeableTableView.h; sourceTree = "<group>"; };
 		D06AF04110652A8800E076CF /* ShakeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShakeableTableView.m; sourceTree = "<group>"; };
 		D06AF1761065481400E076CF /* EditListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditListController.h; path = ../EditListController.h; sourceTree = "<group>"; };
@@ -231,6 +246,8 @@
 				D0C551851068FB820093DBA6 /* TimedURLConnection.h */,
 				D0C551861068FB820093DBA6 /* TimedURLConnection.m */,
 				D0C5527F10691F910093DBA6 /* TimedConnection.h */,
+				D05FFA69106BBB16001E1839 /* CustomButton.h */,
+				D05FFA6A106BBB16001E1839 /* CustomButton.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -249,14 +266,20 @@
 				D0269E861063C17A00DC8BE5 /* Listable-Info.plist */,
 				D0C941F0106314F200C9B8EF /* tabbar_checkmark.png */,
 				D0C54AD5106583EE0093DBA6 /* checked_larger.png */,
-				D05FF889106AF178001E1839 /* Pencil-Wide.png */,
-				D05FF88A106AF178001E1839 /* Users-Wide.png */,
 				D0C54AD6106583EE0093DBA6 /* unchecked_larger.png */,
 				D026A0581064536700DC8BE5 /* checked.png */,
+				D05FFAFF106BD38E001E1839 /* DarkerButtonBackground.png */,
+				D05FFA4A106BB54F001E1839 /* Pencil.png */,
+				D05FFA4B106BB54F001E1839 /* Users.png */,
+				D05FFB1F106BD93A001E1839 /* PencilDark.png */,
+				D05FFAD3106BCC04001E1839 /* CancelTest.png */,
 				D026A0591064536700DC8BE5 /* unchecked.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
 				D0C54B1210658E340093DBA6 /* Default.png */,
+				D05FFAA7106BC994001E1839 /* blueButton.png */,
 				D0C941A01063054C00C9B8EF /* Icon-Small.png */,
+				D05FFA6C106BBB84001E1839 /* custombuttonnormal.png */,
+				D05FFA6D106BBB84001E1839 /* custombuttonpressed.png */,
 				D0C9419E1063054200C9B8EF /* Icon.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -387,8 +410,14 @@
 				D0C54AD8106583EE0093DBA6 /* unchecked_larger.png in Resources */,
 				D0C54B1310658E340093DBA6 /* Default.png in Resources */,
 				D0C54BE910666EFC0093DBA6 /* CurrentSessionController.xib in Resources */,
-				D05FF88B106AF178001E1839 /* Pencil-Wide.png in Resources */,
-				D05FF88C106AF178001E1839 /* Users-Wide.png in Resources */,
+				D05FFA4C106BB54F001E1839 /* Pencil.png in Resources */,
+				D05FFA4D106BB54F001E1839 /* Users.png in Resources */,
+				D05FFA6E106BBB84001E1839 /* custombuttonnormal.png in Resources */,
+				D05FFA6F106BBB84001E1839 /* custombuttonpressed.png in Resources */,
+				D05FFAA8106BC994001E1839 /* blueButton.png in Resources */,
+				D05FFAD4106BCC04001E1839 /* CancelTest.png in Resources */,
+				D05FFB00106BD38E001E1839 /* DarkerButtonBackground.png in Resources */,
+				D05FFB20106BD93A001E1839 /* PencilDark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -429,6 +458,7 @@
 				D0C54BE810666EFC0093DBA6 /* CurrentSessionController.m in Sources */,
 				D0C54F771067FDA20093DBA6 /* UserSettings.m in Sources */,
 				D0C551871068FB820093DBA6 /* TimedURLConnection.m in Sources */,
+				D05FFA6B106BBB16001E1839 /* CustomButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
