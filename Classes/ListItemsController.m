@@ -50,20 +50,25 @@
 	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
 	bi.style = UIBarButtonItemStyleBordered;
 	self.navigationItem.rightBarButtonItem = bi;
-	[bi release];	
+	[bi release];
 	
+	// Set toolbar title
+	self.title = @"Items";
+
+	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
-	UIView *tv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 135, 45.0)];
+	// Add the titleView navigation bar items...
+	UIView *tv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
 	
 	// Add the share button
 	UIImage *users = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
 	
 	UIButton *btn = [UIButton buttonWithType: UIButtonTypeRoundedRect];
-
+	
 	btn.frame = CGRectMake(0, 8, 80, 30);
-		
-	UIImage *backgroundImage = [ [[UIImage imageNamed: @"DarkerButtonBackground.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15] retain];
-
+	
+	UIImage *backgroundImage = [[UIImage imageNamed: @"DarkerButtonBackground.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15];
+	
 	[ btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
 	[ btn setImage:users forState:UIControlStateNormal];
 	[ btn addTarget:self action:@selector(shareButtonAction:)forControlEvents:UIControlEventTouchUpInside];
@@ -81,20 +86,16 @@
 	
 	[btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
 	[btn setImage:pencil forState:UIControlStateNormal];
-
+	
 	btn.frame = CGRectMake(newX, newY, 80, 30);
-
+	
 	[ btn addTarget:self action:@selector(editListButtonAction:)forControlEvents:UIControlEventTouchUpInside];
 	
 	[tv addSubview:btn];
 	
-	// Set toolbar title
-	self.title = @"Items";
 	
 	[ self.navigationItem setTitleView:tv ];
 	[tv release];
-	
-	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
 	[super viewDidLoad];
 }
@@ -321,7 +322,7 @@
 		self.loadingWithUpdate = NO;
 	else
 		[self loadItems];
-
+	
     [super viewWillAppear:animated];
 }
 

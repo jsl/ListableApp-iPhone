@@ -11,21 +11,10 @@
 
 @implementation CustomButton
 
-// global images so we don't load/create them over and over
-UIImage *normalImage;
-UIImage *pressedImage;
-
 - (id)initWithCoder:(NSCoder *)coder {
 	if (self = [super initWithCoder:coder]) {
-		if (!normalImage) {
-			UIImage *image = [UIImage imageNamed:@"custombuttonnormal.png"];
-			normalImage = [image stretchableImageWithLeftCapWidth:12 topCapHeight:12];
-		}
-		
-		if (!pressedImage) {
-			UIImage *image = [UIImage imageNamed:@"custombuttonpressed.png"];
-			pressedImage = [image stretchableImageWithLeftCapWidth:12 topCapHeight:12];
-		}
+		UIImage *normalImage = [ [UIImage imageNamed:@"custombuttonnormal.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:22];
+		UIImage *pressedImage = [[UIImage imageNamed:@"custombuttonpressed.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:22];
 		
 		[self setBackgroundImage:normalImage forState:UIControlStateNormal];
 		[self setBackgroundImage:pressedImage forState:UIControlStateHighlighted];
