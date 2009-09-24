@@ -46,42 +46,49 @@
 	loadingWithUpdate = NO;
 	
 	// create a toolbar to have two buttons in the right
-	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
+	UIToolbar* tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 40, 45)];
 	
 	// create the array to hold the buttons, which then gets added to the toolbar
-	NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:3];
+	NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:1];
 
-	// Add edit button
-	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Pencil" ofType:@"png"]];
+	// create a standard "add" button
+	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
+	bi.style = UIBarButtonItemStyleBordered;
+	[buttons addObject:bi];
+	[bi release];	
 	
-	UIBarButtonItem *bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
+	// stick the buttons in the toolbar
+	[tools setItems:buttons animated:NO];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
+	
+	[buttons release];
+	[tools release];
+	
+	buttons = [[NSMutableArray alloc] initWithCapacity:2];	
+	
+	tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 130, 45)];
+	
+	// Add edit button
+	UIImage *img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Pencil-Wide" ofType:@"png"]];
+	bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
+	
 	[buttons addObject:bi];
 	[img release];
 	[bi release];
-	
+
 	// Add the share button
-	img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
+	img = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users-Wide" ofType:@"png"]];	
 	bi = [ [UIBarButtonItem alloc] initWithImage:img style:UIBarButtonItemStyleBordered target:self action:@selector(shareButtonAction:)];
 	[buttons addObject:bi];
 	[img release];
 	[bi release];
-	
-	// create a standard "add" button
-	bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	[buttons addObject:bi];
-	[bi release];	
-			
-	// stick the buttons in the toolbar
-	[tools setItems:buttons animated:NO];
-	
-	[buttons release];
-	
+
 	// Set toolbar title
 	self.title = @"Items";
 	
+	[tools setItems:buttons];
 	// and put the toolbar in the nav bar
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:tools];
+	self.navigationItem.titleView = tools;
 	[tools release];
 	
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
@@ -537,7 +544,10 @@
 			self.completedItems = tmpItems;
 		
 		NSString *updatingMessage = @"Moving item...";
-		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:toIndexPath.row] stringValue] displayMessage:updatingMessage ];		
+		
+		// Have to add 1 to IndexPath.row because that's what the server expects.
+		int newPos = toIndexPath.row + 1;
+		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];		
 	}
 }
 

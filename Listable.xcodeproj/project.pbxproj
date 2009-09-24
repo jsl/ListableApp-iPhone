@@ -24,14 +24,14 @@
 		D007EB9E1059A331008B41C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D007EB981059A331008B41C4 /* SBJsonWriter.m */; };
 		D023AC551064EA18000CA1E7 /* ItemDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = D023AC541064EA18000CA1E7 /* ItemDetail.xib */; };
 		D023AC5A1064EC04000CA1E7 /* ItemDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = D023AC591064EC04000CA1E7 /* ItemDetailController.m */; };
-		D0269FB01063F16F00DC8BE5 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D0269FAF1063F16F00DC8BE5 /* Users.png */; };
 		D026A01110640B1B00DC8BE5 /* ToggleImageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */; };
 		D026A036106419EE00DC8BE5 /* ListItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */; };
 		D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */; };
 		D026A05A1064536700DC8BE5 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0581064536700DC8BE5 /* checked.png */; };
 		D026A05B1064536700DC8BE5 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D026A0591064536700DC8BE5 /* unchecked.png */; };
+		D05FF88B106AF178001E1839 /* Pencil-Wide.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FF889106AF178001E1839 /* Pencil-Wide.png */; };
+		D05FF88C106AF178001E1839 /* Users-Wide.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FF88A106AF178001E1839 /* Users-Wide.png */; };
 		D06AF04210652A8800E076CF /* ShakeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF04110652A8800E076CF /* ShakeableTableView.m */; };
-		D06AF155106545B300E076CF /* Pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = D06AF154106545B300E076CF /* Pencil.png */; };
 		D06AF1791065481400E076CF /* EditListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D06AF1771065481400E076CF /* EditListController.m */; };
 		D06AF17A1065481400E076CF /* EditListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D06AF1781065481400E076CF /* EditListController.xib */; };
 		D07465A7105C72A600077F03 /* EmailSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D07465A6105C72A600077F03 /* EmailSelectionController.m */; };
@@ -97,7 +97,6 @@
 		D023AC591064EC04000CA1E7 /* ItemDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemDetailController.m; sourceTree = "<group>"; };
 		D0269E851063C17A00DC8BE5 /* Listable_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listable_Prefix.pch; sourceTree = "<group>"; };
 		D0269E861063C17A00DC8BE5 /* Listable-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Listable-Info.plist"; sourceTree = "<group>"; };
-		D0269FAF1063F16F00DC8BE5 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
 		D026A00F10640B1B00DC8BE5 /* ToggleImageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToggleImageControl.h; sourceTree = "<group>"; };
 		D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToggleImageControl.m; sourceTree = "<group>"; };
 		D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListItemCustomCell.h; sourceTree = "<group>"; };
@@ -105,9 +104,10 @@
 		D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListItemCustomCell.xib; sourceTree = "<group>"; };
 		D026A0581064536700DC8BE5 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
 		D026A0591064536700DC8BE5 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
+		D05FF889106AF178001E1839 /* Pencil-Wide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pencil-Wide.png"; sourceTree = "<group>"; };
+		D05FF88A106AF178001E1839 /* Users-Wide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Users-Wide.png"; sourceTree = "<group>"; };
 		D06AF04010652A8800E076CF /* ShakeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeableTableView.h; sourceTree = "<group>"; };
 		D06AF04110652A8800E076CF /* ShakeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShakeableTableView.m; sourceTree = "<group>"; };
-		D06AF154106545B300E076CF /* Pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pencil.png; sourceTree = "<group>"; };
 		D06AF1761065481400E076CF /* EditListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditListController.h; path = ../EditListController.h; sourceTree = "<group>"; };
 		D06AF1771065481400E076CF /* EditListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditListController.m; path = ../EditListController.m; sourceTree = "<group>"; };
 		D06AF1781065481400E076CF /* EditListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditListController.xib; sourceTree = "<group>"; };
@@ -246,15 +246,15 @@
 		29B97314FDCFA39411CA2CEA /* SharedList */ = {
 			isa = PBXGroup;
 			children = (
-				D0269FAF1063F16F00DC8BE5 /* Users.png */,
 				D0269E861063C17A00DC8BE5 /* Listable-Info.plist */,
 				D0C941F0106314F200C9B8EF /* tabbar_checkmark.png */,
 				D0C54AD5106583EE0093DBA6 /* checked_larger.png */,
+				D05FF889106AF178001E1839 /* Pencil-Wide.png */,
+				D05FF88A106AF178001E1839 /* Users-Wide.png */,
 				D0C54AD6106583EE0093DBA6 /* unchecked_larger.png */,
 				D026A0581064536700DC8BE5 /* checked.png */,
 				D026A0591064536700DC8BE5 /* unchecked.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
-				D06AF154106545B300E076CF /* Pencil.png */,
 				D0C54B1210658E340093DBA6 /* Default.png */,
 				D0C941A01063054C00C9B8EF /* Icon-Small.png */,
 				D0C9419E1063054200C9B8EF /* Icon.png */,
@@ -378,17 +378,17 @@
 				D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */,
 				D0C941B4106307E700C9B8EF /* tabbar_key.png in Resources */,
 				D0C941F1106314F200C9B8EF /* tabbar_checkmark.png in Resources */,
-				D0269FB01063F16F00DC8BE5 /* Users.png in Resources */,
 				D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */,
 				D026A05A1064536700DC8BE5 /* checked.png in Resources */,
 				D026A05B1064536700DC8BE5 /* unchecked.png in Resources */,
 				D023AC551064EA18000CA1E7 /* ItemDetail.xib in Resources */,
-				D06AF155106545B300E076CF /* Pencil.png in Resources */,
 				D06AF17A1065481400E076CF /* EditListController.xib in Resources */,
 				D0C54AD7106583EE0093DBA6 /* checked_larger.png in Resources */,
 				D0C54AD8106583EE0093DBA6 /* unchecked_larger.png in Resources */,
 				D0C54B1310658E340093DBA6 /* Default.png in Resources */,
 				D0C54BE910666EFC0093DBA6 /* CurrentSessionController.xib in Resources */,
+				D05FF88B106AF178001E1839 /* Pencil-Wide.png in Resources */,
+				D05FF88C106AF178001E1839 /* Users-Wide.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
