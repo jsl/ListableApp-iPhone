@@ -36,6 +36,9 @@
 	self.navigationItem.leftBarButtonItem = lbi;
 	[lbi release];
 	
+
+	UINavigationBar *bar = [self.navigationController navigationBar]; 
+	[bar setTintColor:	[[UIColor alloc ] initWithRed:0.518 green:0.09 blue:0.09 alpha:1]]; 
 	
 	// create a standard "add" button
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];

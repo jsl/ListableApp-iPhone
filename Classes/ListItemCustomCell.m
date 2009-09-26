@@ -39,7 +39,7 @@
 	UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
 	CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, checkedImage.size.height);
 	checkButton.frame = frame;
-	
+		
 	UIImage *image = (self.checked) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
 	UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
 	[checkButton setBackgroundImage:newImage forState:UIControlStateNormal];

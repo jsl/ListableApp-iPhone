@@ -67,7 +67,7 @@
 	
 	btn.frame = CGRectMake(0, 8, 80, 30);
 	
-	UIImage *backgroundImage = [[UIImage imageNamed: @"DarkerButtonBackground.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15];
+	UIImage *backgroundImage = [[UIImage imageNamed: @"DarkerButtonBackgroundRed.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15];
 	
 	[ btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
 	[ btn setImage:users forState:UIControlStateNormal];
