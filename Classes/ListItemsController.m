@@ -448,7 +448,6 @@
 
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage {
-	[ self.statusDisplay startWithTitle:displayMessage ];
 	
 	NSString *format = @"%@/lists/%@/items/%@.json?item[%@]=%@&user_credentials=%@";
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 

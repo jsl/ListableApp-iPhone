@@ -12,9 +12,11 @@
 @interface ItemList : NSObject {
 	NSString *name;
 	NSDecimalNumber *remoteId;
+	NSDecimalNumber *linkId;
 }
 
 @property (nonatomic, retain) NSString *name; 
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
+@property (nonatomic, retain) NSDecimalNumber *linkId;
 
 @end

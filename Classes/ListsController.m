@@ -29,6 +29,13 @@
 
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
+
+	// Custom left button
+	UIBarButtonItem* lbi = [[UIBarButtonItem alloc] initWithImage:[ UIImage imageNamed:@"PencilDark.png" ] style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
+	lbi.style = UIBarButtonItemStyleBordered;		
+	self.navigationItem.leftBarButtonItem = lbi;
+	[lbi release];
+	
 	
 	// create a standard "add" button
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
@@ -41,6 +48,10 @@
 	self.title = @"Lists";
 	
 	[super viewDidLoad];	
+}
+
+- (void) editListButtonAction:(id)sender {
+	[self setEditing:!self.editing];
 }
 
 - (IBAction)addButtonAction:(id)sender {
@@ -127,6 +138,7 @@
 		ItemList *l = [ [ItemList alloc] init];
 		[l setName:[setObject objectForKey:@"name"]];
 		[l setRemoteId:[setObject objectForKey:@"id"]];
+		[l setLinkId:[setObject objectForKey:@"link_id"]];
 		
 		[tmpItems addObject:l];
 	}
@@ -261,20 +273,45 @@
 	} 
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+// Submits a PUT request to move list to link position specified by position.
+- (void)moveLink: (ItemList *)list toPosition:(NSNumber *)position {	
+	NSString *format = @"%@/user_list_links/%@.json?user_list_link[position]=%@&user_credentials=%@";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, 
+						  API_SERVER, 
+						  list.linkId, 
+						  [[position stringValue] URLEncodeString],
+						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [ request setHTTPMethod:@"PUT" ];
+	
+	[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																					delegate:self 
+																			   statusDisplay:self.statusDisplay 
+																			   statusMessage:@"Moving list..." ];	
 }
-*/
 
 
-/*
-// Override to support conditional rearranging of the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+	// Don't do anything if source is same as target.
+	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
+		ItemList *l = [lists objectAtIndex:fromIndexPath.row];
+		
+		[lists removeObjectAtIndex:fromIndexPath.row];
+		[lists insertObject:l atIndex:toIndexPath.row];
+		
+		// Have to add 1 to IndexPath.row because that's what the server expects.
+		int newPos = toIndexPath.row + 1;
+		[ self moveLink:l toPosition:[ NSNumber numberWithInt: newPos ]];
+	}	
+}
+
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
     return YES;
 }
-*/
 
 
 - (void)dealloc {

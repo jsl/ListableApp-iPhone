@@ -12,6 +12,7 @@
 #import "ShakeableTableView.h"
 #import "SharedListAppDelegate.h"
 #import "TimedConnection.h"
+#import "ItemList.h"
 
 @interface ListsController : UITableViewController <TimedConnection> {
 	NSMutableArray *lists;
@@ -26,6 +27,8 @@
 - (void)alertOnHTTPFailure;
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject;
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
+- (void) editListButtonAction:(id)sender;
+- (void) moveLink: (ItemList *)list toPosition:(NSNumber *)position;
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSMutableArray *lists;

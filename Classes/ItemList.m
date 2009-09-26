@@ -13,10 +13,12 @@
 
 @synthesize name;
 @synthesize remoteId;
+@synthesize linkId;
 
 - (void)dealloc {
 	[name release];
 	[remoteId release];
+	[linkId release];
 	
     [super dealloc];
 }
