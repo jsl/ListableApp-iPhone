@@ -7,4 +7,4 @@
  *
  */
 
-#define API_SERVER @"http://listableapp.com"
+#define API_SERVER @"http://localhost:3000"

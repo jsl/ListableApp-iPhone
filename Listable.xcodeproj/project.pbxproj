@@ -32,6 +32,7 @@
 		D0480551106EAA7000C5CD5B /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054D106EAA6F00C5CD5B /* checked.png */; };
 		D0480552106EAA7000C5CD5B /* unchecked_larger.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054E106EAA6F00C5CD5B /* unchecked_larger.png */; };
 		D0480553106EAA7000C5CD5B /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054F106EAA7000C5CD5B /* unchecked.png */; };
+		D0480584106EBBA500C5CD5B /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0480583106EBBA500C5CD5B /* Icon.png */; };
 		D05FFA4C106BB54F001E1839 /* Pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4A106BB54F001E1839 /* Pencil.png */; };
 		D05FFA4D106BB54F001E1839 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4B106BB54F001E1839 /* Users.png */; };
 		D05FFA6B106BBB16001E1839 /* CustomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D05FFA6A106BBB16001E1839 /* CustomButton.m */; };
@@ -63,8 +64,6 @@
 		D0C54F771067FDA20093DBA6 /* UserSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C54F761067FDA20093DBA6 /* UserSettings.m */; };
 		D0C551871068FB820093DBA6 /* TimedURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C551861068FB820093DBA6 /* TimedURLConnection.m */; };
 		D0C940E31062DAA100C9B8EF /* AuthenticationChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */; };
-		D0C9419F1063054200C9B8EF /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C9419E1063054200C9B8EF /* Icon.png */; };
-		D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941A01063054C00C9B8EF /* Icon-Small.png */; };
 		D0C941B4106307E700C9B8EF /* tabbar_key.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941B3106307E700C9B8EF /* tabbar_key.png */; };
 		D0C941F1106314F200C9B8EF /* tabbar_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C941F0106314F200C9B8EF /* tabbar_checkmark.png */; };
 		D0CA9FB2105AF45F00C5D610 /* AddListItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CA9FB1105AF45F00C5D610 /* AddListItemController.m */; };
@@ -115,6 +114,7 @@
 		D048054D106EAA6F00C5CD5B /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
 		D048054E106EAA6F00C5CD5B /* unchecked_larger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked_larger.png; sourceTree = "<group>"; };
 		D048054F106EAA7000C5CD5B /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
+		D0480583106EBBA500C5CD5B /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		D05FFA4A106BB54F001E1839 /* Pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pencil.png; sourceTree = "<group>"; };
 		D05FFA4B106BB54F001E1839 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
 		D05FFA69106BBB16001E1839 /* CustomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomButton.h; sourceTree = "<group>"; };
@@ -165,8 +165,6 @@
 		D0C5527F10691F910093DBA6 /* TimedConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimedConnection.h; sourceTree = "<group>"; };
 		D0C940E11062DAA100C9B8EF /* AuthenticationChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationChecker.h; sourceTree = "<group>"; };
 		D0C940E21062DAA100C9B8EF /* AuthenticationChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationChecker.m; sourceTree = "<group>"; };
-		D0C9419E1063054200C9B8EF /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		D0C941A01063054C00C9B8EF /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
 		D0C941B3106307E700C9B8EF /* tabbar_key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabbar_key.png; sourceTree = "<group>"; };
 		D0C941F0106314F200C9B8EF /* tabbar_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabbar_checkmark.png; sourceTree = "<group>"; };
 		D0CA9FB0105AF45F00C5D610 /* AddListItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddListItemController.h; sourceTree = "<group>"; };
@@ -272,6 +270,7 @@
 				D0480500106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png */,
 				D05FFA4B106BB54F001E1839 /* Users.png */,
 				D05FFB1F106BD93A001E1839 /* PencilDark.png */,
+				D0480583106EBBA500C5CD5B /* Icon.png */,
 				D05FFAD3106BCC04001E1839 /* CancelTest.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
 				D048054C106EAA6F00C5CD5B /* checked_larger.png */,
@@ -280,10 +279,8 @@
 				D048054F106EAA7000C5CD5B /* unchecked.png */,
 				D0C54B1210658E340093DBA6 /* Default.png */,
 				D05FFAA7106BC994001E1839 /* blueButton.png */,
-				D0C941A01063054C00C9B8EF /* Icon-Small.png */,
 				D05FFA6C106BBB84001E1839 /* custombuttonnormal.png */,
 				D05FFA6D106BBB84001E1839 /* custombuttonpressed.png */,
-				D0C9419E1063054200C9B8EF /* Icon.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -400,8 +397,6 @@
 				D08C92E4105ABA7D0053DA73 /* AddList.xib in Resources */,
 				D0CA9FB4105AF78200C5D610 /* AddListItem.xib in Resources */,
 				D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */,
-				D0C9419F1063054200C9B8EF /* Icon.png in Resources */,
-				D0C941A11063054C00C9B8EF /* Icon-Small.png in Resources */,
 				D0C941B4106307E700C9B8EF /* tabbar_key.png in Resources */,
 				D0C941F1106314F200C9B8EF /* tabbar_checkmark.png in Resources */,
 				D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */,
@@ -422,6 +417,7 @@
 				D0480551106EAA7000C5CD5B /* checked.png in Resources */,
 				D0480552106EAA7000C5CD5B /* unchecked_larger.png in Resources */,
 				D0480553106EAA7000C5CD5B /* unchecked.png in Resources */,
+				D0480584106EBBA500C5CD5B /* Icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

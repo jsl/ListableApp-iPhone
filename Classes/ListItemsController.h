@@ -39,6 +39,7 @@
 - (void) shakeHappened:(ShakeableTableView *)view;
 - (void) editListTitleAction:(id)sender;
 - (Item *)itemAtIndexPath:(NSIndexPath *)indexPath;
+- (void) populateCompletedAndActiveItems;
 
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;

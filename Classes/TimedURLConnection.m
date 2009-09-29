@@ -130,9 +130,6 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	NSLog(@"Used url: %@", self.url);
-	NSLog(@"JSON was: %@", responseData);
-	
 	id parsedJsonObject = [responseData JSONValue];
 		
 	// Try getting items from response if the body isn't empty and the code is 200

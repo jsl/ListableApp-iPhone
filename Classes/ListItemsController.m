@@ -179,31 +179,10 @@
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
 
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
+		
 		self.listItems = [ self processGetResponse:parsedJsonObject ];
+		[ self populateCompletedAndActiveItems ];
 		
-		NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
-		NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
-		
-		NSPredicate  *completedPredicate = [ NSComparisonPredicate
-											predicateWithLeftExpression:lhs
-											rightExpression:rhs
-											modifier:NSDirectPredicateModifier
-											type:NSEqualToPredicateOperatorType
-											options:0 ];
-		
-		NSPredicate  *activePredicate = [ NSComparisonPredicate
-										 predicateWithLeftExpression:lhs
-										 rightExpression:rhs
-										 modifier:NSDirectPredicateModifier
-										 type:NSNotEqualToPredicateOperatorType
-										 options:0 ];
-		
-		self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
-		self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
-		
-		[ self.completedItems filterUsingPredicate:completedPredicate ];
-		[ self.activeItems filterUsingPredicate:activePredicate ];
-				
 	} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
 		// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
 		// the followup to a modification request.
@@ -230,6 +209,32 @@
 	}
 
 	[ self.tableView reloadData ];
+}
+
+// Takes the populated self.listItems NSArray, and re-creates activeItems and completedItems ivars.
+- (void) populateCompletedAndActiveItems {
+	NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
+	NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+	
+	NSPredicate  *completedPredicate = [ NSComparisonPredicate
+										predicateWithLeftExpression:lhs
+										rightExpression:rhs
+										modifier:NSDirectPredicateModifier
+										type:NSEqualToPredicateOperatorType
+										options:0 ];
+	
+	NSPredicate  *activePredicate = [ NSComparisonPredicate
+									 predicateWithLeftExpression:lhs
+									 rightExpression:rhs
+									 modifier:NSDirectPredicateModifier
+									 type:NSNotEqualToPredicateOperatorType
+									 options:0 ];
+	
+	self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+	self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
+	
+	[ self.completedItems filterUsingPredicate:completedPredicate ];
+	[ self.activeItems filterUsingPredicate:activePredicate ];	
 }
 
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
@@ -414,14 +419,34 @@
 
 - (void)toggleCompletedStateForItem:(Item *)item {	
 	int toggledState = ( [ [item completed] intValue] == 0 ? 1 : 0);
-	
-	item.completed = [NSNumber numberWithInt:toggledState];
+
+	// Rather than making the user wait while we get back the new item list from the server, we 
+	// guess at what the new order will be based on the assumption (usually correct) that this
+	// toggle operation will succeed and reload the table accordingly.  If there is a discrepancy
+	// with server data (rare cases), there will be a "jump" when the response is received.
+	for ( Item *itm in self.listItems ) {
+		if ( itm.remoteId == item.remoteId ) {
+			[ self.listItems removeObject:itm];
+			item.completed = [NSNumber numberWithInt:toggledState];
+
+			// By inserting at pos 0, we account for the fact that the server inserts items
+			// at the top of the list when their scope is changed.
+			[ self.listItems insertObject:item atIndex:0];
+			
+			// Re-sort into active and completed with the new data.
+			[ self populateCompletedAndActiveItems ];
+			[ self.tableView reloadData ];
+			
+			break;
+		}
+	}
 	
 	NSString *newStringBoolValue = ( toggledState == 0 ? @"false" : @"true");
 	NSString *updateMessageTerm = ( toggledState == 0 ? @"active" : @"completed");
 	
 	NSString *updatingMessage = [NSString stringWithFormat:@"Marking item as %@", updateMessageTerm];
 	[ self updateAttributeOnItem:item attribute:@"completed" newValue:newStringBoolValue displayMessage:updatingMessage ];
+	
 }
 
 // Updates ItemList name.  Displays appropriate status message in toolbar.
