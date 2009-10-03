@@ -103,11 +103,9 @@
 	
 	[tv addSubview:btn];
 	
-	
 	[ self.navigationItem setTitleView:tv ];
 	[tv release];
 	
-	NSLog(@"Got to end of didLoad");
 	[super viewDidLoad];
 }
 
@@ -128,7 +126,7 @@
 						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	[request setHTTPBody: httpBody];
-	
+		
 	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																				   delegate:self 
 																			  statusDisplay:self.statusDisplay 
@@ -188,10 +186,11 @@
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
-
+	
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
 
 		self.listItems = [ self processGetResponse:parsedJsonObject ];
+		[ self.tableView reloadData ];
 
 	} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
 		// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
@@ -213,13 +212,10 @@
 			[[self navigationController] pushViewController:nextController animated:YES];
 			[nextController release];				
 		} else {
-			// Get new result set.  Should we verify that it's a success message here?
+			// Got a success response on an update, check for latest list on server.
 			[ self loadItems ];
 		}
 	}
-	
-	[ self.tableView reloadData ];
-	
 }
 
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
@@ -240,18 +236,13 @@
 }
 
 // Don't allow moving cells across sections.
-- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
-	
-    if( sourceIndexPath.section != proposedDestinationIndexPath.section )
-        return sourceIndexPath;
-    else
-        return proposedDestinationIndexPath;
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {	
+	return ( sourceIndexPath.section != proposedDestinationIndexPath.section ) ? sourceIndexPath : proposedDestinationIndexPath;
 }
 
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
-	
-	NSLog(@"Proc get resp");
+		
 	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease];
 	
 	for (id setObject in jsonArray) {
@@ -267,12 +258,10 @@
 		[it release];
 	}
 
-	NSLog(@"Proc get resp done!");
-
 	return tmpItems;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {	
 	Item *item = [ self itemAtIndexPath:indexPath ];
 	CGFloat height = [item.name RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20.0;
 	
@@ -312,15 +301,8 @@
 	else
 		[ self loadItems ];
 	
-	NSLog(@"End of willAppear");
     [super viewWillAppear:animated];
 }
-
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[self.tableView resignFirstResponder];
@@ -347,7 +329,7 @@
     return 2;
 }
 
-- (NSArray *)itemArrayInSection:(NSInteger)section {
+- (NSArray *)itemArrayInSection:(NSInteger)section {	
 	return (section == 0) ? [self.listItems filteredArrayUsingPredicate:activePredicate] : [self.listItems filteredArrayUsingPredicate:completedPredicate];
 }
 
@@ -358,37 +340,39 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	
 	Item *itm = [self itemAtIndexPath:indexPath];
-
+	
     static NSString *CellIdentifier = @"ListViewCell";
-    
-	ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
-        cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+
+	ListItemCustomCell *cell = (ListItemCustomCell *)[self.tableView dequeueReusableCellWithIdentifier:@"ListViewCell"];
+
+	if ( cell == nil )
+		cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
 	
 	cell.item				 = itm;
-	cell.listItemsController = self;	
+	cell.listItemsController = self;
 	
+	[ cell layoutSubviews ];
     return cell;
 }
 
-- (void)toggleCompletedStateForItem:(Item *)item {	
+- (void)toggleCompletedStateForItem:(Item *)item {
 	int toggledState = ( [ [item completed] intValue] == 0 ? 1 : 0);
-
+	
 	// Rather than making the user wait while we get back the new item list from the server, we 
 	// guess at what the new order will be based on the assumption (usually correct) that this
 	// toggle operation will succeed and reload the table accordingly.  If there is a discrepancy
 	// with server data (rare cases), there will be a "jump" when the response is received.
 	for ( Item *itm in self.listItems ) {
 		if ( itm.remoteId == item.remoteId ) {
-			[ self.listItems removeObject:itm];
+			[ self.listItems removeObject:itm ];
+			
 			item.completed = [NSNumber numberWithInt:toggledState];
 
 			// By inserting at pos 0, we account for the fact that the server inserts items
 			// at the top of the list when their scope is changed.
 			[ self.listItems insertObject:item atIndex:0];
-			
+
 			[ self.tableView reloadData ];
 			
 			break;
@@ -400,7 +384,6 @@
 	
 	NSString *updatingMessage = [NSString stringWithFormat:@"Marking item as %@", updateMessageTerm];
 	[ self updateAttributeOnItem:item attribute:@"completed" newValue:newStringBoolValue displayMessage:updatingMessage ];
-	
 }
 
 // Updates ItemList name.  Displays appropriate status message in toolbar.
@@ -427,7 +410,7 @@
 
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage {
-	
+
 	NSString *format = @"%@/lists/%@/items/%@.json?item[%@]=%@&user_credentials=%@";
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
 						  API_SERVER, 
@@ -485,16 +468,16 @@
 
 - (Item *)itemAtIndexPath:(NSIndexPath *)indexPath {
 	NSPredicate *thisPredicate = (indexPath.section == 0) ? self.activePredicate : self.completedPredicate;
-	
 	return [[self.listItems filteredArrayUsingPredicate:thisPredicate] objectAtIndex:indexPath.row];
 }
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+	
 	Item *item = [self itemAtIndexPath:indexPath];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
+		[ listItems removeObjectAtIndex:indexPath.row ];
 
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
@@ -511,20 +494,19 @@
 
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-	
 	// Don't do anything if source is same as target.
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
-		
-		Item *item = [self.listItems objectAtIndex:fromIndexPath.row];
+		Item *item = [ self itemAtIndexPath:fromIndexPath ];
 		
 		[self.listItems removeObjectAtIndex:fromIndexPath.row];
-		[self.listItems insertObject:item atIndex:toIndexPath.row];
 		
+		[ self.listItems insertObject:item atIndex:toIndexPath.row ];
+
 		NSString *updatingMessage = @"Moving item...";
-		
+
 		// Have to add 1 to IndexPath.row because that's what the server expects.
 		int newPos = toIndexPath.row + 1;
-		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];
+		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];				
 	}
 }
 
@@ -532,7 +514,6 @@
 	// only allow reordering of active items.
 	return (indexPath.section == 0);
 }
-
 
 - (void)dealloc {
 	[itemList release];

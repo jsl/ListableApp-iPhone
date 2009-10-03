@@ -13,7 +13,6 @@
 #import "ListItemsController.h"
 
 @interface ListItemCustomCell : UITableViewCell {
-	BOOL checked;
 	NSString *title;
 	
 	UIButton *checkButton;
@@ -25,7 +24,6 @@
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) ListItemsController *listItemsController;
 @property (nonatomic, retain) Item *item;
-@property (nonatomic, assign) BOOL checked;
 @property (nonatomic, retain) UIButton *checkButton;
 
 - (void)checkAction:(id)sender;

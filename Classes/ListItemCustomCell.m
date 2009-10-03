@@ -12,7 +12,7 @@
 
 @implementation ListItemCustomCell
 
-@synthesize checked, title, listItemsController, item, checkButton;
+@synthesize title, listItemsController, item, checkButton;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -40,9 +40,6 @@
 		[setObject removeFromSuperview];
 	
 	if (self.editing) {
-		// remove checkButton from cell
-		[ self.checkButton removeFromSuperview ];
-		
 		// Reconfigure title to shift left
 		UILabel *newLabel = [title RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:8.0f y_pos:10.0f];
 		
@@ -59,7 +56,7 @@
 		CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, self.frame.size.height);
 		checkButton.frame = frame;
 		
-		UIImage *image = (self.checked) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
+		UIImage *image = ( [ item.completed intValue ] == 1 ) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
 		[ checkButton setImage:image forState:UIControlStateNormal];
 		[ checkButton setContentMode:UIViewContentModeCenter];
 		
@@ -69,21 +66,17 @@
 		
 		[self.contentView addSubview:newLabel];
 		
-		
 		[ newLabel release ];
     }
 	
 	self.title = item.name;
-	self.checked = ( [ item.completed intValue ] == 1 ? YES : NO );
 	
-
 	[super layoutSubviews];
 }
 
 // called when the checkmark button is touched 
-- (void)checkAction:(id)sender {
-	self.checked = !self.checked;
-	[self.listItemsController toggleCompletedStateForItem:self.item];
+- (void)checkAction:(id)sender {	
+	[ self.listItemsController toggleCompletedStateForItem:self.item ];
 }
 
 - (void)dealloc {
