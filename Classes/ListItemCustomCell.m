@@ -36,9 +36,8 @@
 	// Just clear out the cell on redraw, we have to re-create it depending on if it's in editing mode or not.
 	NSEnumerator *enumerator = [[self.contentView subviews] objectEnumerator];
 	id setObject;
-	while ((setObject = [enumerator nextObject]) != nil) {
+	while ((setObject = [enumerator nextObject]) != nil)
 		[setObject removeFromSuperview];
-	}
 	
 	if (self.editing) {
 		// remove checkButton from cell

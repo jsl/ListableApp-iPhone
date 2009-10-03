@@ -18,17 +18,21 @@
 	ItemList *itemList;
 	
 	NSMutableArray *listItems;
-	NSMutableArray *completedItems;
-	NSMutableArray *activeItems;	
-		
+
 	NSString *inviteeEmail;
 	StatusDisplay *statusDisplay;
+	
+	NSPredicate *completedPredicate;
+	NSPredicate *activePredicate;
 	
 	BOOL loadingWithUpdate;
 }
 
 - (IBAction)shareButtonAction:(id)sender;
 - (IBAction)editListButtonAction:(id)sender;
+
+- (NSArray *)itemArrayInSection:(NSInteger)section;
+- (Item *)itemAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSMutableArray *) processGetResponse:(NSArray *)jsonArray;
 - (void) loadItems;
@@ -38,15 +42,14 @@
 - (void) addListItemWithName:(NSString *) name;
 - (void) shakeHappened:(ShakeableTableView *)view;
 - (void) editListTitleAction:(id)sender;
-- (Item *)itemAtIndexPath:(NSIndexPath *)indexPath;
-- (void) populateCompletedAndActiveItems;
 
 @property (nonatomic, retain) ItemList *itemList;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSString *inviteeEmail;
 @property (nonatomic, retain) NSMutableArray *listItems;
-@property (nonatomic, retain) NSMutableArray *completedItems;
-@property (nonatomic, retain) NSMutableArray *activeItems;
+@property (nonatomic, retain) NSPredicate *activePredicate;
+@property (nonatomic, retain) NSPredicate *completedPredicate;
+
 @property (nonatomic) BOOL loadingWithUpdate;
 
 @end

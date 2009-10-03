@@ -28,13 +28,7 @@
 
 @implementation ListItemsController
 
-@synthesize itemList;
-@synthesize listItems;
-@synthesize inviteeEmail;
-@synthesize completedItems;
-@synthesize activeItems;
-@synthesize loadingWithUpdate;
-@synthesize statusDisplay;
+@synthesize itemList, listItems, inviteeEmail, loadingWithUpdate, statusDisplay, activePredicate, completedPredicate;
 
 - (void)viewDidLoad {	
 	self.tableView = [ [ShakeableTableView alloc] init];
@@ -53,6 +47,24 @@
 	// Set toolbar title
 	self.title = @"Items";
 
+	// Set up predicates used for filtering results based on completed status.
+	NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
+	NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
+	
+	self.completedPredicate = [ NSComparisonPredicate
+									predicateWithLeftExpression:lhs
+									rightExpression:rhs
+									modifier:NSDirectPredicateModifier
+									type:NSEqualToPredicateOperatorType
+									options:0 ];
+	
+	self.activePredicate = [ NSComparisonPredicate
+								predicateWithLeftExpression:lhs
+								rightExpression:rhs
+								modifier:NSDirectPredicateModifier
+								type:NSNotEqualToPredicateOperatorType
+								options:0 ];
+	
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
 	// Add the titleView navigation bar items...
@@ -95,6 +107,7 @@
 	[ self.navigationItem setTitleView:tv ];
 	[tv release];
 	
+	NSLog(@"Got to end of didLoad");
 	[super viewDidLoad];
 }
 
@@ -177,10 +190,9 @@
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
 
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-		
+
 		self.listItems = [ self processGetResponse:parsedJsonObject ];
-		[ self populateCompletedAndActiveItems ];
-		
+
 	} else if ( [ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES ) {
 		// If it's an item detail view, load detail view controller.  Otherwise, load new result set since this is
 		// the followup to a modification request.
@@ -202,37 +214,12 @@
 			[nextController release];				
 		} else {
 			// Get new result set.  Should we verify that it's a success message here?
-			[self loadItems];
+			[ self loadItems ];
 		}
 	}
-
+	
 	[ self.tableView reloadData ];
-}
-
-// Takes the populated self.listItems NSArray, and re-creates activeItems and completedItems ivars.
-- (void) populateCompletedAndActiveItems {
-	NSExpression *lhs = [NSExpression expressionForKeyPath:@"completed"];
-	NSExpression *rhs = [NSExpression expressionForConstantValue:[NSNumber numberWithInt:1]];
 	
-	NSPredicate  *completedPredicate = [ NSComparisonPredicate
-										predicateWithLeftExpression:lhs
-										rightExpression:rhs
-										modifier:NSDirectPredicateModifier
-										type:NSEqualToPredicateOperatorType
-										options:0 ];
-	
-	NSPredicate  *activePredicate = [ NSComparisonPredicate
-									 predicateWithLeftExpression:lhs
-									 rightExpression:rhs
-									 modifier:NSDirectPredicateModifier
-									 type:NSNotEqualToPredicateOperatorType
-									 options:0 ];
-	
-	self.activeItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
-	self.completedItems = [[NSMutableArray alloc] initWithArray:self.listItems copyItems:YES];
-	
-	[ self.completedItems filterUsingPredicate:completedPredicate ];
-	[ self.activeItems filterUsingPredicate:activePredicate ];	
 }
 
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
@@ -252,7 +239,7 @@
 	[alert release];
 }
 
-
+// Don't allow moving cells across sections.
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
 	
     if( sourceIndexPath.section != proposedDestinationIndexPath.section )
@@ -264,6 +251,7 @@
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {
 	
+	NSLog(@"Proc get resp");
 	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease];
 	
 	for (id setObject in jsonArray) {
@@ -278,14 +266,14 @@
 		
 		[it release];
 	}
-	
+
+	NSLog(@"Proc get resp done!");
+
 	return tmpItems;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	Item *item = [tmpItems objectAtIndex:indexPath.row];
-
+	Item *item = [ self itemAtIndexPath:indexPath ];
 	CGFloat height = [item.name RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20.0;
 	
     return height;
@@ -322,8 +310,9 @@
 	if (loadingWithUpdate)
 		self.loadingWithUpdate = NO;
 	else
-		[self loadItems];
+		[ self loadItems ];
 	
+	NSLog(@"End of willAppear");
     [super viewWillAppear:animated];
 }
 
@@ -358,13 +347,13 @@
     return 2;
 }
 
+- (NSArray *)itemArrayInSection:(NSInteger)section {
+	return (section == 0) ? [self.listItems filteredArrayUsingPredicate:activePredicate] : [self.listItems filteredArrayUsingPredicate:completedPredicate];
+}
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 0)
-		return [[self activeItems] count];
-	else
-		return [ [self completedItems] count];
+	return [ [ self itemArrayInSection:section ] count ];
 }
 
 // Customize the appearance of table view cells.
@@ -375,9 +364,8 @@
     static NSString *CellIdentifier = @"ListViewCell";
     
 	ListItemCustomCell *cell = (ListItemCustomCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-    }
 	
 	cell.item				 = itm;
 	cell.listItemsController = self;	
@@ -401,8 +389,6 @@
 			// at the top of the list when their scope is changed.
 			[ self.listItems insertObject:item atIndex:0];
 			
-			// Re-sort into active and completed with the new data.
-			[ self populateCompletedAndActiveItems ];
 			[ self.tableView reloadData ];
 			
 			break;
@@ -498,8 +484,9 @@
 }
 
 - (Item *)itemAtIndexPath:(NSIndexPath *)indexPath {
-	NSArray *tmpItems = (indexPath.section == 0) ? self.activeItems : self.completedItems;
-	return [tmpItems objectAtIndex:indexPath.row];
+	NSPredicate *thisPredicate = (indexPath.section == 0) ? self.activePredicate : self.completedPredicate;
+	
+	return [[self.listItems filteredArrayUsingPredicate:thisPredicate] objectAtIndex:indexPath.row];
 }
 
 // Override to support editing the table view.
@@ -528,29 +515,21 @@
 	// Don't do anything if source is same as target.
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
 		
-		NSMutableArray *tmpItems = (fromIndexPath.section == 0) ? self.activeItems : self.completedItems;
-		Item *item = [tmpItems objectAtIndex:fromIndexPath.row];
+		Item *item = [self.listItems objectAtIndex:fromIndexPath.row];
 		
-		[tmpItems removeObjectAtIndex:fromIndexPath.row];
-		[tmpItems insertObject:item atIndex:toIndexPath.row];
-		
-		if (fromIndexPath.section == 0)
-			self.activeItems = tmpItems;
-		else
-			self.completedItems = tmpItems;
+		[self.listItems removeObjectAtIndex:fromIndexPath.row];
+		[self.listItems insertObject:item atIndex:toIndexPath.row];
 		
 		NSString *updatingMessage = @"Moving item...";
 		
 		// Have to add 1 to IndexPath.row because that's what the server expects.
 		int newPos = toIndexPath.row + 1;
-		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];		
+		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];
 	}
 }
 
-
-// Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-	// only allow reordering in first section.
+	// only allow reordering of active items.
 	return (indexPath.section == 0);
 }
 
@@ -559,8 +538,9 @@
 	[itemList release];
 	[listItems release];
 	[statusDisplay release];
-	[completedItems release];
-	[activeItems release];
+	
+	[activePredicate release];
+	[completedPredicate release];
 	
     [super dealloc];
 }
