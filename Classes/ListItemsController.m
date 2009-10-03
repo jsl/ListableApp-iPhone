@@ -406,13 +406,11 @@
 	
     [cell.contentView addSubview:cellLabel];
     [cellLabel release];
-    	
+	
 	cell.checked = ( [ itm.completed intValue ] == 1 ? YES : NO );
 	cell.item = itm;
 
-	cell.listItemsController = self;
-	
-	[ cell setImageOnCheckedState ];
+	cell.listItemsController = self;	
 	
     return cell;
 }

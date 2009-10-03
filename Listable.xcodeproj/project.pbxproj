@@ -29,9 +29,7 @@
 		D026A03810641A3900DC8BE5 /* ListItemCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */; };
 		D0480501106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png in Resources */ = {isa = PBXBuildFile; fileRef = D0480500106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png */; };
 		D0480550106EAA7000C5CD5B /* checked_larger.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054C106EAA6F00C5CD5B /* checked_larger.png */; };
-		D0480551106EAA7000C5CD5B /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054D106EAA6F00C5CD5B /* checked.png */; };
 		D0480552106EAA7000C5CD5B /* unchecked_larger.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054E106EAA6F00C5CD5B /* unchecked_larger.png */; };
-		D0480553106EAA7000C5CD5B /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = D048054F106EAA7000C5CD5B /* unchecked.png */; };
 		D0480584106EBBA500C5CD5B /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0480583106EBBA500C5CD5B /* Icon.png */; };
 		D05FFA4C106BB54F001E1839 /* Pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4A106BB54F001E1839 /* Pencil.png */; };
 		D05FFA4D106BB54F001E1839 /* Users.png in Resources */ = {isa = PBXBuildFile; fileRef = D05FFA4B106BB54F001E1839 /* Users.png */; };
@@ -111,9 +109,7 @@
 		D026A03710641A3900DC8BE5 /* ListItemCustomCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListItemCustomCell.xib; sourceTree = "<group>"; };
 		D0480500106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DarkerButtonBackgroundRed.png; sourceTree = "<group>"; };
 		D048054C106EAA6F00C5CD5B /* checked_larger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked_larger.png; sourceTree = "<group>"; };
-		D048054D106EAA6F00C5CD5B /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
 		D048054E106EAA6F00C5CD5B /* unchecked_larger.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked_larger.png; sourceTree = "<group>"; };
-		D048054F106EAA7000C5CD5B /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
 		D0480583106EBBA500C5CD5B /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		D05FFA4A106BB54F001E1839 /* Pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pencil.png; sourceTree = "<group>"; };
 		D05FFA4B106BB54F001E1839 /* Users.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Users.png; sourceTree = "<group>"; };
@@ -207,8 +203,6 @@
 				D0C54F741067FD910093DBA6 /* SynthesizeSingleton.h */,
 				D08C90DA105A6CD40053DA73 /* ItemList.h */,
 				D08C90DB105A6CD40053DA73 /* ItemList.m */,
-				D08C915D105A89800053DA73 /* ListItemsController.h */,
-				D08C915E105A89800053DA73 /* ListItemsController.m */,
 				D08C918D105A8F860053DA73 /* Item.h */,
 				D08C918E105A8F860053DA73 /* Item.m */,
 				D0C54A7B10657C0F0093DBA6 /* StringHelper.h */,
@@ -237,6 +231,8 @@
 				D0C54F751067FDA20093DBA6 /* UserSettings.h */,
 				D0C54F761067FDA20093DBA6 /* UserSettings.m */,
 				D026A01010640B1B00DC8BE5 /* ToggleImageControl.m */,
+				D08C915E105A89800053DA73 /* ListItemsController.m */,
+				D08C915D105A89800053DA73 /* ListItemsController.h */,
 				D026A034106419EE00DC8BE5 /* ListItemCustomCell.h */,
 				D026A035106419EE00DC8BE5 /* ListItemCustomCell.m */,
 				D023AC581064EC04000CA1E7 /* ItemDetailController.h */,
@@ -274,9 +270,7 @@
 				D05FFAD3106BCC04001E1839 /* CancelTest.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
 				D048054C106EAA6F00C5CD5B /* checked_larger.png */,
-				D048054D106EAA6F00C5CD5B /* checked.png */,
 				D048054E106EAA6F00C5CD5B /* unchecked_larger.png */,
-				D048054F106EAA7000C5CD5B /* unchecked.png */,
 				D0C54B1210658E340093DBA6 /* Default.png */,
 				D05FFAA7106BC994001E1839 /* blueButton.png */,
 				D05FFA6C106BBB84001E1839 /* custombuttonnormal.png */,
@@ -414,9 +408,7 @@
 				D05FFB20106BD93A001E1839 /* PencilDark.png in Resources */,
 				D0480501106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png in Resources */,
 				D0480550106EAA7000C5CD5B /* checked_larger.png in Resources */,
-				D0480551106EAA7000C5CD5B /* checked.png in Resources */,
 				D0480552106EAA7000C5CD5B /* unchecked_larger.png in Resources */,
-				D0480553106EAA7000C5CD5B /* unchecked.png in Resources */,
 				D0480584106EBBA500C5CD5B /* Icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

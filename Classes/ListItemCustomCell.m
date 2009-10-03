@@ -37,25 +37,21 @@
 	
 	// layout the check button image
 	UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
-	CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, checkedImage.size.height);
+	
+	CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, self.frame.size.height);
 	checkButton.frame = frame;
 	
 	UIImage *image = (self.checked) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
-	UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
-	[checkButton setBackgroundImage:newImage forState:UIControlStateNormal];
+	// UIImage *newImage = [image stretchableImageWithLeftCapWidth:12.0 topCapHeight:0.0];
+	[ checkButton setImage:image forState:UIControlStateNormal];
+	[ checkButton setContentMode:UIViewContentModeCenter];
+	// [checkButton setBackgroundImage:image forState:UIControlStateNormal];
 }
 
 // called when the checkmark button is touched 
 - (void)checkAction:(id)sender {
 	self.checked = !self.checked;
-	[self setImageOnCheckedState];
 	[self.listItemsController toggleCompletedStateForItem:self.item];
-}
-
-// Sets appropriate image based on state of "checked"
-- (void)setImageOnCheckedState {
-	UIImage *checkImage = (self.checked) ? [UIImage imageNamed:@"checked.png"] : [UIImage imageNamed:@"unchecked.png"];
-	[checkButton setImage:checkImage forState:UIControlStateNormal];
 }
 
 - (void)dealloc {

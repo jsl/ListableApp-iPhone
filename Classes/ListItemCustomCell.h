@@ -27,6 +27,5 @@
 @property (nonatomic, assign) BOOL checked;
 
 - (void)checkAction:(id)sender;
-- (void)setImageOnCheckedState;
 
 @end
