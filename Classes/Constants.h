@@ -8,3 +8,5 @@
  */
 
 #define API_SERVER @"http://listableapp.com"
+
+#define kTextViewFontSize        18.0

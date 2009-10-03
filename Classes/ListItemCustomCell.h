@@ -17,6 +17,7 @@
 	NSString *title;
 	
 	UIButton *checkButton;
+	
 	Item *item;
 	ListItemsController *listItemsController;
 }
@@ -25,6 +26,7 @@
 @property (nonatomic, retain) ListItemsController *listItemsController;
 @property (nonatomic, retain) Item *item;
 @property (nonatomic, assign) BOOL checked;
+@property (nonatomic, retain) UIButton *checkButton;
 
 - (void)checkAction:(id)sender;
 

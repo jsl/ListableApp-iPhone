@@ -29,20 +29,21 @@
 	return expectedLabelSize.height;
 }
 
-- (CGRect)RAD_frameForCellLabelWithSystemFontOfSize:(CGFloat)size {
+- (CGRect)RAD_frameForCellLabelWithSystemFontOfSize:(CGFloat)size x_pos:(CGFloat)x_pos y_pos:(CGFloat)y_pos {
 	CGFloat width = [ self RAD_widthFromScreenSize ];
 	CGFloat height = [self RAD_textHeightForSystemFontOfSize:size] + 10.0;
-	return CGRectMake(40.0f, 10.0f, width, height);
+	return CGRectMake(x_pos, y_pos, width, height);
 }
 
-- (void)RAD_resizeLabel:(UILabel *)aLabel WithSystemFontOfSize:(CGFloat)size {
-	aLabel.frame = [self RAD_frameForCellLabelWithSystemFontOfSize:size];
+
+- (void)RAD_resizeLabel:(UILabel *)aLabel WithSystemFontOfSize:(CGFloat)size x_pos:(CGFloat)x_pos y_pos:(CGFloat)y_pos {
+	aLabel.frame = [self RAD_frameForCellLabelWithSystemFontOfSize:size x_pos:x_pos y_pos:y_pos];
 	aLabel.text = self;
 	[aLabel sizeToFit];
 }
 
-- (UILabel *)RAD_newSizedCellLabelWithSystemFontOfSize:(CGFloat)size {
-	UILabel *cellLabel = [[UILabel alloc] initWithFrame:[self RAD_frameForCellLabelWithSystemFontOfSize:size]];
+- (UILabel *)RAD_newSizedCellLabelWithSystemFontOfSize:(CGFloat)size x_pos:(CGFloat)x_pos y_pos:(CGFloat)y_pos {
+	UILabel *cellLabel = [[UILabel alloc] initWithFrame:[self RAD_frameForCellLabelWithSystemFontOfSize:size x_pos:x_pos y_pos:y_pos]];
 	cellLabel.textColor = [UIColor blackColor];
 	cellLabel.backgroundColor = [UIColor clearColor];
 	cellLabel.textAlignment = UITextAlignmentLeft;

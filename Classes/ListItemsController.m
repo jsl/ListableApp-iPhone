@@ -36,8 +36,6 @@
 @synthesize loadingWithUpdate;
 @synthesize statusDisplay;
 
-#define kTextViewFontSize        18.0
-
 - (void)viewDidLoad {	
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
@@ -307,9 +305,7 @@
 	label.text = itemList.name;
 	label.font = [UIFont boldSystemFontOfSize:18];
 	label.textColor = [UIColor blackColor];
-	
-	// [headerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	
+		
 	[ headerButton addSubview:label];
 	
 	headerButton.backgroundColor = [UIColor whiteColor];
@@ -342,20 +338,6 @@
 
 	[super viewWillDisappear:animated];
 }
-
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -397,19 +379,7 @@
         cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-    if ([[cell.contentView subviews] count] > 1) {
-        UIView *labelToClear = [[cell.contentView subviews] objectAtIndex:1];
-        [labelToClear removeFromSuperview];
-    }
-	
-    UILabel *cellLabel = [itm.name RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize];
-	
-    [cell.contentView addSubview:cellLabel];
-    [cellLabel release];
-	
-	cell.checked = ( [ itm.completed intValue ] == 1 ? YES : NO );
-	cell.item = itm;
-
+	cell.item				 = itm;
 	cell.listItemsController = self;	
 	
     return cell;
