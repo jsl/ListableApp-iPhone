@@ -9,10 +9,14 @@
 #import "CurrentSessionController.h"
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
+#import "Constants.h"
+#import "StatusDisplay.h"
+#import "URLEncode.h"
+#import "TimedURLConnection.h"
 
 @implementation CurrentSessionController
 
-@synthesize logoutButton, emailLabel;
+@synthesize logoutButton, changePlanButton, emailLabel, statusDisplay;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -30,6 +34,42 @@
 		
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	emailLabel.text = [prefs objectForKey:@"userEmail"];
+	
+	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.view ];
+	
+}
+
+- (IBAction) changePlanButtonPressed:(id)sender {
+	// Get perishable token synchronously.
+	
+	NSString *format = @"%@/perishable_token.json?user_credentials=%@";
+	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
+						  [ [UserSettings sharedUserSettings].authToken URLEncodeString ]];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+																			   delegate:self 
+																		  statusDisplay:self.statusDisplay 
+																		  statusMessage:@"Loading account details..."];
+	
+}
+
+// When the TimedURLConnection delegate receives a 200 response, it calls this method to figure
+// out the specifics of how the parsed JSON object should be translated into something to render
+// in the UITableView.
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
+	NSString *authtok = [ parsedJsonObject objectForKey:@"token" ];
+	
+	NSString *format = @"%@/account?key=%@";
+	
+	NSString *myUrlStr = [ NSString stringWithFormat:format, 
+						  API_SERVER, 
+						  [ authtok URLEncodeString] ];
+	
+	NSURL *url = [NSURL URLWithString:myUrlStr];	
+
+	[[UIApplication sharedApplication] openURL:url];
 }
 
 - (IBAction) logoutButtonPressed:(id)sender {
@@ -67,7 +107,8 @@
 - (void)dealloc {
 	[logoutButton release];
 	[emailLabel release];
-	
+	[changePlanButton release];
+	[statusDisplay release];
     [super dealloc];
 }
 

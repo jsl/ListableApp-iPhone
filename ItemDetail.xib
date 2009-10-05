@@ -65,7 +65,6 @@
 						<object class="IBUITextInputTraits" key="IBUITextInputTraits">
 							<int key="IBUIAutocapitalizationType">2</int>
 						</object>
-						<int key="IBUIDataDetectorTypes">3</int>
 					</object>
 					<object class="IBUILabel" id="690141702">
 						<reference key="NSNextResponder" ref="116355331"/>
@@ -324,7 +323,7 @@
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{528, 541}, {320, 480}}</string>
+					<string>{{48, 303}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

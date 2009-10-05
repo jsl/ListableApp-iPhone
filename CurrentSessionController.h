@@ -8,15 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import "SharedListAppDelegate.h"
+#import "StatusDisplay.h"
 
 @interface CurrentSessionController : UIViewController {
 	IBOutlet UIButton *logoutButton;	
+	IBOutlet UIButton *changePlanButton;	
+
 	IBOutlet UILabel *emailLabel;
+	StatusDisplay *statusDisplay;
 }
 
 - (IBAction) logoutButtonPressed:(id)sender;
+- (IBAction) changePlanButtonPressed:(id)sender;
 
 @property (nonatomic, retain) UIButton *logoutButton;
+@property (nonatomic, retain) UIButton *changePlanButton;
+@property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) UILabel *emailLabel;
 
 @end
