@@ -61,7 +61,7 @@
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
 	NSString *authtok = [ parsedJsonObject objectForKey:@"token" ];
 	
-	NSString *format = @"%@/account?key=%@";
+	NSString *format = @"%@/subscription_redirect?key=%@";
 	
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
 						  API_SERVER, 
