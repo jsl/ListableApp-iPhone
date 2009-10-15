@@ -37,10 +37,12 @@
 	
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.view ];
 	
+	[self.view setBackgroundColor:[UIColor colorWithRed:1.000 green:1.000 blue:0.949 alpha:1.000]];
+	
 }
 
 - (IBAction) changePlanButtonPressed:(id)sender {
-	// Get perishable token synchronously.
+	// Get perishable token
 	
 	NSString *format = @"%@/perishable_token.json?user_credentials=%@";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
@@ -64,7 +66,7 @@
 	NSString *format = @"%@/subscription_redirect?key=%@";
 	
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
-						  API_SERVER, 
+						  ACCOUNT_SERVER, 
 						  [ authtok URLEncodeString] ];
 	
 	NSURL *url = [NSURL URLWithString:myUrlStr];	

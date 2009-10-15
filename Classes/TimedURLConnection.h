@@ -19,6 +19,7 @@
 	NSNumber *statusCode;
 	int ticks;
 	NSTimer *timer;
+	NSString *token;
 	BOOL didReceiveResponse;
 	StatusDisplay *statusDisplay;
 }
@@ -31,6 +32,7 @@
 @property (nonatomic, retain) NSTimer *timer;
 @property (nonatomic) BOOL didReceiveResponse;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
+@property (nonatomic, retain) NSString *token;
 @property (nonatomic) int ticks;
 
 - (id)initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:(NSMutableURLRequest *)inRequest delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage;

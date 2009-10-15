@@ -54,7 +54,10 @@
 }
 
 - (IBAction) createAccountButtonPressed:(id)sender {
-	NSURL *url = [ [ NSURL alloc ] initWithString: @"http://listableapp.com/account/new" ];
+	NSString *format = @"%@/account/new";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, ACCOUNT_SERVER ];
+
+	NSURL *url = [ [ NSURL alloc ] initWithString: myUrlStr ];
 	[[UIApplication sharedApplication] openURL:url];
 }
 
@@ -169,6 +172,8 @@
 */
 
 - (void)viewDidLoad {	
+	[self.view setBackgroundColor:[UIColor colorWithRed:1.000 green:1.000 blue:0.949 alpha:1.000]];
+
 	[super viewDidLoad];
 }
 
