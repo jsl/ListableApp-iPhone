@@ -68,6 +68,7 @@
 		D0CA9FB4105AF78200C5D610 /* AddListItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0CA9FB3105AF78200C5D610 /* AddListItem.xib */; };
 		D0CAA14E105BD76200C5D610 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA14D105BD76200C5D610 /* AddressBook.framework */; };
 		D0CAA1FA105C0A7900C5D610 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA1F9105C0A7900C5D610 /* AddressBookUI.framework */; };
+		D0E52BA61088E76600580B51 /* rounded-text-border.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E52BA51088E76600580B51 /* rounded-text-border.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -169,6 +170,7 @@
 		D0CAA0A2105B4F7300C5D610 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		D0CAA14D105BD76200C5D610 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
 		D0CAA1F9105C0A7900C5D610 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		D0E52BA51088E76600580B51 /* rounded-text-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rounded-text-border.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +271,7 @@
 				D0480583106EBBA500C5CD5B /* Icon.png */,
 				D05FFAD3106BCC04001E1839 /* CancelTest.png */,
 				D0C941B3106307E700C9B8EF /* tabbar_key.png */,
+				D0E52BA51088E76600580B51 /* rounded-text-border.png */,
 				D048054C106EAA6F00C5CD5B /* checked_larger.png */,
 				D048054E106EAA6F00C5CD5B /* unchecked_larger.png */,
 				D0C54B1210658E340093DBA6 /* Default.png */,
@@ -410,6 +413,7 @@
 				D0480550106EAA7000C5CD5B /* checked_larger.png in Resources */,
 				D0480552106EAA7000C5CD5B /* unchecked_larger.png in Resources */,
 				D0480584106EBBA500C5CD5B /* Icon.png in Resources */,
+				D0E52BA61088E76600580B51 /* rounded-text-border.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,9 +465,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Justin Leitgeb";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Justin Leitgeb";
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -471,8 +475,9 @@
 				GCC_PREFIX_HEADER = Listable_Prefix.pch;
 				INFOPLIST_FILE = "Listable-Info.plist";
 				PRODUCT_NAME = Listable;
-				PROVISIONING_PROFILE = "DEAF4A0D-BCC7-4627-98F0-D66A9D6B9BE7";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DEAF4A0D-BCC7-4627-98F0-D66A9D6B9BE7";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos3.0;
 			};
 			name = Debug;
 		};

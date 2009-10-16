@@ -75,7 +75,7 @@
 	
 	UIButton *btn = [UIButton buttonWithType: UIButtonTypeRoundedRect];
 	
-	btn.frame = CGRectMake(0, 8, 80, 30);
+	btn.frame = CGRectMake(0, 7, 80, 30);
 	
 	UIImage *backgroundImage = [[UIImage imageNamed: @"DarkerButtonBackgroundRed.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15];
 	
