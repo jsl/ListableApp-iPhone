@@ -120,10 +120,10 @@
 	
 	[request setHTTPBody: httpBody];
 	
-	[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+	[[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																				   delegate:self 
 																			  statusDisplay:self.statusDisplay 
-																			  statusMessage:@"Sending invitation..." ];	
+																			  statusMessage:@"Sending invitation..." ] autorelease];	
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {
@@ -168,9 +168,10 @@
 		[c setRemoteId:[setObject objectForKey:@"id"] ];
 		
 		[tmpCollaborators addObject:c];
+		[c release];
 	}
 
-	return tmpCollaborators;
+	return [ tmpCollaborators autorelease ];
 }
 
 - (void) loadItems {
@@ -183,10 +184,10 @@
 		
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
-	[ [ TimedURLConnection alloc ] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+	[[ [ TimedURLConnection alloc ] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
 																				 delegate:self 
 																			statusDisplay:self.statusDisplay 
-																			statusMessage:@"Loading editor list..." ];	
+																			statusMessage:@"Loading editor list..." ] autorelease];	
 }
 
 
@@ -332,10 +333,10 @@
 
 		[request setHTTPMethod:@"DELETE"];
 
-		[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+		[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																						 delegate:self 
 																					statusDisplay:self.statusDisplay 
-																					statusMessage:@"Deleting editor..." ];
+																					statusMessage:@"Deleting editor..." ] autorelease];
 	}
 }
 

@@ -18,6 +18,7 @@
 	
 	NSMutableData *receivedData;
 	NSDictionary *authResponse;
+	NSURLConnection *connection;
 		
 	NSNumber *statusCode;
 }
@@ -32,6 +33,7 @@
 
 @property (nonatomic, retain) IBOutlet UITextField *emailTextField;
 @property (nonatomic, retain) IBOutlet UITextField *passwordTextField;
+@property (nonatomic, retain) NSURLConnection *connection;
 
 @property (nonatomic, retain) IBOutlet UIButton *checkAccountButton;
 @property (nonatomic, retain) IBOutlet UIButton *createAccountButton;

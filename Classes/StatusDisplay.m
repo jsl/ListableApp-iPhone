@@ -37,6 +37,7 @@
 	
 	[ self.toolbar setItems:[NSArray arrayWithObjects:bi, activityItem, nil] ];
 	
+	[bi release];
     [activityItem release];
 	
 	[ uiView addSubview: self.toolbar ];

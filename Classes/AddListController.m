@@ -45,7 +45,7 @@
 	
 	[request setHTTPBody: httpBody];
 	
-	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Creating list..."];
+	[[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Creating list..."] autorelease];
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {
@@ -57,6 +57,7 @@
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
 	[ nextController setItemList:l ];
 	
+	[ l release ];
 	NSArray *ct2 = [NSArray arrayWithObjects:[ct objectAtIndex:0], nextController, nil];
 	
 	[nextController release];		

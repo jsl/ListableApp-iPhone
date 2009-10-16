@@ -17,8 +17,9 @@
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
 #import "TimedConnection.h"
+#import "ShakeDelegate.h"
 
-@interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate, TimedConnection> {
+@interface CollaboratorsController : UITableViewController <ABPeoplePickerNavigationControllerDelegate, UIAlertViewDelegate, TimedConnection, ShakeDelegate> {
 	NSMutableArray *collaborators;
 	NSString *inviteeEmail;
 	ItemList *itemList;

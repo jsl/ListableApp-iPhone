@@ -19,6 +19,7 @@
 @synthesize authResponse;
 @synthesize emailTextField;
 @synthesize passwordTextField;
+@synthesize connection;
 
 @synthesize checkAccountButton;
 @synthesize createAccountButton;
@@ -46,10 +47,10 @@
 	
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
 	
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+    self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 		
-    if (connection) { 
-        receivedData = [[NSMutableData data] retain]; 
+    if (self.connection) { 
+        self.receivedData = [[NSMutableData data] retain]; 
     }
 }
 
@@ -59,6 +60,7 @@
 
 	NSURL *url = [ [ NSURL alloc ] initWithString: myUrlStr ];
 	[[UIApplication sharedApplication] openURL:url];
+	[ url release ];
 }
 
 
@@ -70,7 +72,7 @@
 }
 
 - (void)connectionDidFail:(NSURLConnection *)connection {
-	[connection release];
+	[self.connection release];
 	[receivedData release];
 }
 
@@ -130,7 +132,7 @@
 	}
 
 	[responseBody release];
-    [connection release];
+    [self.connection release];
 }
 
 - (void)dropKickResponder {
@@ -202,6 +204,7 @@
 	[authResponse release];
 	[receivedData release];
 	[statusCode release];
+	[connection release];
 	
     [super dealloc];
 }

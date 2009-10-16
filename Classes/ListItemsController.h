@@ -13,8 +13,9 @@
 #import "StatusDisplay.h"
 #import "ShakeableTableView.h"
 #import "TimedConnection.h"
+#import "ShakeDelegate.h"
 
-@interface ListItemsController : UITableViewController <UIAlertViewDelegate, TimedConnection> {
+@interface ListItemsController : UITableViewController <UIAlertViewDelegate, TimedConnection, ShakeDelegate> {
 	ItemList *itemList;
 	
 	NSMutableArray *listItems;

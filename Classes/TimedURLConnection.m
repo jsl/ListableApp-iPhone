@@ -10,10 +10,11 @@
 #import "JSON.h"
 #import "Constants.h"
 #import "URLEncode.h"
+#import "AccountChangeRequiredDelegate.h"
 
 @implementation TimedURLConnection
 
-@synthesize url, data, connection, statusCode, delegate, timer, didReceiveResponse, ticks, token, statusDisplay;
+@synthesize url, data, connection, statusCode, delegate, timer, didReceiveResponse, ticks, statusDisplay;
 
 
 - (id)initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:(NSMutableURLRequest *)inRequest delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage {
@@ -142,13 +143,14 @@
 		// First see if this error is because the user needs to change their account settings.  If so,
 		// provide useful message directing them to account settings.
 		if ((NSNumber *)[parsedJsonObject valueForKey:@"direct_to_account_page"] == [NSNumber numberWithBool:YES]) {
+
+			AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
 			
-			NSLog(@"THe respo: %@", parsedJsonObject);
-			self.token = [parsedJsonObject valueForKey:@"token"];
+			acrDelegate.token = [parsedJsonObject valueForKey:@"token"];
 			
 			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Account change required" 
 															 message:[parsedJsonObject valueForKey:@"message"]
-															delegate:self
+															delegate:acrDelegate
 												   cancelButtonTitle:@"Cancel" 
 												   otherButtonTitles:@"Upgrade", nil ];
 
@@ -162,22 +164,6 @@
 	
 	[responseData release];
     [self.connection release];
-}
-
-// Only alert in this controller is to upgrade account with button index 1
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 1) {		
-		NSString *format = @"%@/subscription_redirect?key=%@";
-		
-		NSLog(@"THe token we got is %@", self.token);
-		NSString *myUrlStr = [ NSString stringWithFormat:format, 
-							  ACCOUNT_SERVER, 
-							  [ self.token URLEncodeString] ];
-		
-		NSURL *myUrl = [NSURL URLWithString:myUrlStr];	
-		
-		[[UIApplication sharedApplication] openURL:myUrl];		
-	}
 }
 
 - (void)alertOnHTTPFailure {
@@ -202,7 +188,6 @@
 	[ delegate release ];
 	[ statusCode release ];
 	[ timer release ];
-	[ token release ];
 	
 	if (! ( statusDisplay == nil ) )
 		[ statusDisplay release ];

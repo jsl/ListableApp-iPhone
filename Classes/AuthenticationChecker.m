@@ -24,12 +24,11 @@
 
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 
 
-	NSData *data				= nil;
 	NSHTTPURLResponse *response = nil;
 	NSError *error				= nil;
-	data			= [ NSURLConnection sendSynchronousRequest: URLRequest
-											 returningResponse: &response
-														 error: &error	];
+	[ NSURLConnection sendSynchronousRequest: URLRequest
+						   returningResponse: &response
+									   error: &error	];
 		
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 

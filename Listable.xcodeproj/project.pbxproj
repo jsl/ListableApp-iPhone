@@ -69,6 +69,7 @@
 		D0CAA14E105BD76200C5D610 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA14D105BD76200C5D610 /* AddressBook.framework */; };
 		D0CAA1FA105C0A7900C5D610 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CAA1F9105C0A7900C5D610 /* AddressBookUI.framework */; };
 		D0E52BA61088E76600580B51 /* rounded-text-border.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E52BA51088E76600580B51 /* rounded-text-border.png */; };
+		D0E52CB41089108900580B51 /* AccountChangeRequiredDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E52CB31089108900580B51 /* AccountChangeRequiredDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -171,6 +172,9 @@
 		D0CAA14D105BD76200C5D610 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
 		D0CAA1F9105C0A7900C5D610 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		D0E52BA51088E76600580B51 /* rounded-text-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rounded-text-border.png"; sourceTree = "<group>"; };
+		D0E52C4E1088F75400580B51 /* ShakeDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeDelegate.h; sourceTree = "<group>"; };
+		D0E52CB21089108900580B51 /* AccountChangeRequiredDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountChangeRequiredDelegate.h; sourceTree = "<group>"; };
+		D0E52CB31089108900580B51 /* AccountChangeRequiredDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountChangeRequiredDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +250,9 @@
 				D0C5527F10691F910093DBA6 /* TimedConnection.h */,
 				D05FFA69106BBB16001E1839 /* CustomButton.h */,
 				D05FFA6A106BBB16001E1839 /* CustomButton.m */,
+				D0E52C4E1088F75400580B51 /* ShakeDelegate.h */,
+				D0E52CB21089108900580B51 /* AccountChangeRequiredDelegate.h */,
+				D0E52CB31089108900580B51 /* AccountChangeRequiredDelegate.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -455,6 +462,7 @@
 				D0C54F771067FDA20093DBA6 /* UserSettings.m in Sources */,
 				D0C551871068FB820093DBA6 /* TimedURLConnection.m in Sources */,
 				D05FFA6B106BBB16001E1839 /* CustomButton.m in Sources */,
+				D0E52CB41089108900580B51 /* AccountChangeRequiredDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

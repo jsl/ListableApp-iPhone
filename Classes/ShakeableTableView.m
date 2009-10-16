@@ -7,6 +7,7 @@
 //
 
 #import "ShakeableTableView.h"
+#import "ShakeDelegate.h"
 
 @implementation ShakeableTableView
 
@@ -21,9 +22,10 @@
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if ( event.subtype == UIEventSubtypeMotionShake ) {
-		if ([viewDelegate respondsToSelector:@selector(shakeHappened:)])
-			[viewDelegate shakeHappened:self];
-		
+		if ([viewDelegate respondsToSelector:@selector(shakeHappened:)]) {
+			id <ShakeDelegate> theViewDelegate = (id<ShakeDelegate>)viewDelegate;
+			[theViewDelegate shakeHappened:self];
+		}		
     }
 	
     if ( [super respondsToSelector:@selector(motionEnded:withEvent:)] )

@@ -81,6 +81,9 @@
 	
 	[ btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
 	[ btn setImage:users forState:UIControlStateNormal];
+	
+	[ users release ];
+	
 	[ btn addTarget:self action:@selector(shareButtonAction:)forControlEvents:UIControlEventTouchUpInside];
 	
 	[tv addSubview:btn];
@@ -127,10 +130,11 @@
 	
 	[request setHTTPBody: httpBody];
 		
-	[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+	[[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																				   delegate:self 
 																			  statusDisplay:self.statusDisplay 
-																			  statusMessage:@"Updating item..." ];
+																			  statusMessage:@"Updating item..." ] autorelease];
+	
 }
 
 - (void) editListButtonAction:(id)sender {
@@ -178,11 +182,10 @@
 
 	NSURL *myURL = [NSURL URLWithString:urlString];
 		
-	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+	[[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay 
-																		  statusMessage:@"Loading items..."];
-	[ myURL release ];
+																		  statusMessage:@"Loading items..."] autorelease];
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
@@ -284,6 +287,8 @@
 	label.textColor = [UIColor blackColor];
 		
 	[ headerButton addSubview:label];
+
+	[ label release ];
 	
 	headerButton.backgroundColor = [UIColor whiteColor];
 	
@@ -402,10 +407,10 @@
 	
     [ request setHTTPMethod:@"PUT" ];
     
-	[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+	[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																					 delegate:self 
 																				statusDisplay:self.statusDisplay 
-																				statusMessage:@"Updating list name..." ];
+																				statusMessage:@"Updating list name..." ] autorelease];
 }
 
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
@@ -426,10 +431,10 @@
 	
     [ request setHTTPMethod:@"PUT" ];
 	
-	[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+	[[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																					delegate:self 
 																			   statusDisplay:self.statusDisplay 
-																			   statusMessage:displayMessage ];	
+																			   statusMessage:displayMessage ] autorelease];	
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { 
@@ -446,11 +451,10 @@
 	
 	NSURL *myURL = [NSURL URLWithString:urlString];
 	
-	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+	[[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay
-																		  statusMessage:@"Loading item details..." ];	
-	[myURL release];
+																		  statusMessage:@"Loading item details..." ] autorelease];	
 }
 
 
@@ -487,7 +491,7 @@
 		
 		[ request setHTTPMethod:@"DELETE" ];
 		
-		[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."];		
+		[[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."] autorelease];		
 	}	
 }
 

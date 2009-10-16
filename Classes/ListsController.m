@@ -38,7 +38,9 @@
 	
 
 	UINavigationBar *bar = [self.navigationController navigationBar]; 
-	[bar setTintColor:	[[UIColor alloc ] initWithRed:0.518 green:0.09 blue:0.09 alpha:1]]; 
+	UIColor *clr = [[UIColor alloc ] initWithRed:0.518 green:0.09 blue:0.09 alpha:1];
+	[bar setTintColor:	clr]; 
+	[clr release];
 	
 	// create a standard "add" button
 	UIBarButtonItem* bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
@@ -64,7 +66,7 @@
 	[nextController release];	
 }
 
--(void) shakeHappened:(ShakeableTableView *)view {
+- (void) shakeHappened:(ShakeableTableView *)view {
 	[ self loadLists ];
 }
 
@@ -75,10 +77,10 @@
 
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 	
-	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+	[[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay 
-																		  statusMessage:@"Loading lists..."];
+																		  statusMessage:@"Loading lists..."] autorelease];
 }
 
 - (void)alertOnHTTPFailure {
@@ -144,6 +146,7 @@
 		[l setLinkId:[setObject objectForKey:@"link_id"]];
 		
 		[tmpItems addObject:l];
+		[ l release ];
 	}
 		
 	return tmpItems;
@@ -269,10 +272,10 @@
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 		[ request setHTTPMethod:@"DELETE" ];
 		
-		[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+		[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																						 delegate:self 
 																					statusDisplay:self.statusDisplay 
-																					statusMessage:@"Deleting list..." ];
+																					statusMessage:@"Deleting list..." ] autorelease];
 	} 
 }
 
@@ -291,10 +294,11 @@
 	
     [ request setHTTPMethod:@"PUT" ];
 	
-	[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+	[[ [ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																					delegate:self 
 																			   statusDisplay:self.statusDisplay 
-																			   statusMessage:@"Moving list..." ];	
+																			   statusMessage:@"Moving list..." ] autorelease];
+	
 }
 
 

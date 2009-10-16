@@ -110,6 +110,7 @@
 	accountController.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
 	
 	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, accountController, nil];	
+	[ rootNavigationController release ];
 }
 
 /*

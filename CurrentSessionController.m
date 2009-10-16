@@ -50,10 +50,10 @@
 	
 	NSURL *myURL = [NSURL URLWithString:myUrlStr];
 		
-	[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
+	[[ [TimedURLConnection alloc] initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:myURL 
 																			   delegate:self 
 																		  statusDisplay:self.statusDisplay 
-																		  statusMessage:@"Loading account details..."];
+																		  statusMessage:@"Loading account details..."] autorelease];
 	
 }
 
