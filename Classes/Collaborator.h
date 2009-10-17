@@ -12,9 +12,11 @@
 @interface Collaborator : NSObject {
 	NSString *email;
 	NSDecimalNumber *remoteId;
+	NSNumber *isCreator;
 }
 
 @property (nonatomic, retain) NSString *email; 
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
+@property (nonatomic, retain) NSNumber *isCreator;
 
 @end

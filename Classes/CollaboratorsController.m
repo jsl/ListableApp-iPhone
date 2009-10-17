@@ -166,6 +166,7 @@
 		
 		[c setEmail: [setObject objectForKey:@"email"] ];
 		[c setRemoteId:[setObject objectForKey:@"id"] ];
+		[c setIsCreator:[setObject objectForKey:@"is_creator"] ];
 		
 		[tmpCollaborators addObject:c];
 		[c release];
@@ -291,9 +292,11 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    
-    // Set up the cell...
-	cell.textLabel.text = [ [collaborators objectAtIndex:[indexPath row] ] email ];
+ 
+	Collaborator *c = [collaborators objectAtIndex:[indexPath row]];	
+	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
+
+ 	cell.textLabel.text = lblText;
 	
     return cell;
 }

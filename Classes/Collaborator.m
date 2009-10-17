@@ -13,10 +13,12 @@
 
 @synthesize email;
 @synthesize remoteId;
+@synthesize isCreator;
 
 - (void)dealloc {
 	[email release];
 	[remoteId release];
+	[isCreator release];
 	
     [super dealloc];
 }
