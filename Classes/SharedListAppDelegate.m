@@ -14,6 +14,10 @@
 #import "ShakeableTableView.h"
 #import "CurrentSessionController.h"
 #import "UserSettings.h"
+#import "TimedURLConnection.h"
+
+#import "Constants.h"
+#import "URLEncode.h"
 
 #import <SystemConfiguration/SCNetworkReachability.h>
 
@@ -29,20 +33,22 @@
 @synthesize window;
 @synthesize tabBarController;
 @synthesize isTokenValid;
-@synthesize authToken;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
 	[UserSettings sharedUserSettings].authToken = [ [NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
-	
-	self.authToken =  [ [NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
-	
-	if (! (self.authToken == nil ) ) {
+		
+	if ( [UserSettings sharedUserSettings].authToken != nil ) {
 		[self configureTabBarWithLoggedInState:YES];
 
 		// Add the tab bar controller's current view as a subview of the window
 		[window addSubview:tabBarController.view];
 
+		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert)];
+		
+		
+		application.applicationIconBadgeNumber = 0;
+		
 	} else {
 		[self configureTabBarWithLoggedInState:NO];
 
@@ -62,6 +68,22 @@
 		[alert show];
 		[alert release];
 	}
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	NSDictionary *apsInfo = [userInfo objectForKey:@"aps"];
+
+	if (!apsInfo.count)
+		return;
+	
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Update"
+													 message:[apsInfo objectForKey:@"alert"]
+													delegate:self
+										   cancelButtonTitle:@"OK" 
+										   otherButtonTitles:nil ];
+	
+	[alert show];
+	[alert release];			
 }
 
 // If unable to connect display a standard notice.  Returns bool indicating whether
@@ -85,8 +107,41 @@
 	return serverReachable;
 }
 
+
+- (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
+	NSString *format = @"%@/device_token.json?device_token=%@&user_credentials=%@";
+	
+	if ( [UserSettings sharedUserSettings].authToken != nil ) {
+		NSString *deviceToken = [[devToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+		deviceToken = [deviceToken stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+		NSString *myUrlStr = [ NSString stringWithFormat:format, 
+							  API_SERVER,
+							  [ deviceToken URLEncodeString ], 
+							  [ [UserSettings sharedUserSettings].authToken URLEncodeString] ];
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		[ request setHTTPMethod:@"PUT" ];
+		
+		[[ [ TimedURLConnection alloc ] initWithRequest:request ] autorelease ];		
+	}
+}
+
+- (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+    NSLog(@"Error in registration. Error: %@", err);
+}
+
 -(BOOL)ableToConnect {
 	return YES;
+}
+
+- (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
+}
+
+- (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode {
 }
 
 - (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn {
@@ -127,7 +182,6 @@
 
 
 - (void)dealloc {
-	[authToken release];
     [tabBarController release];
     [window release];
 	

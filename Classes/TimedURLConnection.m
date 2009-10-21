@@ -17,17 +17,26 @@
 @synthesize url, data, connection, statusCode, delegate, timer, didReceiveResponse, ticks, statusDisplay;
 
 
+// When we don't want to update display with the message.
+- (id)initWithRequest:(NSMutableURLRequest *)inRequest {
+	return [self initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:inRequest delegate:nil statusDisplay:nil statusMessage:nil ];
+}
+
 - (id)initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:(NSMutableURLRequest *)inRequest delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage {
 	
 	if (self = [super init]) {
-		self.delegate = [ inDelegate retain ];
+		if (inDelegate != nil) 
+			self.delegate = [ inDelegate retain ];
+		
 		self.didReceiveResponse = NO;
 		self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkIfResponseReceived:) userInfo:nil repeats:YES];
 		self.ticks = 0;
-		self.statusDisplay = inStatusDisplay;
+		
+		if (inStatusDisplay != nil) 
+			self.statusDisplay = inStatusDisplay;
     }
 	
-	if (! ( self.statusDisplay == nil  ) )
+	if ( self.statusDisplay != nil )
 		[ self.statusDisplay startWithTitle:inStatusMessage];
 	
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES]; 	
@@ -73,7 +82,7 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
-	if (! ( self.statusDisplay == nil ) )
+	if ( self.statusDisplay != nil )
 		[ self.statusDisplay stop ];	
 
 	[ self displayConnectivityProblemMessage ];
@@ -132,7 +141,6 @@
 	NSString *responseData = [[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding:NSUTF8StringEncoding];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	
 	id parsedJsonObject = [responseData JSONValue];
 			
 	// Try getting items from response if the body isn't empty and the code is 200
@@ -179,7 +187,6 @@
 	[alert release];
 }
 
-// This class is going to pile up unless we release them somewhere!
 - (void)dealloc {
 	
 	[ url release ];
@@ -188,9 +195,7 @@
 	[ delegate release ];
 	[ statusCode release ];
 	[ timer release ];
-	
-	if (! ( statusDisplay == nil ) )
-		[ statusDisplay release ];
+	[ statusDisplay release ];		
 	
     [super dealloc];
 }

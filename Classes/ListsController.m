@@ -97,6 +97,23 @@
 	
 }
 
+- (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
+	NSString *format = @"%@/device_token/%@.json?device_token=%@&user_credentials=%@";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, 
+						  API_SERVER,
+						  devToken, 
+						  [ [UserSettings sharedUserSettings].authToken URLEncodeString] ];
+	
+	NSURL *myURL = [NSURL URLWithString:myUrlStr];
+	
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+	
+    [ request setHTTPMethod:@"PUT" ];
+	
+	[[ [ TimedURLConnection alloc ] initWithRequest:request ] autorelease ];
+	
+}
+
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)theStatusCode {
 
 	if (theStatusCode == 403) {
@@ -222,9 +239,8 @@
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
     
     // Set up the cell...	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -305,14 +321,23 @@
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
 	// Don't do anything if source is same as target.
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
-		ItemList *l = [lists objectAtIndex:fromIndexPath.row];
+		NSLog(@"Move it 1");
+		ItemList *l = [ [lists objectAtIndex:fromIndexPath.row] retain];
+		NSLog(@"Move it 2");
 		
 		[lists removeObjectAtIndex:fromIndexPath.row];
+		NSLog(@"Move it 3");
+
 		[lists insertObject:l atIndex:toIndexPath.row];
 		
+		NSLog(@"Move it 4");
+
 		// Have to add 1 to IndexPath.row because that's what the server expects.
 		int newPos = toIndexPath.row + 1;
 		[ self moveLink:l toPosition:[ NSNumber numberWithInt: newPos ]];
+		NSLog(@"Move it 5");
+		[l release];
+
 	}	
 }
 

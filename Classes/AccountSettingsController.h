@@ -26,8 +26,6 @@
 - (IBAction) checkAccountButtonPressed:(id)sender;
 - (IBAction) createAccountButtonPressed:(id)sender;
 
-- (IBAction) dismissKeyboard: (id)sender;
-
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSDictionary *authResponse;
 

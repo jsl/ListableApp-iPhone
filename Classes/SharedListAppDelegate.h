@@ -7,16 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TimedConnection.h"
 
 #define UIAppDelegate ((SharedListAppDelegate *)[UIApplication sharedApplication].delegate)
 
-@interface SharedListAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
+@interface SharedListAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, TimedConnection> {
     UIWindow *window;
     UITabBarController *tabBarController;
 	
 	BOOL isTokenValid;
-	
-	NSString *authToken;
 }
 
 - (void)configureTabBarWithLoggedInState:(BOOL)isLoggedIn;
@@ -26,6 +25,5 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
 @property (nonatomic) BOOL isTokenValid;
-@property (nonatomic, retain) NSString *authToken;
 
 @end

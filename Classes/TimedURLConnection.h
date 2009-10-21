@@ -36,6 +36,8 @@
 - (id)initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:(NSMutableURLRequest *)inRequest delegate:(UIViewController *)inDelegate statusDisplay:(StatusDisplay *)inStatusDisplay statusMessage:(NSString *)inStatusMessage;
 - (id)initWithUrlAndDelegateAndStatusDisplayAndStatusMessage:(NSURL *)url delegate:(UIViewController *)delegate statusDisplay:(StatusDisplay *)statusDisplay statusMessage:(NSString *)statusMessage;
 - (id)initWithUrlAndDelegate: (NSURL *)url delegate:(UIViewController *)delegate;
+- (id)initWithRequest: (NSMutableURLRequest *)request;
+
 - (id) init;
 
 - (void)alertOnHTTPFailure;

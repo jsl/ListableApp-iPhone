@@ -354,9 +354,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Listable */ = {
+		1D6058900D05DD3D006BFB54 /* com.listableapp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Listable" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "com.listableapp" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -366,7 +366,7 @@
 			);
 			dependencies = (
 			);
-			name = Listable;
+			name = com.listableapp;
 			productName = SharedList;
 			productReference = 1D6058910D05DD3D006BFB54 /* Listable.app */;
 			productType = "com.apple.product-type.application";
@@ -386,7 +386,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Listable */,
+				1D6058900D05DD3D006BFB54 /* com.listableapp */,
 			);
 		};
 /* End PBXProject section */
@@ -474,8 +474,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Justin Leitgeb (26P9SV823H)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Justin Leitgeb (26P9SV823H)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -483,8 +483,8 @@
 				GCC_PREFIX_HEADER = Listable_Prefix.pch;
 				INFOPLIST_FILE = "Listable-Info.plist";
 				PRODUCT_NAME = Listable;
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "E0D63C2E-28AF-4494-B21B-EEF97B6659C7";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E0D63C2E-28AF-4494-B21B-EEF97B6659C7";
 				SDKROOT = iphoneos3.0;
 			};
 			name = Debug;
@@ -500,9 +500,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Listable_Prefix.pch;
 				INFOPLIST_FILE = "Listable-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = Listable;
-				PROVISIONING_PROFILE = "DEAF4A0D-BCC7-4627-98F0-D66A9D6B9BE7";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DEAF4A0D-BCC7-4627-98F0-D66A9D6B9BE7";
+				PROVISIONING_PROFILE = "A2B21B30-A0F8-49D1-9AD7-E2878DE6379D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A2B21B30-A0F8-49D1-9AD7-E2878DE6379D";
 			};
 			name = Release;
 		};
@@ -535,7 +536,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Listable" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "com.listableapp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
