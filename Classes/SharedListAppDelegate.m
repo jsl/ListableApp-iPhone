@@ -86,28 +86,6 @@
 	[alert release];			
 }
 
-// If unable to connect display a standard notice.  Returns bool indicating whether
-// or not the connection was available so that the caller can take appropriate action.
-- (BOOL)ableToConnectToHostWithAlert {
-	BOOL serverReachable = [self ableToConnect];
-		
-	if (! serverReachable ) {
-		NSString *msg = @"Listable is unable to connect to the server.  Please make sure that your device is able to access the internet and try again.  If problems persist, please contact support@listableapp.com for help.";
-		
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to ListableApp.com"
-														 message:msg
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
-		
-		[alert show];
-		[alert release];		
-	}
-	
-	return serverReachable;
-}
-
-
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
 	NSString *format = @"%@/device_token.json?device_token=%@&user_credentials=%@";
 	
@@ -131,11 +109,7 @@
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
-    NSLog(@"Error in registration. Error: %@", err);
-}
-
--(BOOL)ableToConnect {
-	return YES;
+	// XXX do something here???
 }
 
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	

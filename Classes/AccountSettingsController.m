@@ -27,8 +27,6 @@
 @synthesize statusCode;
 
 - (IBAction) checkAccountButtonPressed:(id)sender {
-	if (!UIAppDelegate.ableToConnectToHostWithAlert)
-		return;
 
 	NSString *format = @"%@/user_session.json";
 	NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER];

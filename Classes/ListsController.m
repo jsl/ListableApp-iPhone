@@ -276,8 +276,6 @@
 	ItemList *l = [lists objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		if (!UIAppDelegate.ableToConnectToHostWithAlert)
-			return;
 
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
@@ -321,22 +319,17 @@
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
 	// Don't do anything if source is same as target.
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
-		NSLog(@"Move it 1");
 		ItemList *l = [ [lists objectAtIndex:fromIndexPath.row] retain];
-		NSLog(@"Move it 2");
 		
 		[lists removeObjectAtIndex:fromIndexPath.row];
-		NSLog(@"Move it 3");
 
 		[lists insertObject:l atIndex:toIndexPath.row];
 		
-		NSLog(@"Move it 4");
-
 		// Have to add 1 to IndexPath.row because that's what the server expects.
 		int newPos = toIndexPath.row + 1;
 		[ self moveLink:l toPosition:[ NSNumber numberWithInt: newPos ]];
-		NSLog(@"Move it 5");
-		[l release];
+
+		[ l release ];
 
 	}	
 }

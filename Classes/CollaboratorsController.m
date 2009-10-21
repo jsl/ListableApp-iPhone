@@ -324,8 +324,6 @@
 	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
-		if (!UIAppDelegate.ableToConnectToHostWithAlert)
-			return;
 
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
