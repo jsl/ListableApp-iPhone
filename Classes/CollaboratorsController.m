@@ -322,24 +322,24 @@
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
-	
-	// List creator can't be deleted, don't bother with the request.
-	if (collaborator.isCreator == [NSNumber numberWithBool:YES]) {
-		NSString *msg = @"List creator cannot be removed.  Delete this list instead if it is no longer needed.";
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to delete list creator" 
-														 message:msg 
-														delegate:self
-											   cancelButtonTitle:@"OK" 
-											   otherButtonTitles:nil ];
 		
-	 	[alert show];
-		[alert release];
-		
-		return;
-	}
-	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
+		Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
+		
+		// List creator can't be deleted, don't bother with the request, just return.
+		if (collaborator.isCreator == [NSNumber numberWithBool:YES]) {
+			NSString *msg = @"List creator cannot be removed.  Delete this list instead if it is no longer needed.";
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to delete list creator" 
+															 message:msg 
+															delegate:self
+												   cancelButtonTitle:@"OK" 
+												   otherButtonTitles:nil ];
+			
+			[alert show];
+			[alert release];
+			
+			return;
+		}		
 
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
@@ -365,8 +365,6 @@
 																						 statusMessage:@"Deleting editor..." ] autorelease];
 			
 		}
-
-		
 	}
 }
 
