@@ -145,6 +145,7 @@
 		
 		[alert show];
 		[alert release];
+		
 	}
 }
 
@@ -323,6 +324,21 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 	
+	// List creator can't be deleted, don't bother with the request.
+	if (collaborator.isCreator == [NSNumber numberWithBool:YES]) {
+		NSString *msg = @"List creator cannot be removed.  Delete this list instead if it is no longer needed.";
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to delete list creator" 
+														 message:msg 
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+	 	[alert show];
+		[alert release];
+		
+		return;
+	}
+	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
 
 		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
@@ -334,10 +350,23 @@
 
 		[request setHTTPMethod:@"DELETE"];
 
-		[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
-																						 delegate:self 
-																					statusDisplay:self.statusDisplay 
-																					statusMessage:@"Deleting editor..." ] autorelease];
+		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+		if ( [[prefs objectForKey:@"userEmail"] isEqualToString:collaborator.email ]) {
+			// We're deleting ourselves!
+			[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
+			UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
+			[self.navigationController popToViewController:controller animated:NO];
+			
+		} else {
+			
+			[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																							  delegate:self 
+																						 statusDisplay:self.statusDisplay 
+																						 statusMessage:@"Deleting editor..." ] autorelease];
+			
+		}
+
+		
 	}
 }
 
