@@ -12,7 +12,7 @@
 @implementation NSString (StringHelper)
 
 - (CGFloat)RAD_widthFromScreenSize {
-	return [UIScreen mainScreen].bounds.size.width - 70;
+	return [UIScreen mainScreen].bounds.size.width - 75;
 }
 
 #pragma mark Methods to determine the height of a string for resizeable table cells

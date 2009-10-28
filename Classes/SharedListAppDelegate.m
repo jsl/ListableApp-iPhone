@@ -15,6 +15,7 @@
 #import "CurrentSessionController.h"
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
+#import "FeedController.h"
 
 #import "Constants.h"
 #import "URLEncode.h"
@@ -125,6 +126,12 @@
 	rootNavigationController.tabBarItem.title = @"Lists";
 	rootNavigationController.tabBarItem.image = [UIImage imageNamed:@"tabbar_checkmark.png"];
 
+	
+	FeedController *feedController = [[[FeedController alloc] initWithNibName:nil bundle:nil] autorelease];
+	UINavigationController *feedNavigationController = [[UINavigationController alloc] initWithRootViewController:feedController];
+	feedNavigationController.tabBarItem.title = @"Feed";
+	feedNavigationController.tabBarItem.image = [UIImage imageNamed:@"TabBarFeeds.png"];
+	
 	UIViewController *accountController;
 	
 	if (isLoggedIn) {
@@ -138,7 +145,7 @@
 	accountController.tabBarItem.title = @"Account";
 	accountController.tabBarItem.image = [UIImage imageNamed:@"tabbar_key.png"];
 	
-	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, accountController, nil];	
+	tabBarController.viewControllers = [NSArray arrayWithObjects:rootNavigationController, feedNavigationController, accountController, nil];	
 	[ rootNavigationController release ];
 }
 

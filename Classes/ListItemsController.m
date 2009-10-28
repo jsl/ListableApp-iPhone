@@ -349,7 +349,7 @@
 	
     static NSString *CellIdentifier = @"ListViewCell";
 
-	ListItemCustomCell *cell = (ListItemCustomCell *)[self.tableView dequeueReusableCellWithIdentifier:@"ListViewCell"];
+	ListItemCustomCell *cell = (ListItemCustomCell *)[self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
 	if ( cell == nil )
 		cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];

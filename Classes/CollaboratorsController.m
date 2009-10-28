@@ -337,33 +337,36 @@
 			
 			[alert show];
 			[alert release];
-			
-			return;
-		}		
-
-		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
-		
-		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-		
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-
-		[request setHTTPMethod:@"DELETE"];
-
-		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-		if ( [[prefs objectForKey:@"userEmail"] isEqualToString:collaborator.email ]) {
-			// We're deleting ourselves!
-			[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
-			UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
-			[self.navigationController popToViewController:controller animated:NO];
-			
 		} else {
 			
-			[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
-																							  delegate:self 
-																						 statusDisplay:self.statusDisplay 
-																						 statusMessage:@"Deleting editor..." ] autorelease];
+			// Make a request to delete this user.
 			
+			NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
+			NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
+			
+			NSURL *myURL = [NSURL URLWithString:myUrlStr];
+			
+			NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+			
+			[request setHTTPMethod:@"DELETE"];
+			
+			NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+			
+			// If this request was to delete ourselves, don't set up the delegate.  Just back out to a "safe" place
+			// 
+			if ( [[prefs objectForKey:@"userEmail"] isEqualToString:collaborator.email ]) {
+				[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
+				UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
+				[self.navigationController popToViewController:controller animated:NO];
+				
+			} else {
+				
+				[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																								  delegate:self 
+																							 statusDisplay:self.statusDisplay 
+																							 statusMessage:@"Deleting editor..." ] autorelease];
+				
+			}			
 		}
 	}
 }
