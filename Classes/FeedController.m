@@ -160,28 +160,6 @@
     return [ [self blips] count];
 }
 
-- (UITableViewCell *) getCellContentView:(NSString *)cellIdentifier {
-	
-	CGRect CellFrame = CGRectMake(0, 0, 300, 60);
-	
-	
-	CGRect lblFrame1 = CGRectMake(60, 10, 240, 25);
-	UILabel *lblTemp;
-	
-	UITableViewCell *cell = [[[UITableViewCell alloc] initWithFrame:CellFrame reuseIdentifier:cellIdentifier] autorelease];
-	
-	//Initialize Label with tag 1.
-	lblTemp = [[UILabel alloc] initWithFrame:lblFrame1];
-	lblTemp.tag = 1;
-	
-	[cell.contentView addSubview:lblTemp];
-	[lblTemp release];
-	
-	//Initialize Label with tag 2.
-	
-	return cell;
-}
-
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	Blip *b = [self.blips objectAtIndex:indexPath.row];
 	return [b.message RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 30;

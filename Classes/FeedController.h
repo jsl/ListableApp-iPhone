@@ -25,7 +25,6 @@
 - (void) shakeHappened: (ShakeableTableView *)view;
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject;
 - (void) renderFailureJSONResponse: (id)parsedJsonObject withStatusCode:(int)statusCode;
-- (UITableViewCell *) getCellContentView:(NSString *)cellIdentifier;
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSMutableArray *blips;

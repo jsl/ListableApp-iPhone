@@ -13,10 +13,12 @@
 	NSString *email;
 	NSDecimalNumber *remoteId;
 	NSNumber *isCreator;
+	NSString *userImage;
 }
 
 @property (nonatomic, retain) NSString *email; 
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
 @property (nonatomic, retain) NSNumber *isCreator;
+@property (nonatomic, retain) NSString *userImage;
 
 @end

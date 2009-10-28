@@ -14,6 +14,8 @@
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
+#import "StringHelper.h"
+#import "AsyncImageView.h"
 
 #import "StatusDisplay.h"
 
@@ -168,6 +170,7 @@
 		[c setEmail: [setObject objectForKey:@"email"] ];
 		[c setRemoteId:[setObject objectForKey:@"id"] ];
 		[c setIsCreator:[setObject objectForKey:@"is_creator"] ];
+		[c setUserImage:[setObject objectForKey:@"user_image"] ];
 		
 		[tmpCollaborators addObject:c];
 		[c release];
@@ -287,27 +290,76 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
-    
+//    static NSString *CellIdentifier = @"Cell";
+//    
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (cell == nil) {
+//        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+//    }
+// 
+//	Collaborator *c = [collaborators objectAtIndex:[indexPath row]];	
+//	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
+//
+// 	cell.textLabel.text = lblText;
+//	
+//    return cell;
+
+	Collaborator *c = [self.collaborators objectAtIndex:indexPath.row];
+	
+	static NSString *CellIdentifier = @"CollaboratorCell";
+	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
- 
-	Collaborator *c = [collaborators objectAtIndex:[indexPath row]];	
+	
+	if ( cell == nil ) {
+		cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+		
+	} else {
+		UIView *vw;
+		vw = [cell viewWithTag:1];
+		[vw removeFromSuperview];
+				
+		vw = [cell viewWithTag:999];
+		[vw removeFromSuperview];
+	}
+	
+	cell.accessoryType = UITableViewCellAccessoryNone;
+	
+	NSString *format = @"http://www.gravatar.com/avatar/%@?s=35";
+	NSString *myUrlStr = [NSString stringWithFormat:format, c.userImage];
+	
+	NSURL *url = [NSURL URLWithString:myUrlStr ];
+
 	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
 
- 	cell.textLabel.text = lblText;
+	UILabel *msgLabel = [ lblText RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:55.0f y_pos:10.0f];
 	
+	CGRect ImageFrame = CGRectMake(10, ( msgLabel.frame.size.height / 2 ) - 7, 35, 35);
+	
+	AsyncImageView* asyncImage = [[[AsyncImageView alloc] initWithFrame:ImageFrame] autorelease];
+	
+	asyncImage.tag = 999;
+	
+	[asyncImage loadImageFromURL:url];
+	
+	msgLabel.numberOfLines = 0;
+	msgLabel.lineBreakMode = UILineBreakModeWordWrap;
+	msgLabel.tag = 1;
+	
+	[cell addSubview:msgLabel];
+
+	msgLabel.text = lblText;
+	
+	[msgLabel release];
+
+	[cell.contentView addSubview:asyncImage];
+	
+	[ cell layoutSubviews ];
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 

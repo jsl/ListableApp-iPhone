@@ -14,8 +14,10 @@
 @synthesize email;
 @synthesize remoteId;
 @synthesize isCreator;
+@synthesize userImage;
 
 - (void)dealloc {
+	[userImage release];
 	[email release];
 	[remoteId release];
 	[isCreator release];
