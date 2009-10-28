@@ -121,14 +121,18 @@
 
 // To be displayed on timeouts and when we get a connection failure.
 - (void)displayConnectivityProblemMessage {
-	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to server"
-													 message:@"Unable to connect to ListableApp.com.  Please try again, or contact support@listableapp.com if problems persist."
-													delegate:self
-										   cancelButtonTitle:@"OK" 
-										   otherButtonTitles:nil ];
-	
-	[alert show];
-	[alert release];	
+	// We crash when registering for notifications here, but that's only in cases where the delegate is
+	// not defined.  Works for now, figure out a more elegant solution later.
+	if (self.delegate != nil) {
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to connect to server"
+														 message:@"Unable to connect to ListableApp.com.  Please try again, or contact support@listableapp.com if problems persist."
+														delegate:self
+											   cancelButtonTitle:@"OK" 
+											   otherButtonTitles:nil ];
+		
+		[alert show];
+		[alert release];
+	}	
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
