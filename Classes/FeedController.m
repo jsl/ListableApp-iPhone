@@ -213,20 +213,22 @@
 	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-	NSString *format = @"http://www.gravatar.com/avatar/%@?s=30";
+	NSString *format = @"http://www.gravatar.com/avatar/%@?s=35";
 	NSString *myUrlStr = [NSString stringWithFormat:format, b.userImage];
 	
 	NSURL *url = [NSURL URLWithString:myUrlStr ];
 
-	CGRect ImageFrame = CGRectMake(10, 10, 30, 30);
+	
+	UILabel *msgLabel = [ b.message RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:55.0f y_pos:10.0f];
 
+	CGRect ImageFrame = CGRectMake(10, ( msgLabel.frame.size.height / 2 ) - 7, 35, 35);
+	
+	
 	AsyncImageView* asyncImage = [[[AsyncImageView alloc] initWithFrame:ImageFrame] autorelease];
 	
 	asyncImage.tag = 999;
 	
 	[asyncImage loadImageFromURL:url];
-	
-	UILabel *msgLabel = [b.message RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:60.0f y_pos:10.0f];
 	
 	msgLabel.numberOfLines = 0;
 	msgLabel.lineBreakMode = UILineBreakModeWordWrap;
@@ -236,7 +238,7 @@
 	
 	msgLabel.text = b.message;
 
-	UILabel *lblTemp2 = [[UILabel alloc] initWithFrame:CGRectMake(60, msgLabel.frame.size.height + 5, 240, 25)];
+	UILabel *lblTemp2 = [[UILabel alloc] initWithFrame:CGRectMake(55, msgLabel.frame.size.height + 5, 245, 25)];
 	lblTemp2.tag = 2;
 	lblTemp2.font = [UIFont boldSystemFontOfSize:12];
 	lblTemp2.textColor = [UIColor lightGrayColor];

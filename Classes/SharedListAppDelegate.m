@@ -53,7 +53,7 @@
 	} else {
 		[self configureTabBarWithLoggedInState:NO];
 
-		self.tabBarController.selectedIndex = 1;
+		self.tabBarController.selectedIndex = 2;
 
 		// Add the tab bar controller's current view as a subview of the window
 		[window addSubview:tabBarController.view];
