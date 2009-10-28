@@ -101,7 +101,6 @@
 // Iterate through response data and set table items appropriately.
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {	
 	
-	NSLog(@"resp was %@", jsonArray);
 	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease ];
 	
 	for (id setObject in jsonArray) {
@@ -112,13 +111,15 @@
 
 		[b setTimeAgo:[NSString stringWithFormat:@"%@ ago", [setObject objectForKey:@"time_ago"]]];
 		
-		ItemList *il = [[ItemList alloc] init];
-		[il setName: [ [ setObject objectForKey:@"list" ] objectForKey:@"name"] ];
-		[il setRemoteId: [ [ setObject objectForKey:@"list" ] objectForKey:@"id"] ];
-		
-		[b setItemList:il ];
-		
-		[il release];
+		if ( [ setObject objectForKey:@"list" ] != nil ) {
+			ItemList *il = [[ItemList alloc] init];
+			[il setName: [ [ setObject objectForKey:@"list" ] objectForKey:@"name"] ];
+			[il setRemoteId: [ [ setObject objectForKey:@"list" ] objectForKey:@"id"] ];
+			
+			[b setItemList:il ];
+			
+			[il release];
+		}
 		
 		[tmpItems addObject:b];
 		
@@ -196,7 +197,6 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
 	if ( cell == nil ) {
-		NSLog(@"Cell was nil");
 		cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
 	
 	} else {
@@ -211,7 +211,7 @@
 		[vw removeFromSuperview];
 	}
 	
-	if (b.itemList.remoteId == nil) {
+	if (b.itemList == nil) {
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	} else {
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -267,7 +267,7 @@
 
 	Blip *b = [self.blips objectAtIndex:indexPath.row];
 	
-	if (b.itemList.remoteId == nil)
+	if (b.itemList == nil)
 		return;
 		
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
