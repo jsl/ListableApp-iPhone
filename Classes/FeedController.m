@@ -239,12 +239,17 @@
 	msgLabel.text = b.message;
 
 	UILabel *lblTemp2 = [[UILabel alloc] initWithFrame:CGRectMake(55, msgLabel.frame.size.height + 5, 245, 25)];
+	
+	[msgLabel release];
+	
 	lblTemp2.tag = 2;
 	lblTemp2.font = [UIFont boldSystemFontOfSize:12];
 	lblTemp2.textColor = [UIColor lightGrayColor];
-	[cell.contentView addSubview:lblTemp2];
-	[lblTemp2 release];
 	
+	[cell.contentView addSubview:lblTemp2];
+	
+	[lblTemp2 release];
+		
 	lblTemp2.text = b.timeAgo;
 	
 	[cell.contentView addSubview:asyncImage];
