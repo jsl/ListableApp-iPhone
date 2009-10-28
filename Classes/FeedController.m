@@ -211,7 +211,11 @@
 		[vw removeFromSuperview];
 	}
 	
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	if (b.itemList.remoteId == nil) {
+		cell.accessoryType = UITableViewCellAccessoryNone;
+	} else {
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	}
 
 	NSString *format = @"http://www.gravatar.com/avatar/%@?s=35";
 	NSString *myUrlStr = [NSString stringWithFormat:format, b.userImage];
@@ -259,9 +263,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	Blip *b = [self.blips objectAtIndex:indexPath.row];
-
 	[tableView deselectRowAtIndexPath:indexPath animated:NO];
+
+	Blip *b = [self.blips objectAtIndex:indexPath.row];
+	
+	if (b.itemList.remoteId == nil)
+		return;
 		
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];
 	
