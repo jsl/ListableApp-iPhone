@@ -280,6 +280,12 @@
     return 1;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	Collaborator *c = [self.collaborators objectAtIndex:indexPath.row];
+	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
+
+	return [lblText RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20;
+}
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -290,20 +296,6 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-//    static NSString *CellIdentifier = @"Cell";
-//    
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if (cell == nil) {
-//        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-//    }
-// 
-//	Collaborator *c = [collaborators objectAtIndex:[indexPath row]];	
-//	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
-//
-// 	cell.textLabel.text = lblText;
-//	
-//    return cell;
-
 	Collaborator *c = [self.collaborators objectAtIndex:indexPath.row];
 	
 	static NSString *CellIdentifier = @"CollaboratorCell";

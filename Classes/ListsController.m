@@ -17,6 +17,7 @@
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
+#import "StringHelper.h"
 
 #import "ShakeableTableView.h"
 
@@ -53,6 +54,12 @@
 	self.title = @"Lists";
 	
 	[super viewDidLoad];	
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSString *lblText = [[self.lists objectAtIndex:indexPath.row] name];
+	
+	return [lblText RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20;
 }
 
 - (void) editListButtonAction:(id)sender {
@@ -232,21 +239,49 @@
     return [ [self lists] count];
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+	
+    [self.tableView setEditing:editing animated:animated];
+
+	[self.tableView reloadData];	
+}
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
-    
+	NSString *lblText = [[self.lists objectAtIndex:indexPath.row] name];
+	
+	static NSString *CellIdentifier = @"ListCell";
+	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    
-    // Set up the cell...	
+	
+	if ( cell == nil ) {
+		cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+	} else {
+		
+		UIView *vw;
+		vw = [cell viewWithTag:1];
+		[vw removeFromSuperview];		
+	}
+	
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-	cell.textLabel.text = [ [ [self lists] objectAtIndex:indexPath.row] name];
+	float cellLeft = self.editing ? 40.0f : 10.0f;
+
+	UILabel *msgLabel = [ lblText RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:cellLeft y_pos:10.0f];		
+
+	msgLabel.numberOfLines = 0;
+	msgLabel.lineBreakMode = UILineBreakModeWordWrap;
+	msgLabel.tag = 1;
 	
+	[cell addSubview:msgLabel];
+	
+	msgLabel.text = lblText;
+	
+	[msgLabel release];
+	
+	[ cell layoutSubviews ];
     return cell;
 }
 

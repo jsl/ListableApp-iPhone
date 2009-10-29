@@ -129,7 +129,7 @@
 	
 	FeedController *feedController = [[[FeedController alloc] initWithNibName:nil bundle:nil] autorelease];
 	UINavigationController *feedNavigationController = [[UINavigationController alloc] initWithRootViewController:feedController];
-	feedNavigationController.tabBarItem.title = @"Feed";
+	feedNavigationController.tabBarItem.title = @"Activity Feed";
 	feedNavigationController.tabBarItem.image = [UIImage imageNamed:@"TabBarFeeds.png"];
 	
 	UIViewController *accountController;
