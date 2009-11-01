@@ -23,7 +23,6 @@
 
 - (void) loadLists;
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray;
-- (void)processDeleteResponse:(NSString *)jsonData;
 - (void) shakeHappened: (ShakeableTableView *)view;
 - (void)alertOnHTTPFailure;
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject;

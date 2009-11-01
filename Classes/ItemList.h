@@ -13,10 +13,15 @@
 	NSString *name;
 	NSDecimalNumber *remoteId;
 	NSDecimalNumber *linkId;
+	NSDecimalNumber *maxItems;
+	
+	NSNumber *currentUserIsCreator;
 }
 
 @property (nonatomic, retain) NSString *name; 
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
 @property (nonatomic, retain) NSDecimalNumber *linkId;
+@property (nonatomic, retain) NSNumber *currentUserIsCreator;
+@property (nonatomic, retain) NSDecimalNumber *maxItems;
 
 @end

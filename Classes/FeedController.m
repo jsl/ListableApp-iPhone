@@ -129,10 +129,6 @@
 	return tmpItems;
 }
 
-- (void)processDeleteResponse:(NSString *)jsonData {
-	[self loadBlips];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
 	[self.tableView becomeFirstResponder];
 	

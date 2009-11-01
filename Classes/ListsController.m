@@ -64,6 +64,7 @@
 
 - (void) editListButtonAction:(id)sender {
 	[self setEditing:!self.editing];
+	[self.tableView reloadData];
 }
 
 - (IBAction)addButtonAction:(id)sender {
@@ -131,7 +132,7 @@
 	if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
 		NSString *msg = (NSString *)[parsedJsonObject objectForKey:@"message"];
 		
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action" 
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to perform action, reload list and try again"
 														 message:msg
 														delegate:self
 											   cancelButtonTitle:@"OK" 
@@ -152,8 +153,7 @@
 		self.lists = [ self processGetResponse:parsedJsonObject ];
 		
 	} else if ([ parsedJsonObject isKindOfClass:[ NSDictionary class ]] == YES) {
-		// Must have been a POST or a DELETE, no body parseable to an Array.  Just get new result set.
-		[self loadLists];
+		// Must have been a POST or a DELETE, no body parseable to an Array.  No action req'd.
 	}
 	
 	[ self.tableView reloadData ];
@@ -168,16 +168,15 @@
 		[l setName:[setObject objectForKey:@"name"]];
 		[l setRemoteId:[setObject objectForKey:@"id"]];
 		[l setLinkId:[setObject objectForKey:@"link_id"]];
+		[l setCurrentUserIsCreator: [setObject objectForKey:@"current_user_is_creator"]];
+		// XXX todo fix this, use show for list instead???
+		// [l setMaxItems: [setObject objectForKey:"max_items"]];
 		
 		[tmpItems addObject:l];
 		[ l release ];
 	}
 		
 	return tmpItems;
-}
-
-- (void)processDeleteResponse:(NSString *)jsonData {
-	[self loadLists];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -188,44 +187,11 @@
     [super viewWillAppear:animated];
 }
 
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-
 - (void)viewWillDisappear:(BOOL)animated {
 	[self resignFirstResponder];
 
 	[super viewWillDisappear:animated];
 }
-
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
-/*
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-*/
-
-/*
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-}
-*/
 
 #pragma mark Table view methods
 
@@ -237,14 +203,6 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [ [self lists] count];
-}
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-    [super setEditing:editing animated:animated];
-	
-    [self.tableView setEditing:editing animated:animated];
-
-	[self.tableView reloadData];	
 }
 
 // Customize the appearance of table view cells.
@@ -298,26 +256,43 @@
 	[nextController release];
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
 	ItemList *l = [lists objectAtIndex:indexPath.row];
 	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 
+		// If the current user is not the list creator, she is unable to delete the list.
+		// Notify them of this fact and return.
+		
+		if (![ l.currentUserIsCreator boolValue]) {
+			NSString *msg = @"Sorry, you are only able to delete lists which you've created and this list is not yours.  If you don't want to see this list anymore, remove yourself from the list collaborators.";
+			
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to delete list"
+															 message:msg
+															delegate:self
+												   cancelButtonTitle:@"OK" 
+												   otherButtonTitles:nil ];
+			
+			[alert show];
+			[alert release];		
+
+			return;
+		}
+		
+		[ self.tableView beginUpdates ];
+		[ self.lists removeObjectAtIndex:indexPath.row ];
+		[ self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationRight];
+		[ self.tableView endUpdates ];
+		
+		[ self.tableView reloadData ];		
+		
 		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
 							  l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 				
 		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-				
+		
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
 		[ request setHTTPMethod:@"DELETE" ];
 		

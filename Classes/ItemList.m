@@ -14,11 +14,15 @@
 @synthesize name;
 @synthesize remoteId;
 @synthesize linkId;
+@synthesize currentUserIsCreator;
+@synthesize maxItems;
 
 - (void)dealloc {
 	[name release];
 	[remoteId release];
 	[linkId release];
+	[currentUserIsCreator release];
+	[maxItems release];
 	
     [super dealloc];
 }

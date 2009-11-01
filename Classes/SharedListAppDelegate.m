@@ -139,7 +139,7 @@
 		self.tabBarController.selectedIndex = 0;
 	} else {
 		accountController = [ [ [AccountSettingsController alloc] initWithNibName:nil bundle:nil] autorelease];
-		self.tabBarController.selectedIndex = 1;
+		self.tabBarController.selectedIndex = 2;
 	}
 	
 	accountController.tabBarItem.title = @"Account";

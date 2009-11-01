@@ -25,8 +25,7 @@
 	
 	NSPredicate *completedPredicate;
 	NSPredicate *activePredicate;
-	
-	BOOL loadingWithUpdate;
+	BOOL recentlyAddedItem;
 }
 
 - (IBAction)shareButtonAction:(id)sender;
@@ -50,7 +49,5 @@
 @property (nonatomic, retain) NSMutableArray *listItems;
 @property (nonatomic, retain) NSPredicate *activePredicate;
 @property (nonatomic, retain) NSPredicate *completedPredicate;
-
-@property (nonatomic) BOOL loadingWithUpdate;
 
 @end

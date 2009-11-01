@@ -36,7 +36,6 @@
 
 - (IBAction) doneButtonPressed: (id)sender {
 	[ listItemsController updateListName:self.list name:self.listNameTextField.text ];	
-	listItemsController.loadingWithUpdate = YES; // Tell it not to automatically load remote data until we finish.
 	listItemsController.itemList.name = self.listNameTextField.text;
 	
 	[self.navigationController popViewControllerAnimated:YES];

@@ -173,7 +173,7 @@
 					<object class="IBUIButton" id="173901875">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{20, 354}, {280, 37}}</string>
+						<string key="NSFrame">{{19, 354}, {133, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="IBUIBackgroundColor" ref="632512021"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -182,7 +182,7 @@
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="125011778"/>
 						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Create an account</string>
+						<string key="IBUINormalTitle">Create account</string>
 						<reference key="IBUIHighlightedTitleColor" ref="856200318"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
 							<int key="NSColorSpace">1</int>
@@ -193,7 +193,7 @@
 					<object class="IBUITextView" id="106827254">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{23, 231}, {277, 122}}</string>
+						<string key="NSFrame">{{23, 231}, {277, 115}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="IBUIBackgroundColor" ref="632512021"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -245,6 +245,26 @@
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">Icon.png</string>
 						</object>
+					</object>
+					<object class="IBUIButton" id="74856994">
+						<reference key="NSNextResponder" ref="191373211"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{165, 354}, {140, 37}}</string>
+						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="IBUIBackgroundColor" ref="632512021"/>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<reference key="IBUIFont" ref="125011778"/>
+						<int key="IBUIButtonType">1</int>
+						<string key="IBUINormalTitle">Reset password</string>
+						<reference key="IBUIHighlightedTitleColor" ref="856200318"/>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MyAwLjMwOTgwMzkzIDAuNTIxNTY4NjYAA</bytes>
+						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="1032259625"/>
 					</object>
 				</object>
 				<string key="NSFrameSize">{320, 411}</string>
@@ -299,15 +319,6 @@
 					<int key="connectionID">45</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">dismissKeyboard:</string>
-						<reference key="source" ref="585132613"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">1</int>
-					</object>
-					<int key="connectionID">48</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">passwordTextField</string>
 						<reference key="source" ref="372490531"/>
@@ -332,6 +343,15 @@
 					</object>
 					<int key="connectionID">61</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">resetPasswordButtonPressed:</string>
+						<reference key="source" ref="74856994"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">66</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -354,8 +374,9 @@
 							<reference ref="923164545"/>
 							<reference ref="969316569"/>
 							<reference ref="398461321"/>
-							<reference ref="106827254"/>
 							<reference ref="173901875"/>
+							<reference ref="106827254"/>
+							<reference ref="74856994"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -417,6 +438,11 @@
 						<reference key="object" ref="105693673"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">64</int>
+						<reference key="object" ref="74856994"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -436,6 +462,8 @@
 					<string>58.IBPluginDependency</string>
 					<string>62.IBPluginDependency</string>
 					<string>63.IBPluginDependency</string>
+					<string>64.CustomClassName</string>
+					<string>64.IBPluginDependency</string>
 					<string>8.IBPluginDependency</string>
 					<string>9.IBPluginDependency</string>
 				</object>
@@ -443,7 +471,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>AccountSettingsController</string>
 					<string>UIResponder</string>
-					<string>{{123, 263}, {320, 480}}</string>
+					<string>{{71, 297}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -453,6 +481,8 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>CustomButton</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -474,7 +504,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">63</int>
+			<int key="maxID">66</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -488,7 +518,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>checkAccountButtonPressed:</string>
 							<string>createAccountButtonPressed:</string>
-							<string>dismissKeyboard:</string>
+							<string>resetPasswordButtonPressed:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -505,6 +535,7 @@
 							<string>createAccountButton</string>
 							<string>emailTextField</string>
 							<string>passwordTextField</string>
+							<string>resetPasswordButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -512,6 +543,7 @@
 							<string>UIButton</string>
 							<string>UITextField</string>
 							<string>UITextField</string>
+							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

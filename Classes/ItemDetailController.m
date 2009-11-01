@@ -57,8 +57,6 @@
 - (IBAction) doneButtonPressed: (id)sender {
 	[listItemsController updateAttributeOnItem:item attribute:@"name" newValue:self.listNameTextView.text displayMessage:@"Updating list item..."];
 	
-	listItemsController.loadingWithUpdate = YES; // Tell it not to automatically load remote data until we finish.
-	
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

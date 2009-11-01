@@ -12,6 +12,7 @@
 @interface AccountSettingsController : UIViewController <UITextFieldDelegate> {
 	IBOutlet UIButton *checkAccountButton;
 	IBOutlet UIButton *createAccountButton;
+	IBOutlet UIButton *resetPasswordButton;
 	
 	IBOutlet UITextField *emailTextField;
 	IBOutlet UITextField *passwordTextField;
@@ -25,6 +26,7 @@
 
 - (IBAction) checkAccountButtonPressed:(id)sender;
 - (IBAction) createAccountButtonPressed:(id)sender;
+- (IBAction) resetPasswordButtonPressed:(id)sender;
 
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSDictionary *authResponse;
@@ -35,6 +37,7 @@
 
 @property (nonatomic, retain) IBOutlet UIButton *checkAccountButton;
 @property (nonatomic, retain) IBOutlet UIButton *createAccountButton;
+@property (nonatomic, retain) IBOutlet UIButton *resetPasswordButton;
 
 @property (nonatomic, retain) NSNumber *statusCode;
 

@@ -28,15 +28,13 @@
 
 @implementation ListItemsController
 
-@synthesize itemList, listItems, inviteeEmail, loadingWithUpdate, statusDisplay, activePredicate, completedPredicate;
+@synthesize itemList, listItems, inviteeEmail, statusDisplay, activePredicate, completedPredicate;
 
 - (void)viewDidLoad {	
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 	
-	// allows other controllers to tell us not to load data immediately if we're called after an update
-	// on an item in our list.
-	loadingWithUpdate = NO;
+	recentlyAddedItem = NO;
 	
 	// create a standard "add" button
 	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
@@ -129,11 +127,13 @@
 						  [[UserSettings sharedUserSettings].authToken URLEncodeString] ] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	[request setHTTPBody: httpBody];
-		
+	
+	recentlyAddedItem = YES;
+	
 	[[ [TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																				   delegate:self 
 																			  statusDisplay:self.statusDisplay 
-																			  statusMessage:@"Updating item..." ] autorelease];
+																			  statusMessage:@"Adding item..." ] autorelease];
 	
 }
 
@@ -167,6 +167,10 @@
 }
 
 - (IBAction)addButtonAction:(id)sender {
+	
+	// Check maxItems against the count of items in the list, and provide alert if list is at capacity.
+	// Tailor list for whether or not user is list creator
+	
 	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
 	
 	[ nextController setListItemsController:self ];
@@ -215,8 +219,14 @@
 			[[self navigationController] pushViewController:nextController animated:YES];
 			[nextController release];				
 		} else {
-			// Got a success response on an update, check for latest list on server.
-			[ self loadItems ];
+			if ( recentlyAddedItem ) {
+				recentlyAddedItem = NO;
+				[ self loadItems ];
+			}
+
+			// Got a success response on an update, but we won't do anything unless we 
+			// get a failure.
+			// [ self loadItems ];
 		}
 	}
 }
@@ -298,13 +308,9 @@
 	
 	[headerButton addTarget:self action:@selector(editListTitleAction:) forControlEvents:UIControlEventTouchUpInside];
 	[headerButton release];
+	
+	[ self loadItems ];
 
-	// If we're loading with an update from another controller, let that finished request load
-	// items and unset the flag.  Otherwise, load items as normal.
-	if (loadingWithUpdate)
-		self.loadingWithUpdate = NO;
-	else
-		[ self loadItems ];
 	
     [super viewWillAppear:animated];
 }
@@ -416,6 +422,22 @@
 // Updates a remote attribute using PUT.  Displays appropriate status message in toolbar.
 - (void)updateAttributeOnItem: (Item *)item attribute:(NSString *)attribute newValue:(NSString *)newValue displayMessage:(NSString *)displayMessage {
 
+	NSUInteger index = 0;
+
+	if ([ attribute isEqualToString:@"name"] ) {
+		for (Item *itm in self.listItems) {
+			if ( [ itm.remoteId  isEqualToNumber:item.remoteId ] ) {
+				[self.listItems removeObjectAtIndex:index];
+				[self.listItems insertObject:itm atIndex:index];
+				break;
+			}
+			
+			index++;
+		}
+		
+		[self.tableView reloadData];		
+	}
+	
 	NSString *format = @"%@/lists/%@/items/%@.json?item[%@]=%@&user_credentials=%@";
 	NSString *myUrlStr = [ NSString stringWithFormat:format, 
 						  API_SERVER, 
@@ -481,8 +503,14 @@
 	Item *item = [self itemAtIndexPath:indexPath];
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
-		[ listItems removeObjectAtIndex:indexPath.row ];
 
+		[ self.tableView beginUpdates ];
+		[ self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationRight];
+		[ self.listItems removeObject:item ];		
+		[ self.tableView endUpdates ];
+
+		[ self.tableView reloadData ];
+		
 		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
 		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
 				
@@ -503,7 +531,6 @@
 		Item *item = [ self itemAtIndexPath:fromIndexPath ];
 		
 		[self.listItems removeObjectAtIndex:fromIndexPath.row];
-		
 		[ self.listItems insertObject:item atIndex:toIndexPath.row ];
 
 		NSString *updatingMessage = @"Moving item...";

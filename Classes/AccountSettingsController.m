@@ -23,6 +23,7 @@
 
 @synthesize checkAccountButton;
 @synthesize createAccountButton;
+@synthesize resetPasswordButton;
 
 @synthesize statusCode;
 
@@ -47,9 +48,18 @@
 	
     self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 		
-    if (self.connection) { 
-        self.receivedData = [[NSMutableData data] retain]; 
-    }
+    if (self.connection)
+        self.receivedData = [[NSMutableData data] retain];
+	
+}
+
+- (IBAction) resetPasswordButtonPressed:(id)sender {
+	NSString *format = @"%@/password_resets/new";
+	NSString *myUrlStr = [ NSString stringWithFormat:format, ACCOUNT_SERVER ];
+	
+	NSURL *url = [ [ NSURL alloc ] initWithString: myUrlStr ];
+	[[UIApplication sharedApplication] openURL:url];
+	[ url release ];
 }
 
 - (IBAction) createAccountButtonPressed:(id)sender {
