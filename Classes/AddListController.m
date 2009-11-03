@@ -52,6 +52,8 @@
 	ItemList *l = [ [ItemList alloc] init];
 	[l setName:[parsedJsonObject objectForKey:@"name"]];
 	[l setRemoteId:[parsedJsonObject objectForKey:@"id"]];
+	[l setCurrentUserIsCreator:[parsedJsonObject objectForKey:@"current_user_is_creator"]];
+	[l setMaxItems:[parsedJsonObject objectForKey:@"max_items"]];	
 	
 	NSArray *ct = [ self.navigationController viewControllers];
 	ListItemsController *nextController = [[ListItemsController alloc] initWithStyle:UITableViewStylePlain];

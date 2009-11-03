@@ -18,19 +18,21 @@
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
 #import "StringHelper.h"
+#import "AccountChangeRequiredDelegate.h"
 
 #import "ShakeableTableView.h"
 
 @implementation ListsController
 
-@synthesize lists;
-@synthesize statusDisplay;
+@synthesize lists, statusDisplay, ownedLists;
 
 - (void)viewDidLoad {
 
 	self.tableView = [ [ShakeableTableView alloc] init];
 	[ (ShakeableTableView *)self.tableView setViewDelegate:self ];
 
+	self.ownedLists = 0;
+	
 	// Custom left button
 	UIBarButtonItem* lbi = [[UIBarButtonItem alloc] initWithImage:[ UIImage imageNamed:@"PencilDark.png" ] style:UIBarButtonItemStyleBordered target:self action:@selector(editListButtonAction:)];
 	lbi.style = UIBarButtonItemStyleBordered;		
@@ -68,6 +70,26 @@
 }
 
 - (IBAction)addButtonAction:(id)sender {
+	
+	if ( ( [UserSettings sharedUserSettings].maxLists != nil ) && ([ [UserSettings sharedUserSettings].maxLists intValue] == ownedLists) ) {
+		AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
+		
+		[ acrDelegate fetchToken ];
+		
+		NSString *msg = [NSString stringWithFormat:@"You have already created %@ lists, which is the capacity of your current subscription plan.  Tap 'upgrade' to add more lists now.", [UserSettings sharedUserSettings].maxLists];
+		
+		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List capacity reached" 
+														 message:msg
+														delegate:acrDelegate
+											   cancelButtonTitle:@"Cancel" 
+											   otherButtonTitles:@"Upgrade", nil ];
+		
+		[alert show];
+		[alert release];		
+		
+		return;
+	}
+
 	AddListController *nextController = [[AddListController alloc] initWithNibName:@"AddList" bundle:nil];
 		
 	[[self navigationController] pushViewController:nextController animated:YES];
@@ -94,7 +116,7 @@
 - (void)alertOnHTTPFailure {
 	NSString *msg = @"HTTP Failure";
 	
-	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"HTTP Failure, whoops!"
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"HTTP Failure!"
 													 message:msg
 													delegate:self
 										   cancelButtonTitle:@"OK" 
@@ -163,14 +185,19 @@
 - (NSMutableArray *)processGetResponse:(NSArray *)jsonArray {	
 	NSMutableArray *tmpItems = [ [[NSMutableArray alloc] init] autorelease ];
 
+	self.ownedLists = 0;
+	
 	for (id setObject in jsonArray) {
 		ItemList *l = [ [ItemList alloc] init];
 		[l setName:[setObject objectForKey:@"name"]];
 		[l setRemoteId:[setObject objectForKey:@"id"]];
 		[l setLinkId:[setObject objectForKey:@"link_id"]];
 		[l setCurrentUserIsCreator: [setObject objectForKey:@"current_user_is_creator"]];
-		// XXX todo fix this, use show for list instead???
-		// [l setMaxItems: [setObject objectForKey:"max_items"]];
+		
+		if ([ l.currentUserIsCreator boolValue ])
+			self.ownedLists++;
+		
+		[l setMaxItems: [setObject objectForKey:@"max_items"]];
 		
 		[tmpItems addObject:l];
 		[ l release ];
@@ -280,21 +307,23 @@
 			return;
 		}
 		
+		self.ownedLists--;
+		
+		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
+							  l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		[ request setHTTPMethod:@"DELETE" ];
+				
 		[ self.tableView beginUpdates ];
 		[ self.lists removeObjectAtIndex:indexPath.row ];
 		[ self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationRight];
 		[ self.tableView endUpdates ];
 		
 		[ self.tableView reloadData ];		
-		
-		NSString *format = @"%@/lists/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, 
-							  l.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
-				
-		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-		
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-		[ request setHTTPMethod:@"DELETE" ];
 		
 		[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
 																						 delegate:self 
@@ -331,8 +360,7 @@
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
 		ItemList *l = [ [lists objectAtIndex:fromIndexPath.row] retain];
 		
-		[lists removeObjectAtIndex:fromIndexPath.row];
-
+		[lists removeObject:l];
 		[lists insertObject:l atIndex:toIndexPath.row];
 		
 		// Have to add 1 to IndexPath.row because that's what the server expects.

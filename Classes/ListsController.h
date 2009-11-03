@@ -19,6 +19,7 @@
 	NSMutableArray *lists;
 
 	StatusDisplay *statusDisplay;
+	int ownedLists;
 }
 
 - (void) loadLists;
@@ -32,5 +33,6 @@
 
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
 @property (nonatomic, retain) NSMutableArray *lists;
+@property (nonatomic) int ownedLists;
 
 @end

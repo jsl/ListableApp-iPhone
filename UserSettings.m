@@ -12,11 +12,13 @@
 @implementation UserSettings
 
 @synthesize authToken;
+@synthesize maxLists;
 
 SYNTHESIZE_SINGLETON_FOR_CLASS(UserSettings);
 
 - (void)dealloc {
 	[authToken release];
+	[maxLists release];
 	
     [super dealloc];
 }

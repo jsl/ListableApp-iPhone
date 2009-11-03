@@ -181,7 +181,7 @@
 - (void)alertOnHTTPFailure {
 	NSString *msg = @"HTTP Failure";
 	
-	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"HTTP Failure, whoops!"
+	UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"HTTP Failure!"
 													 message:msg
 													delegate:self
 										   cancelButtonTitle:@"OK" 

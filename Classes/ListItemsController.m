@@ -20,6 +20,7 @@
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
+#import "AccountChangeRequiredDelegate.h"
 
 #import "StringHelper.h"
 
@@ -36,11 +37,6 @@
 	
 	recentlyAddedItem = NO;
 	
-	// create a standard "add" button
-	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
-	bi.style = UIBarButtonItemStyleBordered;
-	self.navigationItem.rightBarButtonItem = bi;
-	[bi release];
 	
 	// Set toolbar title
 	self.title = @"Items";
@@ -66,14 +62,14 @@
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.parentViewController.view ];
 	
 	// Add the titleView navigation bar items...
-	UIView *tv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 45)];
+	UIView *tv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 160, 45)];
 	
 	// Add the share button
 	UIImage *users = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource :@"Users" ofType:@"png"]];	
 	
 	UIButton *btn = [UIButton buttonWithType: UIButtonTypeRoundedRect];
 	
-	btn.frame = CGRectMake(0, 7, 80, 30);
+	btn.frame = CGRectMake(0, 7, 70, 30);
 	
 	UIImage *backgroundImage = [[UIImage imageNamed: @"DarkerButtonBackgroundRed.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:15];
 	
@@ -90,7 +86,7 @@
 	
 	UIImage *pencil = [ UIImage imageNamed:@"PencilDark.png"];
 	
-	int newX = btn.frame.origin.x + btn.frame.size.width ;
+	int newX = btn.frame.origin.x + btn.frame.size.width + 3;
 	int newY = btn.frame.origin.y ;
 	
 	btn = [UIButton buttonWithType: UIButtonTypeRoundedRect];
@@ -98,7 +94,7 @@
 	[btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
 	[btn setImage:pencil forState:UIControlStateNormal];
 	
-	btn.frame = CGRectMake(newX, newY, 80, 30);
+	btn.frame = CGRectMake(newX, newY, 70, 30);
 	
 	[ btn addTarget:self action:@selector(editListButtonAction:)forControlEvents:UIControlEventTouchUpInside];
 	
@@ -106,6 +102,13 @@
 	
 	[ self.navigationItem setTitleView:tv ];
 	[tv release];
+	
+	// create a standard "add" button
+	UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addButtonAction:)];
+
+	// bi.style = UIBarButtonItemStyleBordered;
+	self.navigationItem.rightBarButtonItem = bi;
+	[bi release];
 	
 	[super viewDidLoad];
 }
@@ -170,6 +173,43 @@
 	
 	// Check maxItems against the count of items in the list, and provide alert if list is at capacity.
 	// Tailor list for whether or not user is list creator
+	// If this list has reached capacity, display alert customized for whether or not this user is the list
+	// creator.
+	
+	if ( [ self.itemList.maxItems intValue ] == [ self.listItems count ]) {
+		if (self.itemList.currentUserIsCreator) {
+			
+			AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
+			
+			[ acrDelegate fetchToken ];
+			
+			NSString *msg = [NSString stringWithFormat:@"Your list has exceeded its maximum capacity of %@ items.  Tap 'upgrade' to increase the capacity of this list now.", self.itemList.maxItems];
+			
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List item capacity reached" 
+															 message:msg
+															delegate:acrDelegate
+												   cancelButtonTitle:@"Cancel" 
+												   otherButtonTitles:@"Upgrade", nil ];
+			
+			[alert show];
+			[alert release];
+			
+		} else {
+			
+			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List item capacity reached"
+															 message:@"The capacity of this list has been reached, and no more items can be added until the list creator has upgraded his or her account."
+															delegate:self
+												   cancelButtonTitle:@"OK" 
+												   otherButtonTitles:nil ];
+			
+			
+			[alert show];
+			[alert release];
+		}
+		
+		return;
+	}
+	
 	
 	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
 	
@@ -504,6 +544,14 @@
 
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 
+		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		[ request setHTTPMethod:@"DELETE" ];		
+		
 		[ self.tableView beginUpdates ];
 		[ self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationRight];
 		[ self.listItems removeObject:item ];		
@@ -511,13 +559,6 @@
 
 		[ self.tableView reloadData ];
 		
-		NSString *format = @"%@/lists/%@/items/%@.json?user_credentials=%@";
-		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, item.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
-				
-		NSURL *myURL = [NSURL URLWithString:myUrlStr];
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-		
-		[ request setHTTPMethod:@"DELETE" ];
 		
 		[[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."] autorelease];		
 	}	
@@ -530,9 +571,13 @@
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
 		Item *item = [ self itemAtIndexPath:fromIndexPath ];
 		
-		[self.listItems removeObjectAtIndex:fromIndexPath.row];
+		[ item retain ];
+		
+		[ self.listItems removeObject:item ];
 		[ self.listItems insertObject:item atIndex:toIndexPath.row ];
-
+		
+		[ item release ];
+		
 		NSString *updatingMessage = @"Moving item...";
 
 		// Have to add 1 to IndexPath.row because that's what the server expects.

@@ -11,8 +11,20 @@
 
 @interface AccountChangeRequiredDelegate : NSObject <UIAlertViewDelegate> {
 	NSString *token;
+	NSMutableData *data;
+	NSURLConnection *connection;
+	int ticks;
+	NSTimer *timer;
 }
 
+- (void)fetchToken;
+- (void)loadAccountInBrowser;
+- (void)displayConnectivityProblemMessage;
+
 @property (nonatomic, retain) NSString *token;
+@property (nonatomic, retain) NSMutableData *data;
+@property (nonatomic, retain) NSURLConnection *connection;
+@property (nonatomic, retain) NSTimer *timer;
+@property (nonatomic) int ticks;
 
 @end

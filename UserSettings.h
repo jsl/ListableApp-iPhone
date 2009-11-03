@@ -12,10 +12,11 @@
 @interface UserSettings : NSObject {
 	
 	NSString *authToken;
-	
+	NSDecimalNumber *maxLists;
 }
 
 @property (nonatomic, retain) NSString *authToken;
+@property (nonatomic, retain) NSDecimalNumber *maxLists;
 
 + (UserSettings *)sharedUserSettings;
 
