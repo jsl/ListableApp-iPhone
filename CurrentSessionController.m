@@ -16,7 +16,7 @@
 
 @implementation CurrentSessionController
 
-@synthesize logoutButton, changePlanButton, emailLabel, statusDisplay;
+@synthesize logoutButton, changePlanButton, loginLabel, statusDisplay;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -33,7 +33,7 @@
     [super viewDidLoad];
 		
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	emailLabel.text = [prefs objectForKey:@"userEmail"];
+	loginLabel.text = [ prefs objectForKey:@"userLogin" ];
 	
 	self.statusDisplay = [ [StatusDisplay alloc] initWithView:self.view ];
 	
@@ -77,7 +77,7 @@
 - (IBAction) logoutButtonPressed:(id)sender {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[prefs setObject:nil forKey:@"accessToken"];
-	[prefs setObject:nil forKey:@"userEmail"];
+	[prefs setObject:nil forKey:@"userLogin"];
 	[prefs synchronize];
 	
 	[UserSettings sharedUserSettings].authToken = nil;
@@ -108,7 +108,7 @@
 
 - (void)dealloc {
 	[logoutButton release];
-	[emailLabel release];
+	[loginLabel release];
 	[changePlanButton release];
 	[statusDisplay release];
     [super dealloc];

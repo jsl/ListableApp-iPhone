@@ -26,52 +26,11 @@
 		
 		[ self.checkButton addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchDown ];
 		self.checkButton.backgroundColor = self.backgroundColor;
+		self.checkButton.tag = 99;
+		
 		[ self.contentView addSubview:self.checkButton ];
     }
     return self;
-}
-
-- (void)layoutSubviews {
-	
-	// Just clear out the cell on redraw, we have to re-create it depending on if it's in editing mode or not.
-	NSEnumerator *enumerator = [[self.contentView subviews] objectEnumerator];
-	id setObject;
-	while ((setObject = [enumerator nextObject]) != nil)
-		[setObject removeFromSuperview];
-	
-	if (self.editing) {
-		// Reconfigure title to shift left
-		UILabel *newLabel = [title RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:8.0f y_pos:10.0f];
-		
-		[self.contentView addSubview:newLabel];
-		
-		[newLabel release];
-		
-    } else {
-		CGRect contentRect = [self.contentView bounds];
-		
-		// layout the check button image
-		UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
-		
-		CGRect frame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, self.frame.size.height);
-		checkButton.frame = frame;
-		
-		UIImage *image = ( [ item.completed intValue ] == 1 ) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
-		[ checkButton setImage:image forState:UIControlStateNormal];
-		[ checkButton setContentMode:UIViewContentModeCenter];
-		
-		[ self.contentView addSubview:checkButton ];
-		
-		UILabel *newLabel = [title RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:40.0f y_pos:10.0f];
-		
-		[self.contentView addSubview:newLabel];
-		
-		[ newLabel release ];
-    }
-	
-	self.title = item.name;
-	
-	[super layoutSubviews];
 }
 
 // called when the checkmark button is touched 

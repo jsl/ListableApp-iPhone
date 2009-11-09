@@ -14,7 +14,7 @@
 	IBOutlet UIButton *createAccountButton;
 	IBOutlet UIButton *resetPasswordButton;
 	
-	IBOutlet UITextField *emailTextField;
+	IBOutlet UITextField *loginTextField;
 	IBOutlet UITextField *passwordTextField;
 	
 	NSMutableData *receivedData;
@@ -31,7 +31,7 @@
 @property (nonatomic, retain) NSMutableData *receivedData;
 @property (nonatomic, retain) NSDictionary *authResponse;
 
-@property (nonatomic, retain) IBOutlet UITextField *emailTextField;
+@property (nonatomic, retain) IBOutlet UITextField *loginTextField;
 @property (nonatomic, retain) IBOutlet UITextField *passwordTextField;
 @property (nonatomic, retain) NSURLConnection *connection;
 

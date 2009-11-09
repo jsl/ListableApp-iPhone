@@ -142,6 +142,7 @@
 
 - (void) editListButtonAction:(id)sender {
 	[self setEditing:!self.editing];
+	[self.tableView reloadData];
 }
 
 // Activate on touch of list heading.
@@ -235,7 +236,6 @@
 - (void) renderSuccessJSONResponse: (id)parsedJsonObject {	
 	
 	if ( [ parsedJsonObject isKindOfClass:[ NSArray class ]] == YES ) {
-
 		self.listItems = [ self processGetResponse:parsedJsonObject ];
 		[ self.tableView reloadData ];
 
@@ -250,7 +250,7 @@
 			itm.name = [ parsedJsonObject valueForKey:@"name" ];
 			
 			itm.createdAt = [ parsedJsonObject valueForKey:@"created_at" ];
-			itm.creatorEmail = [ parsedJsonObject valueForKey:@"creator_email" ];
+			itm.creatorEmail = [ parsedJsonObject valueForKey:@"creator_login" ];
 			itm.remoteId = [ parsedJsonObject valueForKey:@"id" ];
 			
 			nextController.item = itm;
@@ -350,7 +350,6 @@
 	[headerButton release];
 	
 	[ self loadItems ];
-
 	
     [super viewWillAppear:animated];
 }
@@ -400,10 +399,49 @@
 	if ( cell == nil )
 		cell = [[[ListItemCustomCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
 	
+	else {
+		
+		// Remove check box and text UIView
+		
+		UIView *vw = [cell viewWithTag:1];
+		[vw removeFromSuperview];
+		
+		vw = [cell viewWithTag:99];
+		[vw removeFromSuperview];
+	}
+	
+	
+	CGRect contentRect = [cell.contentView bounds];
+	
+	if (!self.editing) {
+		// layout the check button image
+		UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
+		
+		CGRect theFrame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, cell.frame.size.height);
+		cell.checkButton.frame = theFrame;
+		
+		UIImage *image = ( [ itm.completed intValue ] == 1 ) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
+		[ cell.checkButton setImage:image forState:UIControlStateNormal];
+		[ cell.checkButton setContentMode:UIViewContentModeCenter];
+		
+		[ cell.contentView addSubview:cell.checkButton ];		
+	}
+	
 	cell.item				 = itm;
 	cell.listItemsController = self;
 	
+	CGFloat leftPos = self.editing ? 8.0f : 40.0f;
+	
+	UILabel *newLabel = [itm.name RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:leftPos y_pos:10.0f];
+	
+	newLabel.tag = 1;
+	
+	[ cell.contentView addSubview:newLabel ];
+	
+	[ newLabel release ];
+	
 	[ cell layoutSubviews ];
+	
     return cell;
 }
 
@@ -559,30 +597,31 @@
 
 		[ self.tableView reloadData ];
 		
-		
 		[[[ TimedURLConnection alloc] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request delegate:self statusDisplay:self.statusDisplay statusMessage:@"Deleting list item..."] autorelease];		
 	}	
 }
 
+- (void)refreshDisplay:(UITableView *)tableView {
+    [tableView reloadData]; 
+}
 
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
 	// Don't do anything if source is same as target.
 	if ( ! (fromIndexPath.row == toIndexPath.row && fromIndexPath.section == toIndexPath.section) ) {
-		Item *item = [ self itemAtIndexPath:fromIndexPath ];
-		
-		[ item retain ];
-		
+		Item *item = [ [ self.listItems objectAtIndex:fromIndexPath.row ] retain];
+				
 		[ self.listItems removeObject:item ];
+
 		[ self.listItems insertObject:item atIndex:toIndexPath.row ];
-		
 		[ item release ];
-		
+				
 		NSString *updatingMessage = @"Moving item...";
 
 		// Have to add 1 to IndexPath.row because that's what the server expects.
 		int newPos = toIndexPath.row + 1;
 		[ self updateAttributeOnItem:item attribute:@"position" newValue:[[NSNumber numberWithInt:newPos] stringValue] displayMessage:updatingMessage ];				
+		// [self performSelector:(@selector(refreshDisplay:)) withObject:(tableView) afterDelay:1.5];
 	}
 }
 

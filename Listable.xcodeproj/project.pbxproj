@@ -51,7 +51,6 @@
 		D08C92E3105ABA7D0053DA73 /* AddListController.m in Sources */ = {isa = PBXBuildFile; fileRef = D08C92E1105ABA7D0053DA73 /* AddListController.m */; };
 		D08C92E4105ABA7D0053DA73 /* AddList.xib in Resources */ = {isa = PBXBuildFile; fileRef = D08C92E2105ABA7D0053DA73 /* AddList.xib */; };
 		D0AA4F38109F2966003A17D1 /* SubscriptionPlanInfoFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AA4F37109F2966003A17D1 /* SubscriptionPlanInfoFetcher.m */; };
-		D0AA5073109FC43C003A17D1 /* AddButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D0AA5072109FC43C003A17D1 /* AddButton.png */; };
 		D0AADB8A105E6C6000652E19 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0AADB89105E6C6000652E19 /* Entitlements.plist */; };
 		D0AADCE110600A5D00652E19 /* CollaboratorsController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADCE010600A5D00652E19 /* CollaboratorsController.m */; };
 		D0AADDB41060487200652E19 /* Collaborator.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AADDB31060487200652E19 /* Collaborator.m */; };
@@ -150,7 +149,6 @@
 		D08C92E2105ABA7D0053DA73 /* AddList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddList.xib; sourceTree = "<group>"; };
 		D0AA4F36109F2966003A17D1 /* SubscriptionPlanInfoFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubscriptionPlanInfoFetcher.h; sourceTree = "<group>"; };
 		D0AA4F37109F2966003A17D1 /* SubscriptionPlanInfoFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubscriptionPlanInfoFetcher.m; sourceTree = "<group>"; };
-		D0AA5072109FC43C003A17D1 /* AddButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AddButton.png; sourceTree = "<group>"; };
 		D0AADB89105E6C6000652E19 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		D0AADCDF10600A5D00652E19 /* CollaboratorsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollaboratorsController.h; sourceTree = "<group>"; };
 		D0AADCE010600A5D00652E19 /* CollaboratorsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollaboratorsController.m; sourceTree = "<group>"; };
@@ -299,7 +297,6 @@
 				D05FFAFF106BD38E001E1839 /* DarkerButtonBackground.png */,
 				D05FFA4A106BB54F001E1839 /* Pencil.png */,
 				D0480500106EA0D000C5CD5B /* DarkerButtonBackgroundRed.png */,
-				D0AA5072109FC43C003A17D1 /* AddButton.png */,
 				D05FFA4B106BB54F001E1839 /* Users.png */,
 				D0C9BC451097202E00DBECE4 /* TabBarFeeds.png */,
 				D0C9BC421097201F00DBECE4 /* DefaultGravatar.png */,
@@ -452,7 +449,6 @@
 				D0C9BC431097201F00DBECE4 /* DefaultGravatar.png in Resources */,
 				D0C9BC461097202E00DBECE4 /* TabBarFeeds.png in Resources */,
 				D0C9BEC01097CC4700DBECE4 /* Default.png in Resources */,
-				D0AA5073109FC43C003A17D1 /* AddButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,14 +11,14 @@
 
 @implementation Collaborator
 
-@synthesize email;
+@synthesize login;
 @synthesize remoteId;
 @synthesize isCreator;
 @synthesize userImage;
 
 - (void)dealloc {
 	[userImage release];
-	[email release];
+	[login release];
 	[remoteId release];
 	[isCreator release];
 	

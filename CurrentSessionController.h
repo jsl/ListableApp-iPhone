@@ -14,7 +14,7 @@
 	IBOutlet UIButton *logoutButton;	
 	IBOutlet UIButton *changePlanButton;	
 
-	IBOutlet UILabel *emailLabel;
+	IBOutlet UILabel *loginLabel;
 	StatusDisplay *statusDisplay;
 }
 
@@ -24,6 +24,6 @@
 @property (nonatomic, retain) UIButton *logoutButton;
 @property (nonatomic, retain) UIButton *changePlanButton;
 @property (nonatomic, retain) StatusDisplay *statusDisplay;
-@property (nonatomic, retain) UILabel *emailLabel;
+@property (nonatomic, retain) UILabel *loginLabel;
 
 @end

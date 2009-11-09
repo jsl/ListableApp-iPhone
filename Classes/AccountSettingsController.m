@@ -17,7 +17,7 @@
 
 @synthesize receivedData;
 @synthesize authResponse;
-@synthesize emailTextField;
+@synthesize loginTextField;
 @synthesize passwordTextField;
 @synthesize connection;
 
@@ -39,8 +39,8 @@
 	
     [request setHTTPMethod:@"POST"]; 
     
-	[request setHTTPBody:[[NSString stringWithFormat:@"user_session[email]=%@&user_session[password]=%@&device_id=%@", 
-                           [emailTextField.text URLEncodeString], 
+	[request setHTTPBody:[[NSString stringWithFormat:@"user_session[login]=%@&user_session[password]=%@&device_id=%@", 
+                           [loginTextField.text URLEncodeString], 
 						   [passwordTextField.text URLEncodeString],
                            [[UIDevice currentDevice] uniqueIdentifier]] dataUsingEncoding:NSUTF8StringEncoding]]; 
 	
@@ -99,7 +99,7 @@
 	if ([statusCode intValue ] == 200) {		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 		[prefs setObject:[jsonResponse valueForKey:@"token"] forKey:@"accessToken"];
-		[prefs setObject:emailTextField.text forKey:@"userEmail"];
+		[prefs setObject:loginTextField.text forKey:@"userLogin"];
 		[prefs synchronize];
 		
 		[UIAppDelegate configureTabBarWithLoggedInState:YES];
@@ -144,7 +144,7 @@
 }
 
 - (void)dropKickResponder {
-	[emailTextField resignFirstResponder];
+	[loginTextField resignFirstResponder];
 	[passwordTextField resignFirstResponder];	
 }
 
@@ -155,7 +155,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)theTextField {
 	[self dropKickResponder];
 	
-	[emailTextField resignFirstResponder];
+	[loginTextField resignFirstResponder];
 	[passwordTextField resignFirstResponder];
 }
 

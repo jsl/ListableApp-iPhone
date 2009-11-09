@@ -167,7 +167,7 @@
 	for (id setObject in jsonArray) {
 		Collaborator *c = [[Collaborator alloc] init];
 		
-		[c setEmail: [setObject objectForKey:@"email"] ];
+		[c setLogin: [setObject objectForKey:@"login"] ];
 		[c setRemoteId:[setObject objectForKey:@"id"] ];
 		[c setIsCreator:[setObject objectForKey:@"is_creator"] ];
 		[c setUserImage:[setObject objectForKey:@"user_image"] ];
@@ -282,7 +282,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	Collaborator *c = [self.collaborators objectAtIndex:indexPath.row];
-	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
+	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.login, @"Creator"] : c.login;
 
 	return [lblText RAD_textHeightForSystemFontOfSize:kTextViewFontSize] + 20;
 }
@@ -321,7 +321,7 @@
 	
 	NSURL *url = [NSURL URLWithString:myUrlStr ];
 
-	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.email, @"Creator"] : c.email;
+	NSString *lblText = ([c isCreator] == [NSNumber numberWithBool:YES]) ? [NSString stringWithFormat:@"%@ (%@)", c.login, @"Creator"] : c.login;
 
 	UILabel *msgLabel = [ lblText RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:55.0f y_pos:10.0f];
 	
@@ -398,7 +398,7 @@
 			
 			// If this request was to delete ourselves, don't set up the delegate.  Just back out to a "safe" place
 			// 
-			if ( [[prefs objectForKey:@"userEmail"] isEqualToString:collaborator.email ]) {
+			if ( [[prefs objectForKey:@"userLogin"] isEqualToString:collaborator.login ]) {
 				[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
 				UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
 				[self.navigationController popToViewController:controller animated:NO];
