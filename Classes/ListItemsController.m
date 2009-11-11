@@ -412,12 +412,16 @@
 	
 	
 	CGRect contentRect = [cell.contentView bounds];
+
+	CGFloat leftPos = self.editing ? 8.0f : 40.0f;
+
+	UILabel *newLabel = [itm.name RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:leftPos y_pos:10.0f];
 	
 	if (!self.editing) {
 		// layout the check button image
 		UIImage *checkedImage = [UIImage imageNamed:@"checked_larger.png"];
 		
-		CGRect theFrame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, cell.frame.size.height);
+		CGRect theFrame = CGRectMake(contentRect.origin.x, 0.0, checkedImage.size.width, newLabel.frame.size.height + 20.0);
 		cell.checkButton.frame = theFrame;
 		
 		UIImage *image = ( [ itm.completed intValue ] == 1 ) ? checkedImage: [UIImage imageNamed:@"unchecked_larger.png"];
@@ -429,10 +433,6 @@
 	
 	cell.item				 = itm;
 	cell.listItemsController = self;
-	
-	CGFloat leftPos = self.editing ? 8.0f : 40.0f;
-	
-	UILabel *newLabel = [itm.name RAD_newSizedCellLabelWithSystemFontOfSize:kTextViewFontSize x_pos:leftPos y_pos:10.0f];
 	
 	newLabel.tag = 1;
 	
