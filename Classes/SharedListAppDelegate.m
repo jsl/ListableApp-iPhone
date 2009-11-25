@@ -16,7 +16,6 @@
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
 #import "FeedController.h"
-#import "SubscriptionPlanInfoFetcher.h"
 
 #import "Constants.h"
 #import "URLEncode.h"
@@ -39,9 +38,7 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
 	[UserSettings sharedUserSettings].authToken = [ [NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
-	
-	[[ [[SubscriptionPlanInfoFetcher alloc] init] autorelease] fetchInfo];
-	
+		
 	if ( [UserSettings sharedUserSettings].authToken != nil ) {
 		[self configureTabBarWithLoggedInState:YES];
 
