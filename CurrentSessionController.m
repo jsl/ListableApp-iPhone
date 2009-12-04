@@ -76,8 +76,11 @@
 
 - (IBAction) logoutButtonPressed:(id)sender {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	
 	[prefs setObject:nil forKey:@"accessToken"];
 	[prefs setObject:nil forKey:@"userLogin"];
+	[prefs setObject:nil forKey:@"userId"];	
+	
 	[prefs synchronize];
 	
 	[UserSettings sharedUserSettings].authToken = nil;

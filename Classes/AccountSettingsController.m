@@ -100,6 +100,7 @@
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 		[prefs setObject:[jsonResponse valueForKey:@"token"] forKey:@"accessToken"];
 		[prefs setObject:loginTextField.text forKey:@"userLogin"];
+		[prefs setObject:[jsonResponse valueForKey:@"user_id"] forKey:@"userId"];
 		[prefs synchronize];
 		
 		[UIAppDelegate configureTabBarWithLoggedInState:YES];

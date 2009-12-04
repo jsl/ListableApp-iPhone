@@ -71,25 +71,6 @@
 
 - (IBAction)addButtonAction:(id)sender {
 	
-	if ( ( [UserSettings sharedUserSettings].maxLists != nil ) && ([ [UserSettings sharedUserSettings].maxLists intValue] == ownedLists) ) {
-		AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
-		
-		[ acrDelegate fetchToken ];
-		
-		NSString *msg = [NSString stringWithFormat:@"You have already created %@ lists, which is the capacity of your current subscription plan.  Tap 'upgrade' to add more lists now.", [UserSettings sharedUserSettings].maxLists];
-		
-		UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List capacity reached" 
-														 message:msg
-														delegate:acrDelegate
-											   cancelButtonTitle:@"Cancel" 
-											   otherButtonTitles:@"Upgrade", nil ];
-		
-		[alert show];
-		[alert release];		
-		
-		return;
-	}
-
 	AddListController *nextController = [[AddListController alloc] initWithNibName:@"AddList" bundle:nil];
 		
 	[[self navigationController] pushViewController:nextController animated:YES];

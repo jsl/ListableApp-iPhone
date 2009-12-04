@@ -10,7 +10,6 @@
 #import "ListsController.h"
 #import "AccountSettingsController.h"
 #import <AddressBook/AddressBook.h>
-#import "AuthenticationChecker.h"
 #import "ShakeableTableView.h"
 #import "CurrentSessionController.h"
 #import "UserSettings.h"

@@ -13,6 +13,7 @@
 
 @synthesize login;
 @synthesize remoteId;
+@synthesize userId;
 @synthesize isCreator;
 @synthesize userImage;
 
@@ -20,6 +21,7 @@
 	[userImage release];
 	[login release];
 	[remoteId release];
+	[userId release];
 	[isCreator release];
 	
     [super dealloc];

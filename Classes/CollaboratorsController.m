@@ -166,12 +166,13 @@
 	
 	for (id setObject in jsonArray) {
 		Collaborator *c = [[Collaborator alloc] init];
-		
+				
 		[c setLogin: [setObject objectForKey:@"login"] ];
+		[c setUserId: [setObject objectForKey:@"user_id"]];
 		[c setRemoteId:[setObject objectForKey:@"id"] ];
 		[c setIsCreator:[setObject objectForKey:@"is_creator"] ];
 		[c setUserImage:[setObject objectForKey:@"user_image"] ];
-		
+				
 		[tmpCollaborators addObject:c];
 		[c release];
 	}
@@ -194,16 +195,6 @@
 																			statusDisplay:self.statusDisplay 
 																			statusMessage:@"Loading editor list..." ] autorelease];	
 }
-
-
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-    if (self = [super initWithStyle:style]) {
-    }
-    return self;
-}
-*/
 
 - (void)viewDidLoad {
 	self.tableView = [ [ShakeableTableView alloc] init];
@@ -235,31 +226,11 @@
     [super viewWillAppear:animated];
 }
 
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-
 - (void)viewWillDisappear:(BOOL)animated {
 	[self.tableView resignFirstResponder];
 
 	[super viewWillDisappear:animated];
 }
-
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -354,17 +325,6 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 		
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
@@ -396,9 +356,8 @@
 			
 			NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 			
-			// If this request was to delete ourselves, don't set up the delegate.  Just back out to a "safe" place
-			// 
-			if ( [[prefs objectForKey:@"userLogin"] isEqualToString:collaborator.login ]) {
+			if ( [ [ prefs objectForKey:@"userId" ] integerValue ] == [ collaborator.userId integerValue ] ) {
+				
 				[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
 				UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
 				[self.navigationController popToViewController:controller animated:NO];
@@ -414,23 +373,6 @@
 		}
 	}
 }
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 
 - (void)dealloc {
 	[collaborators release];

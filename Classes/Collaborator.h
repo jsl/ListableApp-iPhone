@@ -12,6 +12,7 @@
 @interface Collaborator : NSObject {
 	NSString *login;
 	NSDecimalNumber *remoteId;
+	NSDecimalNumber *userId;
 	NSNumber *isCreator;
 	NSString *userImage;
 }
@@ -20,5 +21,6 @@
 @property (nonatomic, retain) NSDecimalNumber *remoteId;
 @property (nonatomic, retain) NSNumber *isCreator;
 @property (nonatomic, retain) NSString *userImage;
+@property (nonatomic, retain) NSDecimalNumber *userId;
 
 @end
