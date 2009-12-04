@@ -10,7 +10,6 @@
 #import "JSON.h"
 #import "Constants.h"
 #import "URLEncode.h"
-#import "AccountChangeRequiredDelegate.h"
 
 @implementation TimedURLConnection
 
@@ -152,26 +151,9 @@
 		if ([ delegate respondsToSelector:@selector(renderSuccessJSONResponse:) ])
 			[delegate renderSuccessJSONResponse:parsedJsonObject];
 	} else {
-		// First see if this error is because the user needs to change their account settings.  If so,
-		// provide useful message directing them to account settings.
-		if ((NSNumber *)[parsedJsonObject valueForKey:@"direct_to_account_page"] == [NSNumber numberWithBool:YES]) {
-
-			AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
-			
-			acrDelegate.token = [parsedJsonObject valueForKey:@"token"];
-			
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Account change required" 
-															 message:[parsedJsonObject valueForKey:@"message"]
-															delegate:acrDelegate
-												   cancelButtonTitle:@"Cancel" 
-												   otherButtonTitles:@"Upgrade", nil ];
-
-			[alert show];
-			[alert release];
-
-		} else if ([ delegate respondsToSelector:@selector(renderFailureJSONResponse: withStatusCode:) ]) {
+		
+		if ([ delegate respondsToSelector:@selector(renderFailureJSONResponse: withStatusCode:) ])
 			[delegate renderFailureJSONResponse:parsedJsonObject withStatusCode:[ self.statusCode intValue ] ];
-		}
 	}
 	
 	[responseData release];

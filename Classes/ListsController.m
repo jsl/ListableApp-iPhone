@@ -18,7 +18,6 @@
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
 #import "StringHelper.h"
-#import "AccountChangeRequiredDelegate.h"
 
 #import "ShakeableTableView.h"
 

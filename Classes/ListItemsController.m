@@ -20,7 +20,6 @@
 #import "SharedListAppDelegate.h"
 #import "UserSettings.h"
 #import "TimedURLConnection.h"
-#import "AccountChangeRequiredDelegate.h"
 
 #import "StringHelper.h"
 
@@ -170,48 +169,7 @@
 	[ self loadItems ];
 }
 
-- (IBAction)addButtonAction:(id)sender {
-	
-	// Check maxItems against the count of items in the list, and provide alert if list is at capacity.
-	// Tailor list for whether or not user is list creator
-	// If this list has reached capacity, display alert customized for whether or not this user is the list
-	// creator.
-	
-	if ( [ self.itemList.maxItems intValue ] == [ self.listItems count ]) {
-		if (self.itemList.currentUserIsCreator) {
-			
-			AccountChangeRequiredDelegate *acrDelegate = [[AccountChangeRequiredDelegate alloc] init];
-			
-			[ acrDelegate fetchToken ];
-			
-			NSString *msg = [NSString stringWithFormat:@"Your list has exceeded its maximum capacity of %@ items.  Tap 'upgrade' to increase the capacity of this list now.", self.itemList.maxItems];
-			
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List item capacity reached" 
-															 message:msg
-															delegate:acrDelegate
-												   cancelButtonTitle:@"Cancel" 
-												   otherButtonTitles:@"Upgrade", nil ];
-			
-			[alert show];
-			[alert release];
-			
-		} else {
-			
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"List item capacity reached"
-															 message:@"The capacity of this list has been reached, and no more items can be added until the list creator has upgraded his or her account."
-															delegate:self
-												   cancelButtonTitle:@"OK" 
-												   otherButtonTitles:nil ];
-			
-			
-			[alert show];
-			[alert release];
-		}
-		
-		return;
-	}
-	
-	
+- (IBAction)addButtonAction:(id)sender {	
 	AddListItemController *nextController = [[AddListItemController alloc] initWithNibName:@"AddListItem" bundle:nil];
 	
 	[ nextController setListItemsController:self ];
@@ -513,7 +471,7 @@
 			index++;
 		}
 		
-		[self.tableView reloadData];		
+		[self.tableView reloadData];
 	}
 	
 	NSString *format = @"%@/lists/%@/items/%@.json?item[%@]=%@&user_credentials=%@";
