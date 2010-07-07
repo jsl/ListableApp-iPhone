@@ -326,58 +326,44 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-		
+	
 	if (editingStyle == UITableViewCellEditingStyleDelete) {	
 		Collaborator *collaborator = [collaborators objectAtIndex:indexPath.row];
 		
-		// List creator can't be deleted, don't bother with the request, just return.
-		if (collaborator.isCreator == [NSNumber numberWithBool:YES]) {
-			NSString *msg = @"List creator cannot be removed.  Delete this list instead if it is no longer needed.";
-			UIAlertView *alert = [ [UIAlertView alloc] initWithTitle:@"Unable to delete list creator" 
-															 message:msg 
-															delegate:self
-												   cancelButtonTitle:@"OK" 
-												   otherButtonTitles:nil ];
+		// Make a request to delete this user.
+		
+		NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
+		NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
+		
+		NSURL *myURL = [NSURL URLWithString:myUrlStr];
+		
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
+		
+		[request setHTTPMethod:@"DELETE"];
+		
+		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+		
+		if ( [ [ prefs objectForKey:@"userId" ] integerValue ] == [ collaborator.userId integerValue ] ) {
 			
-			[alert show];
-			[alert release];
+			[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
+			UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
+			[self.navigationController popToViewController:controller animated:NO];
+			
 		} else {
 			
-			// Make a request to delete this user.
+			[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
+																							  delegate:self 
+																						 statusDisplay:self.statusDisplay 
+																						 statusMessage:@"Deleting editor..." ] autorelease];
 			
-			NSString *format = @"%@/lists/%@/collaborators/%@.json?user_credentials=%@";
-			NSString *myUrlStr = [NSString stringWithFormat:format, API_SERVER, itemList.remoteId, collaborator.remoteId, [[UserSettings sharedUserSettings].authToken URLEncodeString]];
-			
-			NSURL *myURL = [NSURL URLWithString:myUrlStr];
-			
-			NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:myURL];
-			
-			[request setHTTPMethod:@"DELETE"];
-			
-			NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-			
-			if ( [ [ prefs objectForKey:@"userId" ] integerValue ] == [ collaborator.userId integerValue ] ) {
-				
-				[[[TimedURLConnection alloc] initWithRequest:request ] autorelease];
-				UIViewController* controller = [self.navigationController.viewControllers objectAtIndex:0];
-				[self.navigationController popToViewController:controller animated:NO];
-				
-			} else {
-				
-				[[ [ TimedURLConnection alloc ] initWithRequestAndDelegateAndStatusDisplayAndStatusMessage:request 
-																								  delegate:self 
-																							 statusDisplay:self.statusDisplay 
-																							 statusMessage:@"Deleting editor..." ] autorelease];
-				
-			}			
-		}
+		}			
 	}
 }
 
 - (void)dealloc {
 	[collaborators release];
 	[inviteeEmail release];
-	[ItemList release];
+	[itemList release];
 	[statusDisplay release];
 	
     [super dealloc];
