@@ -3,7 +3,7 @@
 //  Listable
 //
 //  Created by Justin Leitgeb on 10/27/09.
-//  Copyright 2009 BlockStackers. All rights reserved.
+//  Copyright 2009 Stack Builders Inc. All rights reserved.
 //
 
 #import "Blip.h"

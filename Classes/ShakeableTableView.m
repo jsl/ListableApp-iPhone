@@ -3,7 +3,7 @@
 //  Listable
 //
 //  Created by Justin Leitgeb on 9/19/09.
-//  Copyright 2009 BlockStackers. All rights reserved.
+//  Copyright 2009 Stack Builders Inc. All rights reserved.
 //
 
 #import "ShakeableTableView.h"

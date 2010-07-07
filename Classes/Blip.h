@@ -2,7 +2,7 @@
 //  Blip.h
 //
 //  Created by Justin Leitgeb on 9/11/09.
-//  Copyright 2009 Stack Builders Inc.. All rights reserved.
+//  Copyright 2009 Stack Builders Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
