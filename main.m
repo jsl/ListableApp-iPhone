@@ -3,7 +3,7 @@
 //  SharedList
 //
 //  Created by Justin Leitgeb on 9/10/09.
-//  Copyright __MyCompanyName__ 2009. All rights reserved.
+//  Copyright Stack Builders Inc. 2009. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
