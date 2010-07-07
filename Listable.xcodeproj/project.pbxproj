@@ -556,7 +556,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator4.0;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Distribution;
 		};
@@ -575,7 +575,7 @@
 				PRODUCT_NAME = Listable;
 				PROVISIONING_PROFILE = "808A9D79-4AA7-474F-8A39-DC52BE5E127E";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "808A9D79-4AA7-474F-8A39-DC52BE5E127E";
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Distribution;
 		};
